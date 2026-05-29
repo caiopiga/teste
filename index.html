@@ -166,6 +166,34 @@
         .btn-cancelar:hover { background-color: #4b5563; }
         .valor-variavel-input { display: inline-block; width: 110px; padding: 0.2rem 0.4rem; border: 1px solid var(--primary-light); border-radius: 4px; font-size: 0.9rem; font-weight: 700; color: var(--danger-color); }
 
+
+        /* ===== OVERLAY DOS FORMS DE CONFIGURAÇÃO ===== */
+        .cfg-modal-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
+            animation: fadeIn 0.25s ease;
+            align-items: center; justify-content: center;
+        }
+        .cfg-modal-overlay.open { display: flex; }
+        .cfg-modal-box {
+            background: var(--bg-white); border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg); padding: 2rem; width: 90%;
+            max-width: 650px; max-height: 90vh; overflow-y: auto;
+            animation: slideIn 0.25s ease;
+            position: relative;
+        }
+        .cfg-modal-box h3.cfg-modal-title {
+            font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--text-dark);
+        }
+        .cfg-modal-close {
+            position: absolute; top: 1rem; right: 1rem;
+            color: var(--text-light); font-size: 1.5rem; font-weight: 700;
+            cursor: pointer; line-height: 1; background: none; border: none;
+            padding: 0.2rem 0.5rem; border-radius: 50%;
+        }
+        .cfg-modal-close:hover { background: var(--bg-light); color: var(--text-dark); }
+
         @media (max-width: 900px) { body { padding: 0.75rem; } .container { padding: 0; } .dashboard { flex-direction: column; } .card { min-width: 100%; } .tab { padding: 0.75rem 0.5rem; font-size: 0.85rem; } .resumo-cards { flex-direction: column; } .resumo-card { min-width: 100%; } }
         @media (max-width: 768px) { body { padding: 0.5rem; font-size: 0.9rem; } .header { padding: 1rem 1.5rem; } .header h1 { font-size: 1.35rem; } .tab-content { padding: 1rem; } .tab span { display: none; } .tab i { margin-right: 0; font-size: 1.2rem; } .form-row { flex-direction: column; } .form-group { min-width: 100%; } table { font-size: 0.85rem; } th, td { padding: 0.6rem 0.4rem; font-size: 0.85rem; } .modal-content { padding: 1.25rem; margin: 5% auto; width: 95%; } .card { padding: 1.25rem; } .card h3 { font-size: 1.25rem; } }
         @media (max-width: 480px) { body { padding: 0.25rem; } .header { padding: 0.75rem 1rem; margin-bottom: 1rem; } .header h1 { font-size: 1.15rem; } .tab-content { padding: 0.75rem; } .form-group { min-width: 100%; } input, select { padding: 0.65rem 0.85rem; font-size: 0.9rem; } button { padding: 0.65rem 1.25rem; font-size: 0.9rem; } .action-btn { padding: 0.3rem 0.45rem; font-size: 0.8rem; width: 2rem; height: 2rem; } table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.8rem; } th, td { padding: 0.5rem 0.35rem; font-size: 0.8rem; } .card { padding: 1rem; } .card h3 { font-size: 1.1rem; margin-bottom: 1rem; } .card-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; } .resumo-icon { width: 40px; height: 40px; font-size: 1.1rem; } .resumo-value { font-size: 1.1rem; } .payment-option { font-size: 0.85rem; padding: 0.4rem 0.6rem; } }
@@ -458,6 +486,31 @@
             <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Adicione cada salário com a data de recebimento. O sistema usará os mais recentes para cada ciclo (dia 15 e dia 30).</p>
             <div id="lista-salarios"></div>
             <button class="btn-add-conta" id="btn-show-form-salario" type="button"><i class="fas fa-plus"></i> Adicionar Salário</button>
+            <div class="form-add-conta" id="form-add-salario-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-salario-titulo"><i class="fas fa-plus-circle"></i> Novo Salário</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data de Recebimento</label>
+                        <input type="date" id="sal-data">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="sal-valor" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo</label>
+                        <select id="sal-ciclo">
+                            <option value="dia15">Dia 15</option>
+                            <option value="dia30">Dia 30</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="sal-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-salario"><i class="fas fa-save"></i> Salvar Salário</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-salario"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
         </div>
 
         <div class="section-divider"></div>
@@ -468,6 +521,82 @@
             <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Cadastre seus cartões com limite, vencimento e fechamento. O saldo livre será o limite menos a fatura atual.</p>
             <div id="lista-cartoes"></div>
             <button class="btn-add-conta" id="btn-show-form-cartao" type="button"><i class="fas fa-plus"></i> Adicionar Cartão</button>
+            <div class="form-add-conta" id="form-add-cartao-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-cartao-titulo"><i class="fas fa-plus-circle"></i> Novo Cartão</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome do Cartão</label>
+                        <input type="text" id="cart-nome" placeholder="Ex: Nubank, Inter, Sofisa">
+                    </div>
+                    <div class="form-group">
+                        <label>Limite Total (R$)</label>
+                        <input type="number" id="cart-limite" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vence dia</label>
+                        <input type="number" id="cart-vencimento" min="1" max="31" placeholder="Ex: 15">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha dia</label>
+                        <input type="number" id="cart-fechamento" min="1" max="31" placeholder="Ex: 12">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo de Pagamento</label>
+                        <select id="cart-ciclo">
+                            <option value="dia15">Dia 15</option>
+                            <option value="dia30">Dia 30</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bandeira</label>
+                        <select id="cart-bandeira">
+                            <option value="mastercard">Mastercard</option>
+                            <option value="visa">Visa</option>
+                            <option value="elo">Elo</option>
+                            <option value="amex">Amex</option>
+                            <option value="hipercard">Hipercard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cor do Cartão no Dashboard</label>
+                        <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.3rem;" id="cart-cores">
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#8307bf|#9d33d9" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#8307bf,#9d33d9);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Roxo
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#ff7a00|#ff9a3c" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#ff7a00,#ff9a3c);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Laranja
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#1a1a1a|#2d2d2d" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Preto
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#0ea5e9|#38bdf8" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#0ea5e9,#38bdf8);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Azul
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#10b981|#34d399" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#10b981,#34d399);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Verde
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#f59e0b|#fbbf24" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Amarelo
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#ec4899|#f472b6" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#ec4899,#f472b6);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Rosa
+                            </label>
+                            <label style="cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:400;font-size:0.85rem;">
+                                <input type="radio" name="cart-cor" value="#6366f1|#818cf8" style="width:auto;"> <span style="width:26px;height:16px;border-radius:4px;background:linear-gradient(135deg,#6366f1,#818cf8);display:inline-block;border:1px solid rgba(0,0,0,0.15);"></span> Índigo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="cart-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-cartao"><i class="fas fa-save"></i> Salvar Cartão</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-cartao"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
         </div>
 
         <div class="section-divider"></div>
@@ -481,146 +610,137 @@
             <button class="btn-add-conta" id="btn-show-form-conta" type="button">
                 <i class="fas fa-plus"></i> Adicionar Conta
             </button>
+            <div class="form-add-conta" id="form-add-conta-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-conta-titulo"><i class="fas fa-plus-circle"></i> Nova Conta</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome da Conta</label>
+                        <input type="text" id="cf-nome" placeholder="Ex: Aluguel, Gympass...">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="cf-valor" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Variável?</label>
+                        <select id="cf-variavel">
+                            <option value="nao">Não (fixo)</option>
+                            <option value="sim">Sim (editável todo mês)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prazo / Vencimento</label>
+                        <select id="cf-prazo">
+                            <option value="dia15">Todo dia 15</option>
+                            <option value="dia30">Todo dia 30</option>
+                            <option value="perder">A perder de vista (sem prazo)</option>
+                            <option value="parcelas">Parcelado</option>
+                            <option value="personalizado">Data específica</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="cf-parcelas-group" style="display:none;">
+                        <label>Nº de Parcelas restantes</label>
+                        <input type="number" id="cf-parcelas" min="1" placeholder="Ex: 12">
+                    </div>
+                    <div class="form-group" id="cf-data-group" style="display:none;">
+                        <label>Data de Vencimento</label>
+                        <input type="date" id="cf-data-venc">
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de Pagamento</label>
+                        <select id="cf-pagamento">
+                            <option value="Cartão Nubank">Cartão Nubank</option>
+                            <option value="Cartão Inter">Cartão Inter</option>
+                            <option value="Cartão Sofisa">Cartão Sofisa</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Boleto">Boleto</option>
+                            <option value="Débito Automático">Débito Automático</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo (afeta qual fatura)</label>
+                        <select id="cf-ciclo">
+                            <option value="dia15">Dia 15 (Nubank)</option>
+                            <option value="dia30">Dia 30 (Inter / Sofisa)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="cf-codbarras-group" style="display:none;">
+                    <div class="form-group">
+                        <label><i class="fas fa-barcode"></i> Código de Barras do Boleto</label>
+                        <input type="text" id="cf-codbarras" placeholder="Cole o código de barras aqui (será exibido no relatório)">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;padding-top:1.5rem;">
+                        <input type="checkbox" id="cf-destaque" style="width:auto;cursor:pointer;" title="Aparece em destaque na aba Pagamentos">
+                        <label for="cf-destaque" style="margin:0;cursor:pointer;font-size:0.9rem;">
+                            <i class="fas fa-star" style="color:var(--warning-color);"></i>
+                            Destacar no relatório de pagamentos
+                            <small style="display:block;color:var(--text-light);font-weight:400;">Aparece em evidência na aba Pagamentos (ex: boleto, PIX pontual)</small>
+                        </label>
+                    </div>
+                </div>
+                <input type="hidden" id="cf-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-conta"><i class="fas fa-save"></i> Salvar Conta</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-conta"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Salário -->
-<div id="modalSalario" class="modal">
-    <div class="modal-content" style="max-width:480px;">
-        <span class="close" id="closeModalSalario">&times;</span>
-        <h2 id="form-salario-titulo"><i class="fas fa-plus-circle"></i> Novo Salário</h2>
+
+<!-- ===== MODAL SALÁRIO ===== -->
+<div id="modalSalario" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:450px;">
+        <span class="close" onclick="document.getElementById('modalSalario').style.display='none'">&times;</span>
+        <h2 id="form-salario-titulo-modal"><i class="fas fa-plus-circle"></i> Novo Salário</h2>
         <div class="form-row">
             <div class="form-group">
                 <label>Data de Recebimento</label>
-                <input type="date" id="sal-data">
+                <input type="date" id="sal-data-m">
             </div>
             <div class="form-group">
                 <label>Valor (R$)</label>
-                <input type="number" id="sal-valor" step="0.01" min="0" placeholder="0.00">
+                <input type="number" id="sal-valor-m" step="0.01" min="0" placeholder="0.00">
             </div>
             <div class="form-group">
                 <label>Ciclo</label>
-                <select id="sal-ciclo">
+                <select id="sal-ciclo-m">
                     <option value="dia15">Dia 15</option>
                     <option value="dia30">Dia 30</option>
                 </select>
             </div>
         </div>
-        <input type="hidden" id="sal-edit-index" value="-1">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button type="button" id="btn-salvar-salario"><i class="fas fa-save"></i> Salvar Salário</button>
-            <button type="button" class="btn-cancelar" id="btn-cancelar-salario"><i class="fas fa-times"></i> Cancelar</button>
+        <input type="hidden" id="sal-edit-index-m" value="-1">
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+            <button type="button" id="btn-salvar-salario-m"><i class="fas fa-save"></i> Salvar Salário</button>
+            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalSalario').style.display='none'"><i class="fas fa-times"></i> Cancelar</button>
         </div>
     </div>
 </div>
 
-<!-- Modal Cartão -->
-<div id="modalCartao" class="modal">
-    <div class="modal-content" style="max-width:580px;">
-        <span class="close" id="closeModalCartao">&times;</span>
-        <h2 id="form-cartao-titulo"><i class="fas fa-plus-circle"></i> Novo Cartão</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Nome do Cartão</label>
-                <input type="text" id="cart-nome" placeholder="Ex: Nubank, Inter, Sofisa">
-            </div>
-            <div class="form-group">
-                <label>Limite Total (R$)</label>
-                <input type="number" id="cart-limite" step="0.01" min="0" placeholder="0.00">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Vence dia</label>
-                <input type="number" id="cart-vencimento" min="1" max="31" placeholder="Ex: 15">
-            </div>
-            <div class="form-group">
-                <label>Fecha dia</label>
-                <input type="number" id="cart-fechamento" min="1" max="31" placeholder="Ex: 12">
-            </div>
-            <div class="form-group">
-                <label>Ciclo de Pagamento</label>
-                <select id="cart-ciclo">
-                    <option value="dia15">Dia 15</option>
-                    <option value="dia30">Dia 30</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Cor do Cartão no Dashboard</label>
-                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.25rem;" id="cart-cores">
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Roxo (Nubank)">
-                        <input type="radio" name="cart-cor" value="#8307bf,#9d33d9" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#8307bf,#9d33d9);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Roxo
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Laranja (Inter)">
-                        <input type="radio" name="cart-cor" value="#ff7a00,#ff9a3c" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#ff7a00,#ff9a3c);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Laranja
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Preto (Sofisa)">
-                        <input type="radio" name="cart-cor" value="#1a1a1a,#2d2d2d" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Preto
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Azul">
-                        <input type="radio" name="cart-cor" value="#0ea5e9,#38bdf8" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#0ea5e9,#38bdf8);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Azul
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Verde">
-                        <input type="radio" name="cart-cor" value="#10b981,#34d399" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#10b981,#34d399);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Verde
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Amarelo">
-                        <input type="radio" name="cart-cor" value="#f59e0b,#fbbf24" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Amarelo
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Rosa">
-                        <input type="radio" name="cart-cor" value="#ec4899,#f472b6" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#ec4899,#f472b6);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Rosa
-                    </label>
-                    <label style="cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-weight:400;" title="Índigo">
-                        <input type="radio" name="cart-cor" value="#6366f1,#818cf8" style="width:auto;">
-                        <span style="width:28px;height:18px;border-radius:4px;background:linear-gradient(135deg,#6366f1,#818cf8);display:inline-block;border:1px solid rgba(0,0,0,0.1);"></span> Índigo
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Bandeira do Cartão</label>
-                <select id="cart-bandeira">
-                    <option value="mastercard">💳 Mastercard</option>
-                    <option value="visa">💳 Visa</option>
-                    <option value="elo">💳 Elo</option>
-                    <option value="amex">💳 Amex</option>
-                    <option value="hipercard">💳 Hipercard</option>
-                </select>
-            </div>
-        </div>
-        <input type="hidden" id="cart-edit-index" value="-1">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button type="button" id="btn-salvar-cartao"><i class="fas fa-save"></i> Salvar Cartão</button>
-            <button type="button" class="btn-cancelar" id="btn-cancelar-cartao"><i class="fas fa-times"></i> Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Conta Fixa -->
-<div id="modalContaFixa" class="modal">
-    <div class="modal-content" style="max-width:680px;">
-        <span class="close" id="closeModalContaFixa">&times;</span>
-        <h2 id="form-conta-titulo"><i class="fas fa-plus-circle"></i> Nova Conta</h2>
+<!-- ===== MODAL CONTA FIXA ===== -->
+<div id="modalContaFixa" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:700px;max-height:90vh;overflow-y:auto;">
+        <span class="close" onclick="document.getElementById('modalContaFixa').style.display='none'">&times;</span>
+        <h2 id="form-conta-titulo-modal"><i class="fas fa-plus-circle"></i> Nova Conta</h2>
         <div class="form-row">
             <div class="form-group">
                 <label>Nome da Conta</label>
-                <input type="text" id="cf-nome" placeholder="Ex: Aluguel, Gympass...">
+                <input type="text" id="cf-nome-m" placeholder="Ex: Aluguel, Gympass...">
             </div>
             <div class="form-group">
                 <label>Valor (R$)</label>
-                <input type="number" id="cf-valor" step="0.01" min="0" placeholder="0.00">
+                <input type="number" id="cf-valor-m" step="0.01" min="0" placeholder="0.00">
             </div>
             <div class="form-group">
                 <label>Valor Variável?</label>
-                <select id="cf-variavel">
+                <select id="cf-variavel-m">
                     <option value="nao">Não (fixo)</option>
                     <option value="sim">Sim (editável todo mês)</option>
                 </select>
@@ -629,25 +749,27 @@
         <div class="form-row">
             <div class="form-group">
                 <label>Prazo / Vencimento</label>
-                <select id="cf-prazo">
+                <select id="cf-prazo-m" onchange="atualizarVisibilidadePrazoModal()">
                     <option value="dia15">Todo dia 15</option>
                     <option value="dia30">Todo dia 30</option>
-                    <option value="perder">A perder de vista (sem prazo)</option>
+                    <option value="perder">A perder de vista</option>
                     <option value="parcelas">Parcelado</option>
                     <option value="personalizado">Data específica</option>
                 </select>
             </div>
-            <div class="form-group" id="cf-parcelas-group" style="display:none;">
+            <div class="form-group" id="cf-parcelas-group-m" style="display:none;">
                 <label>Nº de Parcelas restantes</label>
-                <input type="number" id="cf-parcelas" min="1" placeholder="Ex: 12">
+                <input type="number" id="cf-parcelas-m" min="1" placeholder="Ex: 12">
             </div>
-            <div class="form-group" id="cf-data-group" style="display:none;">
+            <div class="form-group" id="cf-data-group-m" style="display:none;">
                 <label>Data de Vencimento</label>
-                <input type="date" id="cf-data-venc">
+                <input type="date" id="cf-data-venc-m">
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group">
                 <label>Forma de Pagamento</label>
-                <select id="cf-pagamento">
+                <select id="cf-pagamento-m">
                     <option value="Cartão Nubank">Cartão Nubank</option>
                     <option value="Cartão Inter">Cartão Inter</option>
                     <option value="Cartão Sofisa">Cartão Sofisa</option>
@@ -658,28 +780,28 @@
             </div>
             <div class="form-group">
                 <label>Ciclo (afeta qual fatura)</label>
-                <select id="cf-ciclo">
-                    <option value="dia15">Dia 15 (Nubank)</option>
-                    <option value="dia30">Dia 30 (Inter / Sofisa)</option>
+                <select id="cf-ciclo-m">
+                    <option value="dia15">Dia 15</option>
+                    <option value="dia30">Dia 30</option>
                 </select>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group" id="cf-codbarras-group" style="display:none;">
-                <label>Código de Barras</label>
-                <input type="text" id="cf-codbarras" placeholder="Cole o código de barras do boleto">
-            </div>
+        <div class="form-row" id="cf-codbarras-group-m" style="display:none;">
             <div class="form-group">
-                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
-                    <input type="checkbox" id="cf-destaque" style="width:auto;">
-                    Destacar nos pagamentos
-                </label>
+                <label><i class="fas fa-barcode"></i> Código de Barras do Boleto</label>
+                <input type="text" id="cf-codbarras-m" placeholder="Cole o código de barras aqui">
             </div>
         </div>
-        <input type="hidden" id="cf-edit-index" value="-1">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button type="button" id="btn-salvar-conta"><i class="fas fa-save"></i> Salvar Conta</button>
-            <button type="button" class="btn-cancelar" id="btn-cancelar-conta"><i class="fas fa-times"></i> Cancelar</button>
+        <div class="form-row">
+            <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;padding-top:0.5rem;">
+                <input type="checkbox" id="cf-destaque-m" style="width:auto;cursor:pointer;">
+                <label for="cf-destaque-m" style="margin:0;cursor:pointer;font-size:0.9rem;"><i class="fas fa-star" style="color:var(--warning-color);"></i> Destacar no relatório de pagamentos</label>
+            </div>
+        </div>
+        <input type="hidden" id="cf-edit-index-m" value="-1">
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+            <button type="button" id="btn-salvar-conta-m"><i class="fas fa-save"></i> Salvar Conta</button>
+            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalContaFixa').style.display='none'"><i class="fas fa-times"></i> Cancelar</button>
         </div>
     </div>
 </div>
@@ -934,10 +1056,7 @@ function renderDashboardCartoes() {
     const dashboard = document.getElementById('dashboard-cards');
     if (!dashboard) return;
     dashboard.innerHTML = '';
-    const coresFallback = [
-        '#8307bf,#9d33d9','#ff7a00,#ff9a3c','#1a1a1a,#2d2d2d',
-        '#0ea5e9,#38bdf8','#10b981,#34d399','#f59e0b,#fbbf24'
-    ];
+    const coresFallback = ['#8307bf|#9d33d9','#ff7a00|#ff9a3c','#1a1a1a|#2d2d2d','#0ea5e9|#38bdf8','#10b981|#34d399','#f59e0b|#fbbf24'];
     // Fallback: se nenhum cartão cadastrado, mostrar os 3 antigos
     const lista = cartoes.length > 0 ? cartoes : [
         { nome: 'Nubank', limite: configuracoes.saldoLivreNubank||0, vencimento: 15, fechamento: 12, ciclo: 'dia15' },
@@ -945,9 +1064,10 @@ function renderDashboardCartoes() {
         { nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa||0, vencimento: 1,  fechamento: 26, ciclo: 'dia30' }
     ];
     lista.forEach((c, i) => {
-        const corStr = c.cor || coresFallback[i % coresFallback.length];
-        const [cor1, cor2] = corStr.split(',');
-        const bandeiraCls = {visa:'fab fa-cc-visa',mastercard:'fab fa-cc-mastercard',elo:'fas fa-credit-card',amex:'fab fa-cc-amex',hipercard:'fas fa-credit-card'}[c.bandeira||'mastercard'] || 'fab fa-cc-mastercard';
+        const corStr = (c.cor || coresFallback[i % coresFallback.length]);
+        const [cor1, cor2] = corStr.split('|');
+        const bandeiraIcons = {visa:'fab fa-cc-visa',mastercard:'fab fa-cc-mastercard',elo:'fas fa-credit-card',amex:'fab fa-cc-amex',hipercard:'fas fa-credit-card'};
+        const iconClass = bandeiraIcons[c.bandeira || 'mastercard'] || 'fab fa-cc-mastercard';
         const fatura = getFaturaCartao(c.nome);
         const saldoDisp = (parseFloat(c.limite) || 0) - fatura;
         const saldoCor = saldoDisp >= 0 ? 'rgba(255,255,255,0.9)' : '#ff6b6b';
@@ -956,7 +1076,7 @@ function renderDashboardCartoes() {
         div.style.background = `linear-gradient(135deg, ${cor1}, ${cor2})`;
         div.innerHTML = `
             <div class="card-content">
-                <h3><i class="${bandeiraCls}"></i> ${c.nome}</h3>
+                <h3><i class="${iconClass}"></i> ${c.nome}</h3>
                 <div class="card-info">
                     <span>Fatura atual:</span>
                     <span>${formatarMoeda(fatura)}</span>
@@ -1214,27 +1334,27 @@ function atualizarGraficoBalanco(entradas, despesas, investimentos, saldo) {
     });
 }
 
-/* ===== ATUALIZAR SELECTS DE FORMA DE PAGAMENTO ===== */
+
+/* ===== ATUALIZAR SELECTS DE FORMA DE PAGAMENTO COM CARTÕES DINÂMICOS ===== */
 function atualizarSelectsPagamento() {
-    const baseOptions = `<option value="">Selecione</option>`;
-    const staticOptions = `<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>`;
-    let cartaoOptions = '';
-    if (cartoes.length > 0) {
-        cartoes.forEach(c => {
-            cartaoOptions += `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`;
-        });
-    } else {
-        cartaoOptions = `<option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option>`;
-    }
-    const allOptions = baseOptions + cartaoOptions + staticOptions;
-    // Atualizar todos os selects de forma de pagamento
-    ['forma-pagamento', 'edit-forma-pagamento', 'cf-pagamento'].forEach(id => {
+    const cartaoOpts = cartoes.length > 0
+        ? cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('')
+        : '<option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option>';
+    const base = `<option value="">Selecione</option>${cartaoOpts}<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>`;
+    ['forma-pagamento','edit-forma-pagamento'].forEach(id => {
         const sel = document.getElementById(id);
         if (!sel) return;
-        const currentVal = sel.value;
-        sel.innerHTML = allOptions;
-        if (currentVal) sel.value = currentVal;
+        const cur = sel.value;
+        sel.innerHTML = base;
+        if (cur) sel.value = cur;
     });
+    // cf-pagamento tem opções ligeiramente diferentes (sem "Selecione")
+    const cfSel = document.getElementById('cf-pagamento');
+    if (cfSel) {
+        const cur = cfSel.value;
+        cfSel.innerHTML = cartaoOpts + '<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>';
+        if (cur) cfSel.value = cur;
+    }
 }
 
 /* ===== CONFIGURAÇÕES ===== */
@@ -1305,14 +1425,16 @@ function excluirSalario(index) {
 }
 
 function editarSalario(index) {
+    // abre modal
     const s = salarios[index];
-    document.getElementById('sal-data').value = s.data;
-    document.getElementById('sal-valor').value = s.valor;
-    document.getElementById('sal-ciclo').value = s.ciclo;
-    document.getElementById('sal-edit-index').value = index;
-    document.getElementById('form-salario-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Salário';
+    document.getElementById('sal-data-m').value = s.data;
+    document.getElementById('sal-valor-m').value = s.valor;
+    document.getElementById('sal-ciclo-m').value = s.ciclo;
+    document.getElementById('sal-edit-index-m').value = index;
+    document.getElementById('form-salario-titulo-modal').innerHTML = '<i class="fas fa-edit"></i> Editar Salário';
     document.getElementById('modalSalario').style.display = 'block';
 }
+
 
 function renderCartoes() {
     const lista = document.getElementById('lista-cartoes');
@@ -1355,14 +1477,13 @@ function editarCartao(index) {
     document.getElementById('cart-vencimento').value = c.vencimento;
     document.getElementById('cart-fechamento').value = c.fechamento;
     document.getElementById('cart-ciclo').value = c.ciclo;
-    if (c.bandeira) document.getElementById('cart-bandeira').value = c.bandeira;
-    // Selecionar cor salva
-    document.querySelectorAll('input[name="cart-cor"]').forEach(r => {
-        r.checked = r.value === (c.cor || '#8307bf,#9d33d9');
-    });
+    if (document.getElementById('cart-bandeira') && c.bandeira)
+        document.getElementById('cart-bandeira').value = c.bandeira;
+    document.querySelectorAll('input[name="cart-cor"]').forEach(r => r.checked = (r.value === (c.cor || '#8307bf|#9d33d9')));
     document.getElementById('cart-edit-index').value = index;
     document.getElementById('form-cartao-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Cartão';
-    document.getElementById('modalCartao').style.display = 'block';
+    document.getElementById('form-add-cartao-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-cartao').style.display = 'none';
 }
 
 /* ===== CONTAS FIXAS ===== */
@@ -1445,22 +1566,24 @@ function excluirContaFixa(index) {
 
 function editarContaFixa(index) {
     const c = contasFixas[index];
-    document.getElementById('cf-nome').value = c.nome;
-    document.getElementById('cf-valor').value = c.valor;
-    document.getElementById('cf-variavel').value = c.variavel || 'nao';
-    document.getElementById('cf-prazo').value = c.prazo;
-    document.getElementById('cf-pagamento').value = c.pagamento;
-    document.getElementById('cf-ciclo').value = c.ciclo;
-    document.getElementById('cf-parcelas').value = c.parcelas || '';
-    document.getElementById('cf-data-venc').value = c.dataVenc || '';
-    document.getElementById('cf-destaque').checked = c.destaque || false;
-    document.getElementById('cf-codbarras').value = c.codbarras || '';
-    document.getElementById('cf-codbarras-group').style.display = c.pagamento === 'Boleto' ? '' : 'none';
-    document.getElementById('cf-edit-index').value = index;
-    document.getElementById('form-conta-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Conta';
+    atualizarSelectContaFixaModal();
+    document.getElementById('cf-nome-m').value = c.nome;
+    document.getElementById('cf-valor-m').value = c.valor;
+    document.getElementById('cf-variavel-m').value = c.variavel || 'nao';
+    document.getElementById('cf-prazo-m').value = c.prazo;
+    document.getElementById('cf-pagamento-m').value = c.pagamento;
+    document.getElementById('cf-ciclo-m').value = c.ciclo;
+    document.getElementById('cf-parcelas-m').value = c.parcelas || '';
+    document.getElementById('cf-data-venc-m').value = c.dataVenc || '';
+    document.getElementById('cf-destaque-m').checked = c.destaque || false;
+    document.getElementById('cf-codbarras-m').value = c.codbarras || '';
+    document.getElementById('cf-codbarras-group-m').style.display = c.pagamento === 'Boleto' ? '' : 'none';
+    document.getElementById('cf-edit-index-m').value = index;
+    document.getElementById('form-conta-titulo-modal').innerHTML = '<i class="fas fa-edit"></i> Editar Conta';
+    atualizarVisibilidadePrazoModal();
     document.getElementById('modalContaFixa').style.display = 'block';
-    atualizarVisibilidadePrazo();
 }
+
 
 function atualizarVisibilidadePrazo() {
     const prazo = document.getElementById('cf-prazo').value;
@@ -1582,11 +1705,11 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
         // Zerar contas fixas variáveis ou de data específica do ciclo dia15
-        contasFixas.forEach((c, i) => {
-            if (c.ciclo === 'dia15' && (c.variavel === 'sim' || c.prazo === 'personalizado')) {
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia15' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
                 contasFixas[i].valor = 0;
-            }
         });
+        salvarFirebase('contasFixas', contasFixas);
     }
     if (dia === 30) {
         relatorio += `📊 *Pagamentos do dia 30:*\n\n`;
@@ -1607,14 +1730,13 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
         // Zerar contas fixas variáveis ou de data específica do ciclo dia30
-        contasFixas.forEach((c, i) => {
-            if (c.ciclo === 'dia30' && (c.variavel === 'sim' || c.prazo === 'personalizado')) {
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia30' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
                 contasFixas[i].valor = 0;
-            }
         });
+        salvarFirebase('contasFixas', contasFixas);
     }
     salvarFirebase('lancamentos', lancamentos);
-    salvarFirebase('contasFixas', contasFixas);
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
     navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
 }
@@ -1645,16 +1767,7 @@ document.getElementById('form-lancamento').addEventListener('submit', function(e
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 });
 // ─── Salário event listeners ───────────────────────────
-document.getElementById('btn-show-form-salario').addEventListener('click', () => {
-    document.getElementById('sal-edit-index').value = -1;
-    document.getElementById('form-salario-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Salário';
-    document.getElementById('sal-data').value = new Date().toISOString().split('T')[0];
-    document.getElementById('sal-valor').value = '';
-    document.getElementById('modalSalario').style.display = 'block';
-});
-document.getElementById('closeModalSalario').addEventListener('click', () => { document.getElementById('modalSalario').style.display = 'none'; });
-document.getElementById('btn-cancelar-salario').addEventListener('click', () => { document.getElementById('modalSalario').style.display = 'none'; });
-window.addEventListener('click', e => { if (e.target == document.getElementById('modalSalario')) document.getElementById('modalSalario').style.display = 'none'; });
+/* listeners antigos de salario removidos - substituídos por modal */
 document.getElementById('btn-salvar-salario').addEventListener('click', () => {
     const data  = document.getElementById('sal-data').value;
     const valor = parseFloat(document.getElementById('sal-valor').value) || 0;
@@ -1665,7 +1778,8 @@ document.getElementById('btn-salvar-salario').addEventListener('click', () => {
     if (editIndex >= 0) salarios[editIndex] = sal;
     else salarios.push(sal);
     salvarFirebase('salarios', salarios);
-    document.getElementById('modalSalario').style.display = 'none';
+    document.getElementById('form-add-salario-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-salario').style.display = '';
     carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
 });
 
@@ -1677,31 +1791,30 @@ document.getElementById('btn-show-form-cartao').addEventListener('click', () => 
     document.getElementById('cart-limite').value = '';
     document.getElementById('cart-vencimento').value = '';
     document.getElementById('cart-fechamento').value = '';
-    // Reset cor
-    document.querySelectorAll('input[name="cart-cor"]').forEach(r => r.checked = false);
-    const firstCor = document.querySelector('input[name="cart-cor"]');
-    if (firstCor) firstCor.checked = true;
-    document.getElementById('modalCartao').style.display = 'block';
+    document.getElementById('form-add-cartao-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-cartao').style.display = 'none';
 });
-document.getElementById('closeModalCartao').addEventListener('click', () => { document.getElementById('modalCartao').style.display = 'none'; });
-document.getElementById('btn-cancelar-cartao').addEventListener('click', () => { document.getElementById('modalCartao').style.display = 'none'; });
-window.addEventListener('click', e => { if (e.target == document.getElementById('modalCartao')) document.getElementById('modalCartao').style.display = 'none'; });
+document.getElementById('btn-cancelar-cartao').addEventListener('click', () => {
+    document.getElementById('form-add-cartao-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-cartao').style.display = '';
+});
 document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
     const nome       = document.getElementById('cart-nome').value.trim();
     const limite     = parseFloat(document.getElementById('cart-limite').value) || 0;
     const vencimento = parseInt(document.getElementById('cart-vencimento').value) || 0;
     const fechamento = parseInt(document.getElementById('cart-fechamento').value) || 0;
     const ciclo      = document.getElementById('cart-ciclo').value;
-    const bandeira   = document.getElementById('cart-bandeira').value;
-    const corSel     = document.querySelector('input[name="cart-cor"]:checked');
-    const cor        = corSel ? corSel.value : '#8307bf,#9d33d9';
     if (!nome || limite <= 0 || vencimento <= 0 || fechamento <= 0) { alert('Preencha todos os campos do cartão.'); return; }
+    const corSel = document.querySelector('input[name="cart-cor"]:checked');
+    const cor = corSel ? corSel.value : '#8307bf|#9d33d9';
+    const bandeira = document.getElementById('cart-bandeira') ? document.getElementById('cart-bandeira').value : 'mastercard';
     const cart = { nome, limite, vencimento, fechamento, ciclo, cor, bandeira };
     const editIndex = parseInt(document.getElementById('cart-edit-index').value);
     if (editIndex >= 0) cartoes[editIndex] = cart;
     else cartoes.push(cart);
     salvarFirebase('cartoes', cartoes);
-    document.getElementById('modalCartao').style.display = 'none';
+    document.getElementById('form-add-cartao-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-cartao').style.display = '';
     carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
 });
 
@@ -1763,18 +1876,7 @@ document.getElementById('cf-pagamento').addEventListener('change', function() {
     document.getElementById('cf-codbarras-group').style.display = this.value === 'Boleto' ? '' : 'none';
 });
 
-document.getElementById('btn-show-form-conta').addEventListener('click', () => {
-    document.getElementById('cf-edit-index').value = -1;
-    document.getElementById('form-conta-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Nova Conta';
-    document.getElementById('cf-destaque').checked = false;
-    document.getElementById('cf-codbarras-group').style.display = 'none';
-    document.getElementById('cf-nome').value = '';
-    document.getElementById('cf-valor').value = '';
-    document.getElementById('modalContaFixa').style.display = 'block';
-});
-document.getElementById('closeModalContaFixa').addEventListener('click', () => { document.getElementById('modalContaFixa').style.display = 'none'; });
-document.getElementById('btn-cancelar-conta').addEventListener('click', () => { document.getElementById('modalContaFixa').style.display = 'none'; });
-window.addEventListener('click', e => { if (e.target == document.getElementById('modalContaFixa')) document.getElementById('modalContaFixa').style.display = 'none'; });
+/* listeners antigos de conta removidos - substituídos por modal */
 
 document.getElementById('btn-salvar-conta').addEventListener('click', () => {
     const nome = document.getElementById('cf-nome').value.trim();
@@ -1796,9 +1898,103 @@ document.getElementById('btn-salvar-conta').addEventListener('click', () => {
     if (editIndex >= 0) contasFixas[editIndex] = conta;
     else contasFixas.push(conta);
     salvarFirebase('contasFixas', contasFixas);
-    document.getElementById('modalContaFixa').style.display = 'none';
+    document.getElementById('form-add-conta-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-conta').style.display = '';
     renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
 });
+
+
+// ═══ MODAL SALÁRIO ════════════════════════════════════════════════════
+document.getElementById('btn-show-form-salario').addEventListener('click', () => {
+    document.getElementById('sal-edit-index-m').value = -1;
+    document.getElementById('form-salario-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Salário';
+    document.getElementById('sal-data-m').value = new Date().toISOString().split('T')[0];
+    document.getElementById('sal-valor-m').value = '';
+    document.getElementById('sal-ciclo-m').value = 'dia15';
+    document.getElementById('modalSalario').style.display = 'block';
+});
+
+document.getElementById('btn-salvar-salario-m').addEventListener('click', () => {
+    const data  = document.getElementById('sal-data-m').value;
+    const valor = parseFloat(document.getElementById('sal-valor-m').value) || 0;
+    const ciclo = document.getElementById('sal-ciclo-m').value;
+    if (!data || valor <= 0) { alert('Preencha a data e o valor do salário.'); return; }
+    const sal = { data, valor, ciclo };
+    const editIndex = parseInt(document.getElementById('sal-edit-index-m').value);
+    if (editIndex >= 0) salarios[editIndex] = sal;
+    else salarios.push(sal);
+    salvarFirebase('salarios', salarios);
+    document.getElementById('modalSalario').style.display = 'none';
+    carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
+});
+
+window.addEventListener('click', e => { if (e.target == document.getElementById('modalSalario')) document.getElementById('modalSalario').style.display = 'none'; });
+
+// ═══ MODAL CONTA FIXA ════════════════════════════════════════════════
+function atualizarVisibilidadePrazoModal() {
+    const prazo = document.getElementById('cf-prazo-m').value;
+    document.getElementById('cf-parcelas-group-m').style.display = prazo === 'parcelas' ? '' : 'none';
+    document.getElementById('cf-data-group-m').style.display = prazo === 'personalizado' ? '' : 'none';
+}
+
+document.getElementById('cf-pagamento-m').addEventListener('change', function() {
+    document.getElementById('cf-codbarras-group-m').style.display = this.value === 'Boleto' ? '' : 'none';
+});
+
+function atualizarSelectContaFixaModal() {
+    const sel = document.getElementById('cf-pagamento-m');
+    if (!sel) return;
+    const cur = sel.value;
+    const cartaoOpts = cartoes.length > 0
+        ? cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('')
+        : '<option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option>';
+    sel.innerHTML = cartaoOpts + '<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>';
+    if (cur) sel.value = cur;
+}
+
+document.getElementById('btn-show-form-conta').addEventListener('click', () => {
+    document.getElementById('cf-edit-index-m').value = -1;
+    document.getElementById('form-conta-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Nova Conta';
+    document.getElementById('cf-nome-m').value = '';
+    document.getElementById('cf-valor-m').value = '';
+    document.getElementById('cf-variavel-m').value = 'nao';
+    document.getElementById('cf-prazo-m').value = 'dia15';
+    document.getElementById('cf-ciclo-m').value = 'dia15';
+    document.getElementById('cf-destaque-m').checked = false;
+    document.getElementById('cf-codbarras-m').value = '';
+    document.getElementById('cf-codbarras-group-m').style.display = 'none';
+    document.getElementById('cf-parcelas-group-m').style.display = 'none';
+    document.getElementById('cf-data-group-m').style.display = 'none';
+    atualizarSelectContaFixaModal();
+    document.getElementById('modalContaFixa').style.display = 'block';
+});
+
+document.getElementById('btn-salvar-conta-m').addEventListener('click', () => {
+    const nome = document.getElementById('cf-nome-m').value.trim();
+    const valor = parseFloat(document.getElementById('cf-valor-m').value) || 0;
+    if (!nome || valor <= 0) { alert('Preencha nome e valor.'); return; }
+    const pagamento = document.getElementById('cf-pagamento-m').value;
+    const conta = {
+        nome, valor,
+        variavel: document.getElementById('cf-variavel-m').value,
+        prazo: document.getElementById('cf-prazo-m').value,
+        pagamento,
+        ciclo: document.getElementById('cf-ciclo-m').value,
+        parcelas: document.getElementById('cf-parcelas-m').value || null,
+        dataVenc: document.getElementById('cf-data-venc-m').value || null,
+        destaque: document.getElementById('cf-destaque-m').checked,
+        codbarras: pagamento === 'Boleto' ? (document.getElementById('cf-codbarras-m').value.trim() || null) : null
+    };
+    const editIndex = parseInt(document.getElementById('cf-edit-index-m').value);
+    if (editIndex >= 0) contasFixas[editIndex] = conta;
+    else contasFixas.push(conta);
+    salvarFirebase('contasFixas', contasFixas);
+    document.getElementById('modalContaFixa').style.display = 'none';
+    renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
+    atualizarSelectsPagamento();
+});
+
+window.addEventListener('click', e => { if (e.target == document.getElementById('modalContaFixa')) document.getElementById('modalContaFixa').style.display = 'none'; });
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
