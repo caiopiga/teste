@@ -733,100 +733,96 @@
 
 <!-- ===== MODAL CARTÃO ===== -->
 <div id="modalCartao" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:640px;max-height:90vh;overflow-y:auto;">
-        <span class="close" id="closeModalCartao">&times;</span>
-        <h2 id="form-cartao-titulo"><i class="fas fa-plus-circle"></i> Novo Cartão</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Nome do Cartão</label>
-                <input type="text" id="cart-nome" placeholder="Ex: Nubank, Inter, Sofisa">
-            </div>
-            <div class="form-group">
-                <label>Limite Total (R$)</label>
-                <input type="number" id="cart-limite" step="0.01" min="0" placeholder="0.00">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Vence dia</label>
-                <input type="number" id="cart-vencimento" min="1" max="31" placeholder="Ex: 15">
-            </div>
-            <div class="form-group">
-                <label>Fecha dia</label>
-                <input type="number" id="cart-fechamento" min="1" max="31" placeholder="Ex: 12">
-            </div>
-            <div class="form-group">
-                <label>Ciclo de Pagamento</label>
-                <select id="cart-ciclo">
-                    <option value="dia15">Dia 15</option>
-                    <option value="dia30">Dia 30</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Bandeira</label>
-                <select id="cart-bandeira">
-                    <option value="mastercard">Mastercard</option>
-                    <option value="visa">Visa</option>
-                    <option value="elo">Elo</option>
-                    <option value="amex">Amex</option>
-                    <option value="hipercard">Hipercard</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group" style="flex:1 1 100%;">
-                <label>Cor do Cartão no Dashboard</label>
-                <div style="display:flex;flex-wrap:wrap;gap:0.7rem;margin-top:0.5rem;" id="cart-cores">
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#8307bf|#9d33d9" style="display:none;" checked>
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#8307bf,#9d33d9);display:inline-block;box-shadow:0 2px 6px rgba(131,7,191,.35);"></span> Roxo
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#ff7a00|#ff9a3c" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#ff7a00,#ff9a3c);display:inline-block;box-shadow:0 2px 6px rgba(255,122,0,.35);"></span> Laranja
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#1a1a1a|#2d2d2d" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:inline-block;box-shadow:0 2px 6px rgba(0,0,0,.35);"></span> Preto
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#0ea5e9|#38bdf8" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#0ea5e9,#38bdf8);display:inline-block;box-shadow:0 2px 6px rgba(14,165,233,.35);"></span> Azul
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#10b981|#34d399" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#10b981,#34d399);display:inline-block;box-shadow:0 2px 6px rgba(16,185,129,.35);"></span> Verde
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#f59e0b|#fbbf24" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:inline-block;box-shadow:0 2px 6px rgba(245,158,11,.35);"></span> Amarelo
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#ec4899|#f472b6" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#ec4899,#f472b6);display:inline-block;box-shadow:0 2px 6px rgba(236,72,153,.35);"></span> Rosa
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#6366f1|#818cf8" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#6366f1,#818cf8);display:inline-block;box-shadow:0 2px 6px rgba(99,102,241,.35);"></span> Índigo
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#dc2626|#f87171" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#dc2626,#f87171);display:inline-block;box-shadow:0 2px 6px rgba(220,38,38,.35);"></span> Vermelho
-                    </label>
-                    <label class="cor-option" style="cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-weight:400;font-size:0.88rem;padding:0.35rem 0.7rem;border:2px solid transparent;border-radius:8px;transition:all .15s;">
-                        <input type="radio" name="cart-cor" value="#0d9488|#2dd4bf" style="display:none;">
-                        <span style="width:32px;height:20px;border-radius:5px;background:linear-gradient(135deg,#0d9488,#2dd4bf);display:inline-block;box-shadow:0 2px 6px rgba(13,148,136,.35);"></span> Teal
-                    </label>
-                </div>
-                <div id="cart-preview-cor" style="margin-top:0.8rem;height:8px;border-radius:4px;background:linear-gradient(135deg,#8307bf,#9d33d9);transition:background .25s;"></div>
-            </div>
-        </div>
-        <input type="hidden" id="cart-edit-index" value="-1">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;">
-            <button type="button" id="btn-salvar-cartao"><i class="fas fa-save"></i> Salvar Cartão</button>
-            <button type="button" class="btn-cancelar" id="btn-cancelar-cartao"><i class="fas fa-times"></i> Cancelar</button>
-        </div>
+  <div class="modal-content" style="max-width:520px;max-height:92vh;overflow-y:auto;">
+    <span class="close" id="closeModalCartao">&times;</span>
+    <h2 id="form-cartao-titulo" style="margin-bottom:1.25rem;"><i class="fas fa-credit-card"></i> Novo Cartão</h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome do Cartão</label>
+        <input type="text" id="cart-nome" placeholder="Ex: Nubank, Inter, Sofisa">
+      </div>
+      <div class="form-group">
+        <label>Limite Total (R$)</label>
+        <input type="number" id="cart-limite" step="0.01" min="0" placeholder="0.00">
+      </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Vence dia</label>
+        <input type="number" id="cart-vencimento" min="1" max="31" placeholder="15">
+      </div>
+      <div class="form-group">
+        <label>Fecha dia</label>
+        <input type="number" id="cart-fechamento" min="1" max="31" placeholder="12">
+      </div>
+      <div class="form-group">
+        <label>Ciclo</label>
+        <select id="cart-ciclo">
+          <option value="dia15">Dia 15</option>
+          <option value="dia30">Dia 30</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Bandeira</label>
+        <select id="cart-bandeira">
+          <option value="mastercard">Mastercard</option>
+          <option value="visa">Visa</option>
+          <option value="elo">Elo</option>
+          <option value="amex">Amex</option>
+          <option value="hipercard">Hipercard</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- COLOR PICKER -->
+    <div class="form-group" style="margin-top:0.75rem;">
+      <label>Cor do Cartão no Dashboard</label>
+
+      <!-- Quadrado SV (Saturation / Value) -->
+      <div style="position:relative;margin-top:0.6rem;">
+        <canvas id="cp-sv" width="460" height="200"
+          style="width:100%;height:160px;border-radius:8px;cursor:crosshair;display:block;touch-action:none;"></canvas>
+        <!-- Cursor bolinha SV -->
+        <div id="cp-sv-cursor" style="
+          position:absolute;width:18px;height:18px;border-radius:50%;
+          border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.4);
+          pointer-events:none;transform:translate(-50%,-50%);top:50%;left:50%;
+          transition:background .1s;"></div>
+      </div>
+
+      <!-- Barra Hue -->
+      <div style="position:relative;margin-top:10px;">
+        <canvas id="cp-hue" width="460" height="24"
+          style="width:100%;height:20px;border-radius:20px;cursor:pointer;display:block;touch-action:none;"></canvas>
+        <!-- Cursor bolinha Hue -->
+        <div id="cp-hue-cursor" style="
+          position:absolute;width:24px;height:24px;border-radius:50%;top:50%;
+          border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.4);
+          pointer-events:none;transform:translate(-50%,-50%);left:0%;
+          transition:background .1s;"></div>
+      </div>
+
+      <!-- Preview do cartão -->
+      <div id="cp-preview" style="
+        margin-top:12px;height:52px;border-radius:10px;
+        background:linear-gradient(135deg,#8307bf,#6610f2);
+        box-shadow:0 4px 14px rgba(0,0,0,.25);transition:background .15s;
+        display:flex;align-items:center;padding:0 1rem;gap:0.6rem;color:#fff;font-weight:600;font-size:0.9rem;">
+        <i class="fab fa-cc-mastercard" id="cp-preview-icon" style="font-size:1.5rem;"></i>
+        <span id="cp-preview-nome">Meu Cartão</span>
+      </div>
+
+      <!-- Cor salva como string "hex1|hex2" -->
+      <input type="hidden" id="cart-cor-value" value="#8307bf|#6610f2">
+    </div>
+
+    <input type="hidden" id="cart-edit-index" value="-1">
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;">
+      <button type="button" id="btn-salvar-cartao"><i class="fas fa-save"></i> Salvar Cartão</button>
+      <button type="button" class="btn-cancelar" id="btn-cancelar-cartao"><i class="fas fa-times"></i> Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal edição lançamento -->
@@ -1495,16 +1491,16 @@ function excluirCartao(index) {
 
 function editarCartao(index) {
     const c = cartoes[index];
-    document.getElementById('cart-nome').value = c.nome;
-    document.getElementById('cart-limite').value = c.limite;
+    document.getElementById('cart-nome').value       = c.nome;
+    document.getElementById('cart-limite').value     = c.limite;
     document.getElementById('cart-vencimento').value = c.vencimento;
     document.getElementById('cart-fechamento').value = c.fechamento;
-    document.getElementById('cart-ciclo').value = c.ciclo || 'dia15';
-    if (c.bandeira) document.getElementById('cart-bandeira').value = c.bandeira;
-    document.querySelectorAll('input[name="cart-cor"]').forEach(r => {
-        r.checked = r.value === (c.cor || '#8307bf|#9d33d9');
-    });
-    atualizarPreviewCor(c.cor || '#8307bf|#9d33d9');
+    document.getElementById('cart-ciclo').value      = c.ciclo || 'dia15';
+    document.getElementById('cart-bandeira').value   = c.bandeira || 'mastercard';
+    const cor = c.cor || '#8307bf|#6610f2';
+    document.getElementById('cart-cor-value').value  = cor;
+    if (window.cpInitPicker) window.cpInitPicker(cor);
+    if (window.cpUpdatePreview) setTimeout(window.cpUpdatePreview, 50);
     abrirModalCartao(index);
 }
 
@@ -1700,63 +1696,65 @@ function emojiConta(nome) {
 }
 
 function gerarRelatorioPagamento(dia) {
-    const ciclo = dia === 15 ? 'dia15' : 'dia30';
-
-    // Cartões cadastrados neste ciclo
-    const cartoesCiclo = cartoes.filter(c => c.ciclo === ciclo);
-    // Nomes completos para deletar lançamentos (ex: "Cartão Nubank")
-    // Fallback para nomes antigos caso nenhum cartão esteja cadastrado
-    const nomesParaDeletar = cartoesCiclo.length > 0
-        ? cartoesCiclo.map(c => 'Cartão ' + c.nome)
-        : (dia === 15 ? ['Cartão Nubank'] : ['Cartão Inter', 'Cartão Sofisa']);
-
-    const salarioCiclo = parseFloat(dia === 15 ? configuracoes.salario1 : configuracoes.salario2) || 0;
-    const fixasCiclo   = somaContasFixasCiclo(ciclo, true);
-    const totalFaturas = nomesParaDeletar.reduce((t, nome) => {
-        return t + lancamentos.filter(l => l.formaPagamento === nome).reduce((s,l) => s + parseFloat(l.valor||0), 0);
-    }, 0) + contasFixas.filter(c => nomesParaDeletar.includes(c.pagamento)).reduce((s,c) => s + parseFloat(c.valor||0), 0);
-    const investir = Math.max(0, salarioCiclo - fixasCiclo - totalFaturas);
-
-    let relatorio = `📊 *Pagamentos do dia ${dia}:*
-
-`;
-
-    // Contas fixas em destaque do ciclo
-    contasFixas.filter(c => c.ciclo === ciclo && c.destaque).forEach(c => {
-        relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor||0))}`;
-        if (c.pagamento === 'Boleto' && c.codbarras) relatorio += `
-   📋 Código: ${c.codbarras}`;
-        relatorio += `
-`;
-    });
-
-    // Fatura de cada cartão do ciclo
-    nomesParaDeletar.forEach(nomeCompleto => {
-        const fatura = lancamentos.filter(l => l.formaPagamento === nomeCompleto)
-            .reduce((t,l) => t + parseFloat(l.valor||0), 0)
-            + contasFixas.filter(c => c.pagamento === nomeCompleto).reduce((s,c) => s + parseFloat(c.valor||0), 0);
-        relatorio += `💳 Fatura ${nomeCompleto.replace('Cartão ','')}: ${formatarMoeda(fatura)}
-`;
-    });
-
-    relatorio += `📈 Investir: ${formatarMoeda(investir)}
-`;
-    relatorio += `
-💰 *Total*: ${formatarMoeda(salarioCiclo)}`;
-
-    // ── APAGAR lançamentos de TODOS os cartões do ciclo (dinâmico) ────
-    lancamentos = lancamentos.filter(l => !nomesParaDeletar.includes(l.formaPagamento));
-
-    // ── ZERAR variáveis; EXCLUIR de data específica ───────────────────
-    contasFixas = contasFixas.filter(c => {
-        if (c.ciclo !== ciclo) return true;           // outro ciclo: manter intocado
-        if (c.prazo === 'personalizado') return false; // data específica: excluir
-        if (c.variavel === 'sim') { c.valor = 0; return true; } // variável: zerar e manter
-        return true;                                   // fixo: manter
-    });
-
+    let relatorio = '';
+    const faturaNubankVal = calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
+    const faturaInterVal = calcularFaturaInter() + somaContasFixasCartao('Cartão Inter');
+    const faturaSofisaVal = calcularFaturaSofisa();
+    const fixas15 = somaContasFixasCiclo('dia15', true);
+    const fixas30 = somaContasFixasCiclo('dia30', true);
+    const invest15 = Math.max(0, (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal);
+    const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
+    const total15 = parseFloat(configuracoes.salario1) || 0;
+    const total30 = parseFloat(configuracoes.salario2) || 0;
+    if (dia === 15) {
+        relatorio += `📊 *Pagamentos do dia 15:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nome do cartão dia15 nos cartoes cadastrados
+        const cartaoDia15 = cartoes.find(c => c.ciclo === 'dia15');
+        const nomeFatura15 = cartaoDia15 ? cartaoDia15.nome : 'Nubank';
+        relatorio += `💳 Fatura ${nomeFatura15}: ${formatarMoeda(faturaNubankVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
+        // Zerar contas fixas variáveis ou de data específica do ciclo dia15
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia15' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
+                contasFixas[i].valor = 0;
+        });
+        salvarFirebase('contasFixas', contasFixas);
+    }
+    if (dia === 30) {
+        relatorio += `📊 *Pagamentos do dia 30:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nomes dos cartões dia30
+        const cartoesDia30 = cartoes.filter(c => c.ciclo === 'dia30');
+        const nomeInter  = cartoesDia30.find(c => c.nome.toLowerCase().includes('inter'))?.nome  || 'Inter';
+        const nomeSofisa = cartoesDia30.find(c => c.nome.toLowerCase().includes('sofisa'))?.nome || 'Sofisa';
+        relatorio += `💳 Fatura ${nomeInter}: ${formatarMoeda(faturaInterVal)}\n`;
+        relatorio += `💳 Fatura ${nomeSofisa}: ${formatarMoeda(faturaSofisaVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
+        // Zerar contas fixas variáveis ou de data específica do ciclo dia30
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia30' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
+                contasFixas[i].valor = 0;
+        });
+        salvarFirebase('contasFixas', contasFixas);
+    }
     salvarFirebase('lancamentos', lancamentos);
-    salvarFirebase('contasFixas', contasFixas);
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
     navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
 }
@@ -1804,20 +1802,158 @@ document.getElementById('btn-salvar-salario').addEventListener('click', () => {
 });
 
 // ─── Cartão event listeners ────────────────────────────
-// ── Helpers modal cartão ──────────────────────────────────────────
-function atualizarPreviewCor(val) {
-    const [c1, c2] = (val || '#8307bf|#9d33d9').split('|');
-    const prev = document.getElementById('cart-preview-cor');
-    if (prev) prev.style.background = `linear-gradient(135deg,${c1},${c2})`;
-}
-function atualizarBordaCor() {
-    document.querySelectorAll('.cor-option').forEach(lbl => {
-        const inp = lbl.querySelector('input[name="cart-cor"]');
-        const sel = inp && inp.checked;
-        lbl.style.borderColor = sel ? inp.value.split('|')[0] : 'transparent';
-        lbl.style.background  = sel ? inp.value.split('|')[0] + '22' : '';
+// ═══ COLOR PICKER ════════════════════════════════════════════════════
+(function() {
+    // Estado interno do picker
+    let cpHue = 270, cpSat = 0.8, cpVal = 0.85;
+
+    function hsvToHex(h, s, v) {
+        const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+        const r = Math.round(f(5) * 255), g = Math.round(f(3) * 255), b = Math.round(f(1) * 255);
+        return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
+    }
+
+    function drawSV() {
+        const canvas = document.getElementById('cp-sv');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        // Gradiente horizontal branco → cor pura
+        const hueHex = hsvToHex(cpHue, 1, 1);
+        const gW = ctx.createLinearGradient(0,0,W,0);
+        gW.addColorStop(0, '#fff'); gW.addColorStop(1, hueHex);
+        ctx.fillStyle = gW; ctx.fillRect(0,0,W,H);
+        // Gradiente vertical transparente → preto
+        const gB = ctx.createLinearGradient(0,0,0,H);
+        gB.addColorStop(0,'rgba(0,0,0,0)'); gB.addColorStop(1,'#000');
+        ctx.fillStyle = gB; ctx.fillRect(0,0,W,H);
+        // Cursor
+        const cursor = document.getElementById('cp-sv-cursor');
+        if (cursor) {
+            cursor.style.left  = (cpSat * 100) + '%';
+            cursor.style.top   = ((1 - cpVal) * 100) + '%';
+            cursor.style.background = hsvToHex(cpHue, cpSat, cpVal);
+        }
+    }
+
+    function drawHue() {
+        const canvas = document.getElementById('cp-hue');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const g = ctx.createLinearGradient(0,0,W,0);
+        for (let i=0; i<=360; i+=10) g.addColorStop(i/360, `hsl(${i},100%,50%)`);
+        ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+        // Cursor
+        const cursor = document.getElementById('cp-hue-cursor');
+        if (cursor) {
+            cursor.style.left = (cpHue / 360 * 100) + '%';
+            cursor.style.background = `hsl(${cpHue},100%,50%)`;
+        }
+    }
+
+    function updatePreviewAndValue() {
+        const cor1 = hsvToHex(cpHue, cpSat, cpVal);
+        const cor2 = hsvToHex(cpHue, Math.min(cpSat + 0.15, 1), Math.max(cpVal - 0.2, 0));
+        const val  = cor1 + '|' + cor2;
+        const inp  = document.getElementById('cart-cor-value');
+        if (inp) inp.value = val;
+        const prev = document.getElementById('cp-preview');
+        if (prev) prev.style.background = `linear-gradient(135deg,${cor1},${cor2})`;
+        // Preview nome
+        const nomeEl = document.getElementById('cp-preview-nome');
+        const nomeInput = document.getElementById('cart-nome');
+        if (nomeEl && nomeInput) nomeEl.textContent = nomeInput.value || 'Meu Cartão';
+        // Preview ícone bandeira
+        const iconEl = document.getElementById('cp-preview-icon');
+        const bandeiraEl = document.getElementById('cart-bandeira');
+        if (iconEl && bandeiraEl) {
+            const icons = {mastercard:'fab fa-cc-mastercard',visa:'fab fa-cc-visa',elo:'fas fa-credit-card',amex:'fab fa-cc-amex',hipercard:'fas fa-credit-card'};
+            iconEl.className = icons[bandeiraEl.value] || 'fab fa-cc-mastercard';
+            iconEl.style.fontSize = '1.5rem';
+        }
+        drawSV();
+    }
+
+    function setCpFromHex(hex) {
+        // Parse hex → HSV para restaurar estado ao editar
+        hex = hex.replace('#','');
+        if (hex.length !== 6) return;
+        const r = parseInt(hex.substr(0,2),16)/255;
+        const g = parseInt(hex.substr(2,2),16)/255;
+        const b = parseInt(hex.substr(4,2),16)/255;
+        const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
+        cpVal = max;
+        cpSat = max === 0 ? 0 : d / max;
+        if (d === 0) cpHue = 0;
+        else if (max === r) cpHue = 60 * (((g-b)/d) % 6);
+        else if (max === g) cpHue = 60 * ((b-r)/d + 2);
+        else cpHue = 60 * ((r-g)/d + 4);
+        if (cpHue < 0) cpHue += 360;
+    }
+
+    function initPicker(hexValue) {
+        if (hexValue && hexValue.includes('|')) {
+            setCpFromHex(hexValue.split('|')[0]);
+        } else {
+            cpHue = 270; cpSat = 0.80; cpVal = 0.85;
+        }
+        drawHue(); drawSV(); updatePreviewAndValue();
+    }
+
+    // Drag helpers
+    function dragHandler(canvas, onMove) {
+        function getXY(e) {
+            const r = canvas.getBoundingClientRect();
+            const src = e.touches ? e.touches[0] : e;
+            return [src.clientX - r.left, src.clientY - r.top, r.width, r.height];
+        }
+        let active = false;
+        canvas.addEventListener('mousedown',  e => { active = true; onMove(...getXY(e)); });
+        canvas.addEventListener('touchstart', e => { active = true; e.preventDefault(); onMove(...getXY(e)); }, {passive:false});
+        window.addEventListener('mousemove',  e => { if (active) onMove(...getXY(e)); });
+        window.addEventListener('touchmove',  e => { if (active) { e.preventDefault(); onMove(...getXY(e)); } }, {passive:false});
+        window.addEventListener('mouseup',  () => active = false);
+        window.addEventListener('touchend', () => active = false);
+    }
+
+    // Inicializar após DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        const svCanvas  = document.getElementById('cp-sv');
+        const hueCanvas = document.getElementById('cp-hue');
+        if (!svCanvas || !hueCanvas) return;
+
+        dragHandler(svCanvas, (x, y, W, H) => {
+            cpSat = Math.max(0, Math.min(1, x / W));
+            cpVal = Math.max(0, Math.min(1, 1 - y / H));
+            updatePreviewAndValue();
+        });
+        dragHandler(hueCanvas, (x, y, W) => {
+            cpHue = Math.max(0, Math.min(360, x / W * 360));
+            drawSV(); updatePreviewAndValue();
+        });
+
+        // Atualizar preview ao digitar nome ou mudar bandeira
+        document.getElementById('cart-nome').addEventListener('input', updatePreviewAndValue);
+        document.getElementById('cart-bandeira').addEventListener('change', updatePreviewAndValue);
+
+        // Redesenhar quando o modal abrir (canvas precisa de tamanho real)
+        const observer = new MutationObserver(() => {
+            if (document.getElementById('modalCartao').style.display !== 'none') {
+                drawHue(); drawSV();
+            }
+        });
+        observer.observe(document.getElementById('modalCartao'), {attributes: true, attributeFilter: ['style']});
+
+        drawHue(); drawSV();
     });
-}
+
+    // Expor para uso externo
+    window.cpInitPicker = initPicker;
+    window.cpUpdatePreview = updatePreviewAndValue;
+})();
+
+// ═══ MODAL CARTÃO — abrir / fechar / salvar ═══════════════════════════
 function abrirModalCartao(editIndex) {
     const isEdit = editIndex >= 0;
     document.getElementById('cart-edit-index').value = editIndex;
@@ -1826,18 +1962,16 @@ function abrirModalCartao(editIndex) {
         : '<i class="fas fa-plus-circle"></i> Novo Cartão';
     if (!isEdit) {
         ['cart-nome','cart-limite','cart-vencimento','cart-fechamento'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('cart-ciclo').value = 'dia15';
+        document.getElementById('cart-ciclo').value    = 'dia15';
         document.getElementById('cart-bandeira').value = 'mastercard';
-        const primeira = document.querySelector('input[name="cart-cor"]');
-        if (primeira) { primeira.checked = true; atualizarPreviewCor(primeira.value); }
+        document.getElementById('cart-cor-value').value = '#8307bf|#6610f2';
+        if (window.cpInitPicker) window.cpInitPicker('#8307bf|#6610f2');
     }
-    atualizarBordaCor();
     document.getElementById('modalCartao').style.display = 'block';
 }
-document.getElementById('cart-cores').addEventListener('change', e => {
-    if (e.target.name === 'cart-cor') { atualizarPreviewCor(e.target.value); atualizarBordaCor(); }
-});
+
 document.getElementById('btn-show-form-cartao').addEventListener('click', () => abrirModalCartao(-1));
+
 document.getElementById('btn-cancelar-cartao').addEventListener('click', () => {
     document.getElementById('modalCartao').style.display = 'none';
 });
@@ -1848,6 +1982,7 @@ window.addEventListener('click', e => {
     if (e.target === document.getElementById('modalCartao'))
         document.getElementById('modalCartao').style.display = 'none';
 });
+
 document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
     const nome       = document.getElementById('cart-nome').value.trim();
     const limite     = parseFloat(document.getElementById('cart-limite').value) || 0;
@@ -1855,10 +1990,9 @@ document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
     const fechamento = parseInt(document.getElementById('cart-fechamento').value) || 0;
     const ciclo      = document.getElementById('cart-ciclo').value;
     if (!nome || limite <= 0 || vencimento <= 0 || fechamento <= 0) { alert('Preencha todos os campos do cartão.'); return; }
-    const corSel = document.querySelector('input[name="cart-cor"]:checked');
-    const cor = corSel ? corSel.value : '#8307bf|#9d33d9';
-    const bandeira = document.getElementById('cart-bandeira') ? document.getElementById('cart-bandeira').value : 'mastercard';
-    const cart = { nome, limite, vencimento, fechamento, ciclo, cor, bandeira };
+    const cor      = document.getElementById('cart-cor-value').value || '#8307bf|#6610f2';
+    const bandeira = document.getElementById('cart-bandeira').value || 'mastercard';
+    const cart     = { nome, limite, vencimento, fechamento, ciclo, cor, bandeira };
     const editIndex = parseInt(document.getElementById('cart-edit-index').value);
     if (editIndex >= 0) cartoes[editIndex] = cart;
     else cartoes.push(cart);
