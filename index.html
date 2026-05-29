@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary-color: #10b981;
+            --secondary-dark: #059669;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --nubank-color: #8307bf;
+            --nubank-light: #9d33d9;
+            --inter-color: #ff7a00;
+            --inter-light: #ff9a3c;
+            --sofisa-color: #1a1a1a;
+            --sofisa-light: #2d2d2d;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+            --bg-card: #ffffff;
+            --border-light: #e5e7eb;
+            --success-color: #22c55e;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --border-radius-sm: 0.375rem;
+            --border-radius: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); padding: 1.5rem; font-size: 0.95rem; line-height: 1.5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0.5rem; }
+        .header { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 1.25rem 1rem; border-radius: var(--border-radius); margin-bottom: 1.5rem; box-shadow: var(--shadow-md); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(0deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); transform: rotate(30deg); z-index: 0; }
+        .header h1 { position: relative; z-index: 1; font-weight: 600; letter-spacing: 0.5px; font-size: 1.75rem; display: block; }
+        .tabs { display: flex; background-color: var(--bg-white); border-radius: var(--border-radius); overflow: hidden; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .tab { flex: 1; padding: 0.95rem 1.25rem; text-align: center; cursor: pointer; transition: var(--transition); font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-light); border-bottom: 2px solid transparent; }
+        .tab:hover { color: var(--primary-color); background-color: rgba(99, 102, 241, 0.05); }
+        .tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); background-color: rgba(99, 102, 241, 0.08); font-weight: 600; }
+        .tab i { font-size: 1rem; }
+        .tab-content { display: none; background-color: var(--bg-white); padding: 1.5rem; border-radius: var(--border-radius); box-shadow: var(--shadow); border: 1px solid var(--border-light); animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active { display: block; }
+        .dashboard { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+        .card { flex: 1; min-width: 280px; padding: 1.5rem; border-radius: var(--border-radius); box-shadow: var(--shadow-md); color: white; position: relative; overflow: hidden; transition: var(--transition); transform: translateZ(0); }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .card::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0)); z-index: 1; }
+        .card-content { position: relative; z-index: 2; }
+        .card h3 { margin-bottom: 1.25rem; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.75rem; }
+        .card-nubank { background: linear-gradient(135deg, var(--nubank-color), var(--nubank-light)); }
+        .card-inter { background: linear-gradient(135deg, var(--inter-color), var(--inter-light)); }
+        .card-sofisa { background: linear-gradient(135deg, var(--sofisa-color), var(--sofisa-light)); }
+        .card-info { margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .card-info:last-of-type { border-bottom: none; }
+        .card-info span:first-child { font-weight: 500; opacity: 0.9; }
+        .card-info span:last-child { font-weight: 600; font-size: 1.05rem; }
+        .card-footer { font-size: 0.85rem; margin-top: 1.25rem; opacity: 0.75; display: flex; align-items: center; gap: 0.5rem; }
+        .card-footer i { font-size: 0.8rem; }
+        h2 { margin-bottom: 1.25rem; font-weight: 600; color: var(--text-dark); font-size: 1.35rem; display: flex; align-items: center; gap: 0.5rem; }
+        form { margin-bottom: 1.5rem; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+        .form-group { flex: 1; min-width: 220px; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-dark); font-size: 0.9rem; }
+        input, select { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-light); border-radius: var(--border-radius-sm); font-size: 0.95rem; color: var(--text-dark); background-color: var(--bg-white); transition: var(--transition); }
+        input:focus, select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        button { padding: 0.75rem 1.5rem; background-color: var(--primary-color); color: white; border: none; border-radius: var(--border-radius-sm); cursor: pointer; font-weight: 500; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; box-shadow: var(--shadow-sm); }
+        button:hover { background-color: var(--primary-dark); box-shadow: var(--shadow); }
+        button i { font-size: 1rem; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1.25rem; overflow: hidden; border-radius: var(--border-radius-sm); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        th, td { padding: 0.95rem 1rem; text-align: left; }
+        th { background-color: var(--bg-light); font-weight: 600; color: var(--text-dark); border-bottom: 1px solid var(--border-light); position: relative; }
+        th:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 25%; height: 50%; width: 1px; background-color: var(--border-light); }
+        tr:not(:last-child) td { border-bottom: 1px solid var(--border-light); }
+        tr:hover td { background-color: rgba(99, 102, 241, 0.05); }
+        .action-btn { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: var(--border-radius-sm); margin-right: 0.5rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; width: 1.8rem; height: 1.8rem; }
+        .delete-btn { background-color: var(--danger-color); }
+        .delete-btn:hover { background-color: #dc2626; }
+        .edit-btn { background-color: var(--primary-color); }
+        .edit-btn:hover { background-color: var(--primary-dark); }
+        .payment-option { display: inline-flex; align-items: center; margin-right: 1.5rem; cursor: pointer; font-weight: 500; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); transition: var(--transition); background-color: var(--bg-light); }
+        .payment-option:hover { background-color: rgba(99, 102, 241, 0.1); }
+        .payment-option input { margin-right: 0.5rem; cursor: pointer; width: auto; }
+        .payment-details { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .payment-item { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid var(--border-light); align-items: center; }
+        .payment-item:last-child { border-bottom: none; font-weight: 600; padding-top: 1.25rem; font-size: 1.05rem; }
+        .payment-item span:first-child { font-weight: 500; }
+        .payment-item span:last-child { font-weight: 600; }
+        .hidden { display: none; }
+        .pay-btn { background-color: var(--success-color); margin-top: 1.25rem; }
+        .pay-btn:hover { background-color: var(--secondary-dark); }
+
+
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(3px); animation: fadeIn 0.3s ease; }
+        .modal-content { background-color: var(--bg-white); margin: 5% auto; padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--shadow-lg); width: 90%; max-width: 650px; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-content h2 { margin-bottom: 1.5rem; color: var(--text-dark); }
+        .close { color: var(--text-light); float: right; font-size: 1.75rem; font-weight: 700; line-height: 1; cursor: pointer; transition: var(--transition); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .close:hover { color: var(--text-dark); background-color: var(--bg-light); }
+        .status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 500; }
+        .badge-despesa { background-color: rgba(239,68,68,0.1); color: var(--danger-color); }
+        .badge-receita { background-color: rgba(34,197,94,0.1); color: var(--success-color); }
+        .badge-cury { background-color: rgba(59,130,246,0.15); color: #2563eb; }
+        .badge-evolucao { background-color: rgba(249,115,22,0.15); color: #ea580c; }
+        .section-divider { margin: 1.5rem 0; height: 1px; background-color: var(--border-light); }
+        .valor-negativo { color: var(--danger-color); }
+        .valor-positivo { color: var(--success-color); }
+        .resumo-financeiro { margin-top: 1.5rem; background-color: var(--bg-white); padding: 1.5rem; border-radius: var(--border-radius); box-shadow: var(--shadow); border: 1px solid var(--border-light); max-width: 1000px; margin-left: auto; margin-right: auto; }
+        .resumo-cards { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .resumo-card { flex: 1; min-width: 220px; background-color: var(--bg-white); border-radius: var(--border-radius); padding: 1.25rem; display: flex; align-items: center; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid var(--border-light); }
+        .resumo-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .resumo-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; color: white; font-size: 1.25rem; }
+        .card-receitas .resumo-icon { background-color: var(--success-color); }
+        .card-despesas .resumo-icon { background-color: var(--danger-color); }
+        .card-investimentos .resumo-icon { background-color: var(--warning-color); }
+        .card-saldo .resumo-icon { background-color: var(--primary-color); }
+        .resumo-content { display: flex; flex-direction: column; }
+        .resumo-title { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.25rem; }
+        .resumo-value { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); }
+        .chart-container { margin-top: 1.5rem; background-color: var(--bg-white); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .chart-container h3 { margin-bottom: 1rem; font-size: 1.1rem; color: var(--text-dark); }
+
+        /* ===== CONTAS FIXAS ===== */
+        .contas-fixas-section { margin-bottom: 2rem; background: var(--bg-light); border-radius: var(--border-radius); padding: 1.25rem; border: 1px solid var(--border-light); }
+        .contas-fixas-section h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .conta-fixa-card { background: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--border-radius); padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; box-shadow: var(--shadow-sm); transition: var(--transition); }
+        .conta-fixa-card:hover { box-shadow: var(--shadow); }
+        .conta-fixa-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; flex: 1; }
+        .conta-fixa-nome { font-weight: 600; color: var(--text-dark); min-width: 120px; }
+        .conta-fixa-valor { font-weight: 700; color: var(--danger-color); font-size: 1.05rem; min-width: 100px; }
+        .conta-fixa-badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.78rem; font-weight: 600; gap: 0.3rem; }
+        .badge-prazo-fixo { background: rgba(99,102,241,0.12); color: var(--primary-color); }
+        .badge-prazo-perder { background: rgba(16,185,129,0.12); color: var(--secondary-color); }
+        .badge-prazo-parcelas { background: rgba(245,158,11,0.12); color: var(--warning-color); }
+        .badge-pag-nubank { background: rgba(131,7,191,0.12); color: var(--nubank-color); }
+        .badge-pag-inter { background: rgba(255,122,0,0.12); color: var(--inter-color); }
+        .badge-pag-sofisa { background: rgba(26,26,26,0.12); color: var(--sofisa-color); }
+        .badge-pag-pix { background: rgba(34,197,94,0.12); color: var(--success-color); }
+        .badge-pag-boleto { background: rgba(107,114,128,0.12); color: var(--text-light); }
+        .badge-variavel { background: rgba(239,68,68,0.12); color: var(--danger-color); }
+
+        /* Toggle destaque */
+        .toggle-destaque { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0.6rem; border-radius: 1rem; transition: var(--transition); border: 1.5px solid transparent; user-select: none; }
+        .toggle-destaque.ativo { background: rgba(245,158,11,0.15); color: #92400e; border-color: rgba(245,158,11,0.4); }
+        .toggle-destaque.inativo { background: rgba(107,114,128,0.08); color: var(--text-light); border-color: rgba(107,114,128,0.2); }
+        .toggle-destaque:hover { opacity: 0.8; }
+
+        .conta-fixa-acoes { display: flex; gap: 0.5rem; align-items: center; }
+        .form-add-conta { background: var(--bg-white); border: 2px dashed var(--border-light); border-radius: var(--border-radius); padding: 1.25rem; margin-top: 1rem; transition: var(--transition); }
+        .form-add-conta:hover { border-color: var(--primary-light); }
+        .btn-add-conta { background: none; border: 2px dashed var(--primary-light); color: var(--primary-color); padding: 0.6rem 1.2rem; border-radius: var(--border-radius-sm); cursor: pointer; font-weight: 500; transition: var(--transition); width: 100%; justify-content: center; margin-top: 0.75rem; box-shadow: none; }
+        .btn-add-conta:hover { background: rgba(99,102,241,0.07); border-color: var(--primary-color); box-shadow: none; }
+        .btn-cancelar { background-color: var(--text-light); }
+        .btn-cancelar:hover { background-color: #4b5563; }
+        .valor-variavel-input { display: inline-block; width: 110px; padding: 0.2rem 0.4rem; border: 1px solid var(--primary-light); border-radius: 4px; font-size: 0.9rem; font-weight: 700; color: var(--danger-color); }
+
+        @media (max-width: 900px) { body { padding: 0.75rem; } .container { padding: 0; } .dashboard { flex-direction: column; } .card { min-width: 100%; } .tab { padding: 0.75rem 0.5rem; font-size: 0.85rem; } .resumo-cards { flex-direction: column; } .resumo-card { min-width: 100%; } }
+        @media (max-width: 768px) { body { padding: 0.5rem; font-size: 0.9rem; } .header { padding: 1rem 1.5rem; } .header h1 { font-size: 1.35rem; } .tab-content { padding: 1rem; } .tab span { display: none; } .tab i { margin-right: 0; font-size: 1.2rem; } .form-row { flex-direction: column; } .form-group { min-width: 100%; } table { font-size: 0.85rem; } th, td { padding: 0.6rem 0.4rem; font-size: 0.85rem; } .modal-content { padding: 1.25rem; margin: 5% auto; width: 95%; } .card { padding: 1.25rem; } .card h3 { font-size: 1.25rem; } }
+        @media (max-width: 480px) { body { padding: 0.25rem; } .header { padding: 0.75rem 1rem; margin-bottom: 1rem; } .header h1 { font-size: 1.15rem; } .tab-content { padding: 0.75rem; } .form-group { min-width: 100%; } input, select { padding: 0.65rem 0.85rem; font-size: 0.9rem; } button { padding: 0.65rem 1.25rem; font-size: 0.9rem; } .action-btn { padding: 0.3rem 0.45rem; font-size: 0.8rem; width: 2rem; height: 2rem; } table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.8rem; } th, td { padding: 0.5rem 0.35rem; font-size: 0.8rem; } .card { padding: 1rem; } .card h3 { font-size: 1.1rem; margin-bottom: 1rem; } .card-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; } .resumo-icon { width: 40px; height: 40px; font-size: 1.1rem; } .resumo-value { font-size: 1.1rem; } .payment-option { font-size: 0.85rem; padding: 0.4rem 0.6rem; } }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <style>
+        #loading-overlay {
+            position: fixed; inset: 0; background: rgba(255,255,255,0.92);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 1rem;
+        }
+        #loading-overlay .spinner {
+            width: 48px; height: 48px; border: 5px solid #e5e7eb;
+            border-top-color: #6366f1; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        #loading-overlay p { color: #6b7280; font-weight: 500; font-size: 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #firebase-status {
+            position: fixed; bottom: 1rem; right: 1rem;
+            padding: 0.4rem 0.9rem; border-radius: 2rem; font-size: 0.8rem;
+            font-weight: 600; z-index: 999; display: flex; align-items: center; gap: 0.4rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: all 0.4s;
+        }
+        .status-ok   { background: #dcfce7; color: #16a34a; }
+        .status-err  { background: #fee2e2; color: #dc2626; }
+        .status-sync { background: #eff6ff; color: #2563eb; }
+        /* Tela de login */
+        #login-screen {
+            display: none; position: fixed; inset: 0; z-index: 9998;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            align-items: center; justify-content: center;
+        }
+        #login-screen.visible { display: flex; }
+        .login-box {
+            background: white; border-radius: 1rem; padding: 2.5rem 2rem;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 360px; width: 90%;
+        }
+        .login-box .login-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .login-box h2 { font-size: 1.4rem; font-weight: 700; color: #1f2937; margin-bottom: 0.4rem; display: block; text-align: center; }
+        .login-box p  { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.75rem; }
+        .btn-google {
+            display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+            width: 100%; padding: 0.85rem 1.5rem; border: 2px solid #e5e7eb;
+            border-radius: 0.5rem; background: white; cursor: pointer;
+            font-size: 0.95rem; font-weight: 600; color: #374151;
+            transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        .btn-google:hover { border-color: #6366f1; color: #6366f1; box-shadow: 0 2px 8px rgba(99,102,241,0.2); }
+        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .login-box .login-note { margin-top: 1.25rem; font-size: 0.78rem; color: #9ca3af; }
+        #btn-logout.btn-logout-header {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            padding: 0.3rem 0.8rem; font-size: 0.75rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 2rem; color: white; cursor: pointer; z-index: 2;
+            white-space: nowrap; box-shadow: none; line-height: 1.4;
+        }
+        #btn-logout.btn-logout-header:hover { background: rgba(255,255,255,0.35); box-shadow: none; }
+        @media (max-width: 480px) {
+            #btn-logout.btn-logout-header { font-size: 0.65rem; padding: 0.2rem 0.5rem; right: 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>Conectando ao Firebase...</p>
+</div>
+<div id="firebase-status" class="status-sync">⏳ Conectando...</div>
+
+<!-- Tela de login -->
+<div id="login-screen">
+    <div class="login-box">
+        <div class="login-icon">💰</div>
+        <h2>Controle Financeiro</h2>
+        <p>Entre com sua conta Google para acessar seus dados</p>
+        <button class="btn-google" id="btn-login">
+            <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.3 0 24 0 14.6 0 6.6 5.4 2.5 13.3l7.8 6C12.2 13.1 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 6.9-10.1 6.9-17z"/><path fill="#FBBC05" d="M10.3 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.8.9 7.5 2.5 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.4 0-11.8-3.6-13.7-9.3l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>
+            Entrar com Google
+        </button>
+        <p class="login-note">🔒 Apenas você terá acesso aos seus dados</p>
+    </div>
+</div>
+<div class="container" id="app-container" style="display:none">
+    <div class="header">
+        <h1><i class="fas fa-wallet"></i> Controle Financeiro</h1>
+        <button id="btn-logout" onclick="firebase.auth().signOut()" class="btn-logout-header">⬡ Sair</button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="dashboard"><i class="fas fa-chart-line"></i> <span>Dashboard</span></div>
+        <div class="tab" data-tab="lancamentos"><i class="fas fa-file-invoice-dollar"></i> <span>Lançamentos</span></div>
+        <div class="tab" data-tab="pagamentos"><i class="fas fa-credit-card"></i> <span>Pagamentos</span></div>
+        <div class="tab" data-tab="apartamento420b"><i class="fas fa-building"></i> <span>Apartamento 420B</span></div>
+        <div class="tab" data-tab="configuracoes"><i class="fas fa-cog"></i> <span>Configurações</span></div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="tab-content active" id="dashboard">
+        <div class="dashboard">
+            <div id="dashboard-cards" style="display:flex;flex-wrap:wrap;gap:1.5rem;width:100%;"></div>
+
+            <div class="resumo-financeiro">
+                <h2><i class="fas fa-chart-pie"></i> Resumo Financeiro</h2>
+                <div class="resumo-cards">
+                    <div class="resumo-card card-receitas">
+                        <div class="resumo-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="resumo-content">
+                            <span class="resumo-title">Entradas</span>
+                            <span class="resumo-value" id="total-entradas">R$ 0,00</span>
+                            <span class="resumo-percent" id="pct-entradas" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">100%</span>
+                        </div>
+                    </div>
+                    <div class="resumo-card card-despesas">
+                        <div class="resumo-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <div class="resumo-content">
+                            <span class="resumo-title">Despesas Fixas</span>
+                            <span class="resumo-value" id="total-despesas">R$ 0,00</span>
+                            <span class="resumo-percent" id="pct-despesas" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
+                        </div>
+                    </div>
+                    <div class="resumo-card card-investimentos">
+                        <div class="resumo-icon"><i class="fas fa-piggy-bank"></i></div>
+                        <div class="resumo-content">
+                            <span class="resumo-title">Investimentos</span>
+                            <span class="resumo-value" id="total-investimentos">R$ 0,00</span>
+                            <span class="resumo-percent" id="pct-investimentos" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
+                        </div>
+                    </div>
+                    <div class="resumo-card card-saldo">
+                        <div class="resumo-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="resumo-content">
+                            <span class="resumo-title">Livre</span>
+                            <span class="resumo-value" id="saldo-mensal">R$ 0,00</span>
+                            <span class="resumo-percent" id="pct-livre" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>Balanço Mensal</h3>
+                    <canvas id="balanco-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LANÇAMENTOS ===== -->
+    <div class="tab-content" id="lancamentos">
+        <h2><i class="fas fa-plus-circle"></i> Novo Lançamento</h2>
+        <form id="form-lancamento">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" required>
+                        <option value="">Selecione</option>
+                        <option value="Despesa">Despesa</option>
+                        <option value="Receita">Receita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" id="descricao" required placeholder="Ex: Compras do mercado">
+                </div>
+                <div class="form-group">
+                    <label for="valor">Valor</label>
+                    <input type="number" id="valor" step="0.01" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" required>
+                        <option value="">Selecione</option>
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Lazer">Lazer</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="forma-pagamento">Forma de Pagamento</label>
+                    <select id="forma-pagamento" required>
+                        <option value="">Selecione</option>
+                        <option value="Cartão Nubank">Cartão Nubank</option>
+                        <option value="Cartão Inter">Cartão Inter</option>
+                        <option value="Cartão Sofisa">Cartão Sofisa</option>
+                        <option value="PIX">PIX</option>
+                        <option value="Boleto">Boleto</option>
+                        <option value="Débito Automático">Débito Automático</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="data">Data</label>
+                    <input type="date" id="data" required>
+                </div>
+            </div>
+            <button type="submit"><i class="fas fa-save"></i> Adicionar Lançamento</button>
+        </form>
+        <div class="section-divider"></div>
+        <h2><i class="fas fa-list"></i> Últimos Lançamentos</h2>
+        <table id="tabela-lancamentos">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Valor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ===== PAGAMENTOS ===== -->
+    <div class="tab-content" id="pagamentos">
+        <h2><i class="fas fa-money-bill-wave"></i> Pagamentos</h2>
+        <div class="payment-options">
+            <label class="payment-option">
+                <input type="radio" name="payment-date" value="15" checked> Contas do dia 15
+            </label>
+            <label class="payment-option">
+                <input type="radio" name="payment-date" value="30"> Contas do dia 30
+            </label>
+        </div>
+
+        <div id="payment-dia15" class="payment-details">
+            <div id="payment-dia15-items"></div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
+                <button id="relatorio-nubank" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
+            </div>
+        </div>
+
+        <div id="payment-dia30" class="payment-details hidden">
+            <div id="payment-dia30-items"></div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
+                <button id="relatorio-inter" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APARTAMENTO ===== -->
+    <div class="tab-content" id="apartamento420b">
+        <h2><i class="fas fa-building"></i> Controle de Parcelas do Apartamento</h2>
+        <div class="resumo-cards" style="margin-bottom:1.5rem;">
+            <div class="resumo-card">
+                <div class="resumo-icon" style="background-color:var(--success-color);"><i class="fas fa-check-circle"></i></div>
+                <div class="resumo-content"><span class="resumo-title">Parcelas Pagas</span><span class="resumo-value" id="parcelas-pagas">0</span></div>
+            </div>
+            <div class="resumo-card">
+                <div class="resumo-icon" style="background-color:var(--warning-color);"><i class="fas fa-clock"></i></div>
+                <div class="resumo-content"><span class="resumo-title">Parcelas Pendentes</span><span class="resumo-value" id="parcelas-pendentes">0</span></div>
+            </div>
+            <div class="resumo-card">
+                <div class="resumo-icon" style="background-color:var(--primary-color);"><i class="fas fa-wallet"></i></div>
+                <div class="resumo-content"><span class="resumo-title">Total Pago</span><span class="resumo-value" id="total-pago-apt">R$ 0,00</span></div>
+            </div>
+            <div class="resumo-card">
+                <div class="resumo-icon" style="background-color:var(--danger-color);"><i class="fas fa-money-bill"></i></div>
+                <div class="resumo-content"><span class="resumo-title">Construção</span><span class="resumo-value" id="total-construcao-apt">0.000%</span></div>
+            </div>
+        </div>
+        <table id="tabela-apartamento">
+            <thead>
+                <tr>
+                    <th>Mês</th><th>Data</th><th>Parcela Entrada</th><th>Construção %</th>
+                    <th>Evolução de Obra</th><th>Parcela Total</th><th>Situação</th><th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- ===== CONFIGURAÇÕES ===== -->
+    <div class="tab-content" id="configuracoes">
+        <h2><i class="fas fa-sliders-h"></i> Configurações</h2>
+
+        <!-- SALÁRIOS -->
+        <div class="contas-fixas-section">
+            <h3><i class="fas fa-money-bill-wave"></i> Salários</h3>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Adicione cada salário com a data de recebimento. O sistema usará os mais recentes para cada ciclo (dia 15 e dia 30).</p>
+            <div id="lista-salarios"></div>
+            <button class="btn-add-conta" id="btn-show-form-salario" type="button"><i class="fas fa-plus"></i> Adicionar Salário</button>
+            <div class="form-add-conta" id="form-add-salario-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-salario-titulo"><i class="fas fa-plus-circle"></i> Novo Salário</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data de Recebimento</label>
+                        <input type="date" id="sal-data">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="sal-valor" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo</label>
+                        <select id="sal-ciclo">
+                            <option value="dia15">Dia 15</option>
+                            <option value="dia30">Dia 30</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="sal-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-salario"><i class="fas fa-save"></i> Salvar Salário</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-salario"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- CARTÕES -->
+        <div class="contas-fixas-section">
+            <h3><i class="fas fa-credit-card"></i> Cartões de Crédito</h3>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Cadastre seus cartões com limite, vencimento e fechamento. O saldo livre será o limite menos a fatura atual.</p>
+            <div id="lista-cartoes"></div>
+            <button class="btn-add-conta" id="btn-show-form-cartao" type="button"><i class="fas fa-plus"></i> Adicionar Cartão</button>
+            <div class="form-add-conta" id="form-add-cartao-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-cartao-titulo"><i class="fas fa-plus-circle"></i> Novo Cartão</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome do Cartão</label>
+                        <input type="text" id="cart-nome" placeholder="Ex: Nubank, Inter, Sofisa">
+                    </div>
+                    <div class="form-group">
+                        <label>Limite Total (R$)</label>
+                        <input type="number" id="cart-limite" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vence dia</label>
+                        <input type="number" id="cart-vencimento" min="1" max="31" placeholder="Ex: 15">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha dia</label>
+                        <input type="number" id="cart-fechamento" min="1" max="31" placeholder="Ex: 12">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo de Pagamento</label>
+                        <select id="cart-ciclo">
+                            <option value="dia15">Dia 15</option>
+                            <option value="dia30">Dia 30</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="cart-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-cartao"><i class="fas fa-save"></i> Salvar Cartão</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-cartao"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="section-divider"></div>
+
+        <!-- ===== CONTAS FIXAS (movido de Lançamentos) ===== -->
+        <div class="contas-fixas-section">
+            <h3><i class="fas fa-receipt"></i> Contas Fixas / Monitoradas</h3>
+            <div id="lista-contas-fixas"></div>
+            <button class="btn-add-conta" id="btn-show-form-conta" type="button">
+                <i class="fas fa-plus"></i> Adicionar Conta
+            </button>
+            <div class="form-add-conta" id="form-add-conta-wrapper" style="display:none;">
+                <h3 style="font-size:0.95rem;margin-bottom:1rem;color:var(--text-dark);" id="form-conta-titulo"><i class="fas fa-plus-circle"></i> Nova Conta</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome da Conta</label>
+                        <input type="text" id="cf-nome" placeholder="Ex: Aluguel, Gympass...">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="cf-valor" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Variável?</label>
+                        <select id="cf-variavel">
+                            <option value="nao">Não (fixo)</option>
+                            <option value="sim">Sim (editável todo mês)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prazo / Vencimento</label>
+                        <select id="cf-prazo">
+                            <option value="dia15">Todo dia 15</option>
+                            <option value="dia30">Todo dia 30</option>
+                            <option value="perder">A perder de vista (sem prazo)</option>
+                            <option value="parcelas">Parcelado</option>
+                            <option value="personalizado">Data específica</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="cf-parcelas-group" style="display:none;">
+                        <label>Nº de Parcelas restantes</label>
+                        <input type="number" id="cf-parcelas" min="1" placeholder="Ex: 12">
+                    </div>
+                    <div class="form-group" id="cf-data-group" style="display:none;">
+                        <label>Data de Vencimento</label>
+                        <input type="date" id="cf-data-venc">
+                    </div>
+                    <div class="form-group">
+                        <label>Forma de Pagamento</label>
+                        <select id="cf-pagamento">
+                            <option value="Cartão Nubank">Cartão Nubank</option>
+                            <option value="Cartão Inter">Cartão Inter</option>
+                            <option value="Cartão Sofisa">Cartão Sofisa</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Boleto">Boleto</option>
+                            <option value="Débito Automático">Débito Automático</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo (afeta qual fatura)</label>
+                        <select id="cf-ciclo">
+                            <option value="dia15">Dia 15 (Nubank)</option>
+                            <option value="dia30">Dia 30 (Inter / Sofisa)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="cf-codbarras-group" style="display:none;">
+                    <div class="form-group">
+                        <label><i class="fas fa-barcode"></i> Código de Barras do Boleto</label>
+                        <input type="text" id="cf-codbarras" placeholder="Cole o código de barras aqui (será exibido no relatório)">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;padding-top:1.5rem;">
+                        <input type="checkbox" id="cf-destaque" style="width:auto;cursor:pointer;" title="Aparece em destaque na aba Pagamentos">
+                        <label for="cf-destaque" style="margin:0;cursor:pointer;font-size:0.9rem;">
+                            <i class="fas fa-star" style="color:var(--warning-color);"></i>
+                            Destacar no relatório de pagamentos
+                            <small style="display:block;color:var(--text-light);font-weight:400;">Aparece em evidência na aba Pagamentos (ex: boleto, PIX pontual)</small>
+                        </label>
+                    </div>
+                </div>
+                <input type="hidden" id="cf-edit-index" value="-1">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                    <button type="button" id="btn-salvar-conta"><i class="fas fa-save"></i> Salvar Conta</button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-conta"><i class="fas fa-times"></i> Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edição lançamento -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Editar Lançamento</h2>
+        <form id="form-edicao">
+            <div class="form-row">
+                <div class="form-group"><label for="edit-tipo">Tipo</label>
+                    <select id="edit-tipo" required><option value="">Selecione</option><option value="Despesa">Despesa</option><option value="Receita">Receita</option></select></div>
+                <div class="form-group"><label for="edit-descricao">Descrição</label><input type="text" id="edit-descricao" required></div>
+                <div class="form-group"><label for="edit-valor">Valor</label><input type="number" id="edit-valor" step="0.01" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="edit-categoria">Categoria</label>
+                    <select id="edit-categoria" required><option value="">Selecione</option><option value="Alimentação">Alimentação</option><option value="Transporte">Transporte</option><option value="Saúde">Saúde</option><option value="Lazer">Lazer</option><option value="Educação">Educação</option><option value="Outros">Outros</option></select></div>
+                <div class="form-group"><label for="edit-forma-pagamento">Forma de Pagamento</label>
+                    <select id="edit-forma-pagamento" required><option value="">Selecione</option><option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option><option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option></select></div>
+                <div class="form-group"><label for="edit-data">Data</label><input type="date" id="edit-data" required></div>
+            </div>
+            <input type="hidden" id="edit-index">
+            <button type="submit"><i class="fas fa-save"></i> Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal edição apartamento -->
+<div id="editModalApartamento" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeApartamento">&times;</span>
+        <h2>Editar Parcela do Apartamento</h2>
+        <form id="form-edicao-apartamento">
+            <div class="form-row">
+                <div class="form-group"><label for="edit-mes">Mês</label><input type="text" id="edit-mes" required></div>
+                <div class="form-group"><label for="edit-data-apt">Data</label><input type="date" id="edit-data-apt" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="edit-parcela-entrada">Parcela Entrada</label><input type="number" id="edit-parcela-entrada" step="0.01" required></div>
+                <div class="form-group"><label for="edit-construcao">Construção %</label><input type="number" id="edit-construcao" step="0.001" min="0"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="edit-evolucao-obra">Evolução de Obra</label><input type="number" id="edit-evolucao-obra" step="0.01" required></div>
+                <div class="form-group"><label for="edit-parcela-total">Parcela Total</label><input type="number" id="edit-parcela-total" step="0.01" readonly style="background-color:#f3f4f6;cursor:not-allowed;"></div>
+            </div>
+            <input type="hidden" id="edit-index-apt">
+            <button type="submit"><i class="fas fa-save"></i> Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  ⚙️  CONFIGURAÇÃO DO FIREBASE — cole seus dados aqui
+// ═══════════════════════════════════════════════════════
+const firebaseConfig = {
+    apiKey:            "AIzaSyDQEBkocKVbGm5tIMgpcSKKRCfwGaWbT8U",
+    authDomain:        "financas-pessoais-bbd4c.firebaseapp.com",
+    projectId:         "financas-pessoais-bbd4c",
+    storageBucket:     "financas-pessoais-bbd4c.firebasestorage.app",
+    messagingSenderId: "225046583699",
+    appId:             "1:225046583699:web:ed6f65f01edf6bce95b066"
+};
+// ═══════════════════════════════════════════════════════
+
+firebase.initializeApp(firebaseConfig);
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+let DOC_REF = null;
+let snapshotUnsubscribe = null;
+
+// Variáveis globais (serão preenchidas pelo Firebase)
+let lancamentos = [];
+let configuracoes = { salario1: 0, salario2: 0, saldoLivreNubank: 0, saldoLivreInter: 0, saldoLivreSofisa: 0 };
+let contasFixas = [];
+let salarios = []; // [{data, valor, ciclo}]
+let cartoes = [];  // [{nome, limite, vencimento, fechamento, ciclo}]
+// Dados padrão do apartamento (usados apenas na 1ª vez que o Firebase estiver vazio)
+const parcelasApartamentoPadrao = [
+    { mes: "Ato", data: "2025-08-17", parcelaEntrada: 800.00, construcao: 0.000, evolucaoObra: 0.00, parcelaTotal: 800.00, situacao: "PAGO" },
+    { mes: "1", data: "2025-09-15", parcelaEntrada: 706.37, construcao: 0.000, evolucaoObra: 442.43, parcelaTotal: 1148.80, situacao: "PAGO" },
+    { mes: "2", data: "2025-10-15", parcelaEntrada: 710.04, construcao: 0.000, evolucaoObra: 432.76, parcelaTotal: 1142.80, situacao: "PAGO" },
+    { mes: "3", data: "2025-11-15", parcelaEntrada: 711.25, construcao: 0.000, evolucaoObra: 433.53, parcelaTotal: 1144.78, situacao: "PAGO" },
+    { mes: "4", data: "2025-12-15", parcelaEntrada: 713.38, construcao: 2.300, evolucaoObra: 463.52, parcelaTotal: 1176.90, situacao: "PAGO" },
+    { mes: "Parcial", data: "2025-12-20", parcelaEntrada: 3333.33, construcao: 0, evolucaoObra: 0, parcelaTotal: 3227.20, situacao: "PAGO" },
+    { mes: "5", data: "2026-01-15", parcelaEntrada: 715.31, construcao: 4.610, evolucaoObra: 570.46, parcelaTotal: 1285.77, situacao: "NÃO PAGO" },
+    { mes: "6", data: "2026-02-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 376.44, parcelaTotal: 1076.44, situacao: "NÃO PAGO" },
+    { mes: "7", data: "2026-03-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 376.59, parcelaTotal: 1076.59, situacao: "NÃO PAGO" },
+    { mes: "8", data: "2026-04-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 386.69, parcelaTotal: 1086.69, situacao: "NÃO PAGO" },
+    { mes: "9", data: "2026-05-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 397.24, parcelaTotal: 1097.24, situacao: "NÃO PAGO" },
+    { mes: "10", data: "2026-06-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 409.42, parcelaTotal: 1109.42, situacao: "NÃO PAGO" },
+    { mes: "11", data: "2026-07-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 423.38, parcelaTotal: 1123.38, situacao: "NÃO PAGO" },
+    { mes: "12", data: "2026-08-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 446.55, parcelaTotal: 1146.55, situacao: "NÃO PAGO" },
+    { mes: "13", data: "2026-09-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 470.47, parcelaTotal: 1170.47, situacao: "NÃO PAGO" },
+    { mes: "14", data: "2026-10-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 499.73, parcelaTotal: 1199.73, situacao: "NÃO PAGO" },
+    { mes: "15", data: "2026-11-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 528.85, parcelaTotal: 1228.85, situacao: "NÃO PAGO" },
+    { mes: "16", data: "2026-12-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 565.24, parcelaTotal: 1265.24, situacao: "NÃO PAGO" },
+    { mes: "Parcial", data: "2026-12-20", parcelaEntrada: 3333.33, construcao: 0, evolucaoObra: 0, parcelaTotal: 3333.33, situacao: "NÃO PAGO" },
+    { mes: "17", data: "2027-01-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 610.84, parcelaTotal: 1310.84, situacao: "NÃO PAGO" },
+    { mes: "18", data: "2027-02-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 657.63, parcelaTotal: 1357.63, situacao: "NÃO PAGO" },
+    { mes: "19", data: "2027-03-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 714.08, parcelaTotal: 1414.08, situacao: "NÃO PAGO" },
+    { mes: "20", data: "2027-04-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 779.74, parcelaTotal: 1479.74, situacao: "NÃO PAGO" },
+    { mes: "21", data: "2027-05-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 850.15, parcelaTotal: 1550.15, situacao: "NÃO PAGO" },
+    { mes: "22", data: "2027-06-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 921.89, parcelaTotal: 1621.89, situacao: "NÃO PAGO" },
+    { mes: "23", data: "2027-07-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 981.46, parcelaTotal: 1681.46, situacao: "NÃO PAGO" },
+    { mes: "24", data: "2027-08-15", parcelaEntrada: 700.00, construcao: 0, evolucaoObra: 1042.95, parcelaTotal: 1742.95, situacao: "NÃO PAGO" },
+    { mes: "25", data: "2027-09-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1103.71, parcelaTotal: 1743.13, situacao: "NÃO PAGO" },
+    { mes: "26", data: "2027-10-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1175.31, parcelaTotal: 1814.73, situacao: "NÃO PAGO" },
+    { mes: "27", data: "2027-11-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1248.24, parcelaTotal: 1887.66, situacao: "NÃO PAGO" },
+    { mes: "28", data: "2027-12-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1322.21, parcelaTotal: 1961.63, situacao: "NÃO PAGO" },
+    { mes: "Parcial", data: "2027-12-20", parcelaEntrada: 3333.33, construcao: 0, evolucaoObra: 0, parcelaTotal: 3333.33, situacao: "NÃO PAGO" },
+    { mes: "29", data: "2028-01-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1386.39, parcelaTotal: 2025.81, situacao: "NÃO PAGO" },
+    { mes: "30", data: "2028-02-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1457.83, parcelaTotal: 2097.25, situacao: "NÃO PAGO" },
+    { mes: "31", data: "2028-03-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1520.22, parcelaTotal: 2159.64, situacao: "NÃO PAGO" },
+    { mes: "32", data: "2028-04-15", parcelaEntrada: 639.42, construcao: 0, evolucaoObra: 1584.54, parcelaTotal: 2223.96, situacao: "NÃO PAGO" },
+    { mes: "33", data: "2028-05-15", parcelaEntrada: 100.00, construcao: 0, evolucaoObra: 1637.87, parcelaTotal: 1737.87, situacao: "NÃO PAGO" }
+];
+let parcelasApartamento = [];
+
+// ─── Funções Firebase ──────────────────────────────────
+function setStatus(msg, tipo) {
+    const el = document.getElementById('firebase-status');
+    el.textContent = msg;
+    el.className = 'status-' + tipo;
+}
+
+async function salvarFirebase(chave, dados) {
+    if (!DOC_REF) return;
+    try {
+        setStatus('💾 Salvando...', 'sync');
+        await DOC_REF.set({ [chave]: dados }, { merge: true });
+        setStatus('✅ Sincronizado', 'ok');
+        setTimeout(() => setStatus('☁️ Online', 'ok'), 2000);
+    } catch (e) {
+        setStatus('❌ Erro ao salvar', 'err');
+        console.error('Erro Firebase:', e);
+    }
+}
+
+// ─── Login com Google ──────────────────────────────────
+document.getElementById('btn-login').addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(e => alert('Erro ao entrar: ' + e.message));
+});
+
+auth.onAuthStateChanged(user => {
+    if (user) {
+        document.getElementById('login-screen').classList.remove('visible');
+        document.getElementById('app-container').style.display = '';
+        document.getElementById('loading-overlay').style.display = 'flex';
+        DOC_REF = db.collection('financas').doc(user.uid);
+        iniciarSincronizacao();
+    } else {
+        if (snapshotUnsubscribe) { snapshotUnsubscribe(); snapshotUnsubscribe = null; }
+        document.getElementById('app-container').style.display = 'none';
+        document.getElementById('loading-overlay').style.display = 'none';
+        document.getElementById('login-screen').classList.add('visible');
+        setStatus('🔒 Desconectado', 'err');
+    }
+});
+
+function iniciarSincronizacao() {
+    if (snapshotUnsubscribe) snapshotUnsubscribe();
+    snapshotUnsubscribe = DOC_REF.onSnapshot(doc => {
+    const dados = doc.data();
+    if (!dados) {
+        // Primeira vez: salvar dados padrão
+        salvarFirebase('parcelasApartamento', parcelasApartamentoPadrao);
+        parcelasApartamento = [...parcelasApartamentoPadrao];
+        document.getElementById('loading-overlay').style.display = 'none';
+        setStatus('☁️ Online', 'ok');
+        return;
+    }
+    lancamentos          = dados.lancamentos          || [];
+    configuracoes        = dados.configuracoes        || { salario1: 0, salario2: 0, saldoLivreNubank: 0, saldoLivreInter: 0, saldoLivreSofisa: 0 };
+    contasFixas          = dados.contasFixas          || [];
+    salarios             = dados.salarios             || [];
+    cartoes              = dados.cartoes              || [];
+    parcelasApartamento  = dados.parcelasApartamento  || [...parcelasApartamentoPadrao];
+
+    // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
+    if (salarios.length === 0 && (configuracoes.salario1 > 0 || configuracoes.salario2 > 0)) {
+        const hoje = new Date().toISOString().split('T')[0];
+        if (configuracoes.salario1 > 0) salarios.push({ data: hoje, valor: configuracoes.salario1, ciclo: 'dia15' });
+        if (configuracoes.salario2 > 0) salarios.push({ data: hoje, valor: configuracoes.salario2, ciclo: 'dia30' });
+    }
+    // Backward compatibility: cartões fixos antigos → migrar para cartoes[]
+    if (cartoes.length === 0) {
+        if (configuracoes.saldoLivreNubank > 0) cartoes.push({ nome: 'Nubank', limite: configuracoes.saldoLivreNubank, vencimento: 15, fechamento: 12, ciclo: 'dia15' });
+        if (configuracoes.saldoLivreInter  > 0) cartoes.push({ nome: 'Inter',  limite: configuracoes.saldoLivreInter,  vencimento: 30, fechamento: 24, ciclo: 'dia30' });
+        if (configuracoes.saldoLivreSofisa > 0) cartoes.push({ nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa, vencimento: 1,  fechamento: 26, ciclo: 'dia30' });
+    }
+
+    document.getElementById('loading-overlay').style.display = 'none';
+    setStatus('☁️ Online', 'ok');
+    carregarConfiguracoes();
+    renderContasFixas();
+    atualizarTabelaLancamentos();
+    atualizarDashboard();
+    atualizarPagamentos();
+    atualizarTabelaApartamento();
+    }, err => {
+        document.getElementById('loading-overlay').style.display = 'none';
+        setStatus('❌ Sem conexão', 'err');
+        console.error('Erro de conexão:', err);
+    });
+}
+// ──────────────────────────────────────────────────────
+
+const modal = document.getElementById('editModal');
+const closeModal = document.querySelector('.close');
+let balancoChart;
+
+function formatarMoeda(valor) {
+    return 'R$ ' + valor.toFixed(2).replace('.', ',');
+}
+
+/* ===== CÁLCULOS ===== */
+function calcularFaturaNubank() {
+    return lancamentos.filter(l => l.formaPagamento === 'Cartão Nubank').reduce((t, l) => t + parseFloat(l.valor), 0);
+}
+function calcularFaturaInter() {
+    return lancamentos.filter(l => l.formaPagamento === 'Cartão Inter').reduce((t, l) => t + parseFloat(l.valor), 0);
+}
+function calcularFaturaSofisa() {
+    const lanc = lancamentos.filter(l => l.formaPagamento === 'Cartão Sofisa').reduce((t, l) => t + parseFloat(l.valor), 0);
+    const fixas = contasFixas.filter(c => c.pagamento === 'Cartão Sofisa').reduce((t, c) => t + parseFloat(c.valor), 0);
+    return lanc + fixas;
+}
+function somaContasFixasCartao(cartao) {
+    return contasFixas.filter(c => c.pagamento === cartao).reduce((t, c) => t + parseFloat(c.valor), 0);
+}
+function somaContasFixasCiclo(ciclo, excluirCartoes) {
+    const nomesCartoes = cartoes.map(c => 'Cartão ' + c.nome);
+    // fallback para compatibilidade com nomes antigos
+    const todosCartoes = [...new Set([...nomesCartoes, 'Cartão Nubank', 'Cartão Inter', 'Cartão Sofisa'])];
+    return contasFixas
+        .filter(c => c.ciclo === ciclo && (!excluirCartoes || !todosCartoes.includes(c.pagamento)))
+        .reduce((t, c) => t + parseFloat(c.valor), 0);
+}
+
+/* ===== DASHBOARD ===== */
+function atualizarDashboard() {
+    renderDashboardCartoes();
+    atualizarResumoFinanceiro();
+}
+
+function renderDashboardCartoes() {
+    const dashboard = document.getElementById('dashboard-cards');
+    if (!dashboard) return;
+    dashboard.innerHTML = '';
+    const cores = [
+        ['#8307bf','#9d33d9'],['#ff7a00','#ff9a3c'],['#1a1a1a','#2d2d2d'],
+        ['#0ea5e9','#38bdf8'],['#10b981','#34d399'],['#f59e0b','#fbbf24']
+    ];
+    // Fallback: se nenhum cartão cadastrado, mostrar os 3 antigos
+    const lista = cartoes.length > 0 ? cartoes : [
+        { nome: 'Nubank', limite: configuracoes.saldoLivreNubank||0, vencimento: 15, fechamento: 12, ciclo: 'dia15' },
+        { nome: 'Inter',  limite: configuracoes.saldoLivreInter||0,  vencimento: 30, fechamento: 24, ciclo: 'dia30' },
+        { nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa||0, vencimento: 1,  fechamento: 26, ciclo: 'dia30' }
+    ];
+    lista.forEach((c, i) => {
+        const [cor1, cor2] = cores[i % cores.length];
+        const fatura = getFaturaCartao(c.nome);
+        const saldoDisp = (parseFloat(c.limite) || 0) - fatura;
+        const saldoCor = saldoDisp >= 0 ? 'rgba(255,255,255,0.9)' : '#ff6b6b';
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.style.background = `linear-gradient(135deg, ${cor1}, ${cor2})`;
+        div.innerHTML = `
+            <div class="card-content">
+                <h3><i class="fab fa-cc-mastercard"></i> ${c.nome}</h3>
+                <div class="card-info">
+                    <span>Fatura atual:</span>
+                    <span>${formatarMoeda(fatura)}</span>
+                </div>
+                <div class="card-info">
+                    <span>Limite disponível:</span>
+                    <span style="color:${saldoCor}">${formatarMoeda(saldoDisp)}</span>
+                </div>
+                <div class="card-footer">
+                    <i class="far fa-calendar-alt"></i> Fecha dia ${c.fechamento} • Vence dia ${c.vencimento}
+                </div>
+            </div>`;
+        dashboard.appendChild(div);
+    });
+}
+
+/* ===== LANÇAMENTOS ===== */
+function atualizarTabelaLancamentos() {
+    const tbody = document.querySelector('#tabela-lancamentos tbody');
+    tbody.innerHTML = '';
+    lancamentos.forEach((lancamento, index) => {
+        const tr = document.createElement('tr');
+        const [ano, mes, dia] = lancamento.data.split("-");
+        const valorFloat = parseFloat(lancamento.valor);
+        const valorFormatado = formatarMoeda(Math.abs(valorFloat));
+        const valorHtml = valorFloat < 0
+            ? `<span style="color:red">-${valorFormatado}</span>`
+            : `<span style="color:green">${valorFormatado}</span>`;
+        const parcelaInfo = lancamento.parcelado ? ` <small style='color:var(--primary-color);font-weight:600;'>(${lancamento.numeroParcela}/${lancamento.totalParcelas})</small>` : '';
+        const grupoNome = lancamento.parcelado ? lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '') : '';
+        tr.innerHTML = `
+            <td>${dia}/${mes}/${ano}</td>
+            <td>${lancamento.descricao}${parcelaInfo}</td>
+            <td>${lancamento.formaPagamento}</td>
+            <td>${valorHtml}</td>
+            <td>
+                <button class="action-btn edit-btn" data-index="${index}">✎</button>
+                <button class="action-btn delete-btn" data-index="${index}">×</button>
+                ${lancamento.parcelado ? `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>` : ''}
+            </td>`;
+        tbody.appendChild(tr);
+    });
+    document.querySelectorAll('#tabela-lancamentos .delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            lancamentos.splice(parseInt(this.dataset.index), 1);
+            salvarFirebase('lancamentos', lancamentos);
+            atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+        });
+    });
+    document.querySelectorAll('#tabela-lancamentos .edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() { abrirModalEdicao(parseInt(this.dataset.index)); });
+    });
+}
+
+function abrirModalEdicao(index) {
+    const l = lancamentos[index];
+    document.getElementById('edit-tipo').value = l.tipo;
+    document.getElementById('edit-descricao').value = l.descricao;
+    document.getElementById('edit-valor').value = l.valor;
+    document.getElementById('edit-categoria').value = l.categoria;
+    document.getElementById('edit-forma-pagamento').value = l.formaPagamento;
+    document.getElementById('edit-data').value = l.data;
+    document.getElementById('edit-index').value = index;
+    modal.style.display = 'block';
+}
+
+closeModal.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', e => { if (e.target == modal) modal.style.display = 'none'; });
+
+/* ===== PAGAMENTOS ===== */
+function getFaturaCartao(nomeCartao) {
+    const nome = nomeCartao.toLowerCase();
+    if (nome.includes('nubank')) return calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
+    if (nome.includes('inter'))  return calcularFaturaInter()  + somaContasFixasCartao('Cartão Inter');
+    if (nome.includes('sofisa')) return calcularFaturaSofisa();
+    const nomeCartaoFull = 'Cartão ' + nomeCartao;
+    return lancamentos.filter(l => l.formaPagamento === nomeCartaoFull).reduce((t,l) => t + parseFloat(l.valor), 0)
+         + contasFixas.filter(c => c.pagamento === nomeCartaoFull).reduce((t,c) => t + parseFloat(c.valor), 0);
+}
+
+function atualizarPagamentos() {
+    const salario15 = getSalarioCiclo('dia15');
+    const salario30 = getSalarioCiclo('dia30');
+
+    // Montar lista de faturas por ciclo a partir dos cartões cadastrados
+    const cartoes15 = cartoes.filter(c => c.ciclo === 'dia15');
+    const cartoes30 = cartoes.filter(c => c.ciclo === 'dia30');
+
+    const faturas15 = cartoes15.length > 0
+        ? cartoes15.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }))
+        : [{ nome: 'Nubank', fatura: calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank'), limite: configuracoes.saldoLivreNubank||0 }];
+
+    const faturas30 = cartoes30.length > 0
+        ? cartoes30.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }))
+        : [
+            { nome: 'Inter',  fatura: calcularFaturaInter()  + somaContasFixasCartao('Cartão Inter'),  limite: configuracoes.saldoLivreInter||0 },
+            { nome: 'Sofisa', fatura: calcularFaturaSofisa(),                                           limite: configuracoes.saldoLivreSofisa||0 }
+          ];
+
+    const totalFaturas15 = faturas15.reduce((t,f) => t + f.fatura, 0);
+    const totalFaturas30 = faturas30.reduce((t,f) => t + f.fatura, 0);
+    const fixasDia15SemCartao = somaContasFixasCiclo('dia15', true);
+    const fixasDia30SemCartao = somaContasFixasCiclo('dia30', true);
+
+    function criarItemPagamento(label, valor) {
+        const div = document.createElement('div');
+        div.className = 'payment-item';
+        div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
+        return div;
+    }
+
+    function criarItemFaturaCartao(label, valor, limite) {
+        const saldoDisp = limite - valor;
+        const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+        const div = document.createElement('div');
+        div.className = 'payment-item';
+        div.innerHTML = `
+            <span>${label}:</span>
+            <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                <span style="font-weight:600;">${formatarMoeda(valor)}</span>
+                ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
+            </span>`;
+        return div;
+    }
+
+    /* --- DIA 15 --- */
+    const items15 = document.getElementById('payment-dia15-items');
+    items15.innerHTML = '';
+    contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
+        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+        if (c.pagamento === 'Boleto' && c.codbarras) {
+            const barcodeDiv = document.createElement('div');
+            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
+            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
+            item.style.flexWrap = 'wrap';
+            item.appendChild(barcodeDiv);
+        }
+        items15.appendChild(item);
+    });
+    faturas15.forEach(f => items15.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+    const despesasDia15 = fixasDia15SemCartao + totalFaturas15;
+    const investimentoDia15 = Math.max(0, salario15 - despesasDia15);
+    items15.appendChild(criarItemPagamento('Investir', investimentoDia15));
+    const totalItem15 = criarItemPagamento('Total', salario15);
+    totalItem15.style.fontWeight = '600'; totalItem15.style.fontSize = '1.05rem';
+    totalItem15.style.paddingTop = '1.25rem'; totalItem15.style.borderBottom = 'none';
+    items15.appendChild(totalItem15);
+
+    /* --- DIA 30 --- */
+    const items30 = document.getElementById('payment-dia30-items');
+    items30.innerHTML = '';
+    contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
+        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+        if (c.pagamento === 'Boleto' && c.codbarras) {
+            const barcodeDiv = document.createElement('div');
+            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
+            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
+            item.style.flexWrap = 'wrap';
+            item.appendChild(barcodeDiv);
+        }
+        items30.appendChild(item);
+    });
+    faturas30.forEach(f => items30.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+    const despesasDia30 = fixasDia30SemCartao + totalFaturas30;
+    const investimentoDia30 = Math.max(0, salario30 - despesasDia30);
+    items30.appendChild(criarItemPagamento('Investir', investimentoDia30));
+    const totalItem30 = criarItemPagamento('Total', salario30);
+    totalItem30.style.fontWeight = '600'; totalItem30.style.fontSize = '1.05rem';
+    totalItem30.style.paddingTop = '1.25rem'; totalItem30.style.borderBottom = 'none';
+    items30.appendChild(totalItem30);
+}
+
+/* ===== RESUMO / GRÁFICO ===== */
+function atualizarResumoFinanceiro() {
+    // ENTRADAS: soma dos salários configurados
+    const salario1 = parseFloat(configuracoes.salario1) || 0;
+    const salario2 = parseFloat(configuracoes.salario2) || 0;
+    const totalEntradas = salario1 + salario2;
+
+    // DESPESAS FIXAS: soma de TODAS as contas fixas/monitoradas cadastradas
+    const totalDespesasFixas = contasFixas.reduce((t, c) => t + (parseFloat(c.valor) || 0), 0);
+
+    // INVESTIMENTOS: calculado igual à aba Pagamentos (sobra do salário após despesas de cada ciclo)
+    const faturas15tot = (cartoes.filter(c=>c.ciclo==='dia15').length > 0
+        ? cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome))
+        : [calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank')]
+    ).reduce((t,v)=>t+v, 0);
+    const faturas30tot = (cartoes.filter(c=>c.ciclo==='dia30').length > 0
+        ? cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome))
+        : [calcularFaturaInter() + somaContasFixasCartao('Cartão Inter'), calcularFaturaSofisa()]
+    ).reduce((t,v)=>t+v, 0);
+    const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
+    const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
+    const investimentoDia15 = Math.max(0, salario1 - despesasDia15);
+    const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
+    const totalInvestimentos = investimentoDia15 + investimentoDia30;
+
+    // LIVRE: soma dos gastos reais nos cartões (lançamentos)
+    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0) || (configuracoes.saldoLivreNubank||0) + (configuracoes.saldoLivreInter||0) + (configuracoes.saldoLivreSofisa||0);
+    const gastoNubank = calcularFaturaNubank();
+    const gastoInter  = calcularFaturaInter();
+    const gastoSofisa = lancamentos.filter(l => l.formaPagamento === 'Cartão Sofisa').reduce((t, l) => t + parseFloat(l.valor), 0);
+    let totalLivre = gastoNubank + gastoInter + gastoSofisa;
+
+    // limites individuais para cálculo de excesso
+    const limiteNubank  = parseFloat(configuracoes.saldoLivreNubank)  || 0;
+    const limiteInter   = parseFloat(configuracoes.saldoLivreInter)   || 0;
+    const limiteSofisa  = parseFloat(configuracoes.saldoLivreSofisa)  || 0;
+    const excessoNubank = Math.max(0, gastoNubank - limiteNubank);
+    const excessoInter  = Math.max(0, gastoInter  - limiteInter);
+    const excessoSofisa = Math.max(0, gastoSofisa - limiteSofisa);
+    const totalExcesso  = excessoNubank + excessoInter + excessoSofisa;
+    const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
+
+    // PERCENTUAIS em relação às entradas
+    function pct(valor) {
+        if (totalEntradas <= 0) return '0,00%';
+        return (valor / totalEntradas * 100).toFixed(2).replace('.', ',') + '%';
+    }
+
+    document.getElementById('total-entradas').textContent = formatarMoeda(totalEntradas);
+    document.getElementById('pct-entradas').textContent   = '100%';
+
+    document.getElementById('total-despesas').textContent = formatarMoeda(totalDespesasFixas);
+    document.getElementById('pct-despesas').textContent   = pct(totalDespesasFixas);
+
+    document.getElementById('total-investimentos').textContent = formatarMoeda(totalInvestimentosFinal);
+    document.getElementById('pct-investimentos').textContent   = pct(totalInvestimentosFinal);
+
+    const livreEl = document.getElementById('saldo-mensal');
+    livreEl.textContent = formatarMoeda(totalLivre);
+    livreEl.className   = totalLivre > limiteTotal ? 'resumo-value valor-negativo' : 'resumo-value valor-positivo';
+    document.getElementById('pct-livre').textContent = pct(totalLivre);
+
+    atualizarGraficoBalanco(totalEntradas, totalDespesasFixas, totalInvestimentosFinal, totalLivre);
+}
+
+function atualizarGraficoBalanco(entradas, despesas, investimentos, saldo) {
+    const ctx = document.getElementById('balanco-chart').getContext('2d');
+    if (balancoChart) balancoChart.destroy();
+    balancoChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Entradas', 'Despesas Fixas', 'Investimentos', 'Livre'],
+            datasets: [{ label: 'Valor (R$)', data: [entradas, despesas, investimentos, saldo >= 0 ? saldo : 0],
+                backgroundColor: ['rgba(34,197,94,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(99,102,241,0.7)'],
+                borderColor: ['rgba(34,197,94,1)','rgba(239,68,68,1)','rgba(245,158,11,1)','rgba(99,102,241,1)'],
+                borderWidth: 1 }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => (ctx.dataset.label || '') + ': ' + formatarMoeda(ctx.raw) } } },
+            scales: { y: { beginAtZero: true, ticks: { callback: v => 'R$ ' + v } } }
+        }
+    });
+}
+
+/* ===== CONFIGURAÇÕES ===== */
+function getSalarioCiclo(ciclo) {
+    const lista = salarios.filter(s => s.ciclo === ciclo);
+    if (lista.length === 0) return 0;
+    lista.sort((a, b) => b.data.localeCompare(a.data));
+    return parseFloat(lista[0].valor) || 0;
+}
+
+function getCartaoPorNome(nome) {
+    return cartoes.find(c => c.nome.toLowerCase() === nome.toLowerCase()) || null;
+}
+
+function getLimiteCartao(nome) {
+    const c = getCartaoPorNome(nome);
+    return c ? (parseFloat(c.limite) || 0) : 0;
+}
+
+function carregarConfiguracoes() {
+    // Atualiza configuracoes com os valores mais recentes de salarios/cartoes para compatibilidade
+    configuracoes.salario1 = getSalarioCiclo('dia15');
+    configuracoes.salario2 = getSalarioCiclo('dia30');
+    const nubank = cartoes.find(c => c.ciclo === 'dia15');
+    const inter  = cartoes.find(c => c.ciclo === 'dia30' && c.nome.toLowerCase().includes('inter'));
+    const sofisa = cartoes.find(c => c.ciclo === 'dia30' && c.nome.toLowerCase().includes('sofisa'));
+    configuracoes.saldoLivreNubank = nubank ? (parseFloat(nubank.limite) || 0) : 0;
+    configuracoes.saldoLivreInter  = inter  ? (parseFloat(inter.limite)  || 0) : 0;
+    configuracoes.saldoLivreSofisa = sofisa ? (parseFloat(sofisa.limite) || 0) : 0;
+    renderSalarios();
+    renderCartoes();
+}
+
+function renderSalarios() {
+    const lista = document.getElementById('lista-salarios');
+    if (!lista) return;
+    lista.innerHTML = '';
+    if (salarios.length === 0) {
+        lista.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;">Nenhum salário cadastrado ainda.</p>';
+        return;
+    }
+    const sorted = [...salarios].sort((a,b) => b.data.localeCompare(a.data));
+    sorted.forEach((s, i) => {
+        const realIdx = salarios.indexOf(s);
+        const [ano,mes,dia] = s.data.split('-');
+        const div = document.createElement('div');
+        div.className = 'conta-fixa-card';
+        div.innerHTML = `
+            <div class="conta-fixa-info">
+                <span class="conta-fixa-nome"><i class="fas fa-money-bill-wave" style="color:var(--success-color);margin-right:0.4rem;"></i> ${s.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+                <span class="conta-fixa-valor">${formatarMoeda(parseFloat(s.valor))}</span>
+                <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> ${dia}/${mes}/${ano}</span>
+            </div>
+            <div class="conta-fixa-acoes">
+                <button class="action-btn edit-btn" title="Editar" onclick="editarSalario(${realIdx})">✎</button>
+                <button class="action-btn delete-btn" title="Excluir" onclick="excluirSalario(${realIdx})">×</button>
+            </div>`;
+        lista.appendChild(div);
+    });
+}
+
+function excluirSalario(index) {
+    if (!confirm('Excluir este salário?')) return;
+    salarios.splice(index, 1);
+    salvarFirebase('salarios', salarios);
+    carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
+}
+
+function editarSalario(index) {
+    const s = salarios[index];
+    document.getElementById('sal-data').value = s.data;
+    document.getElementById('sal-valor').value = s.valor;
+    document.getElementById('sal-ciclo').value = s.ciclo;
+    document.getElementById('sal-edit-index').value = index;
+    document.getElementById('form-salario-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Salário';
+    document.getElementById('form-add-salario-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-salario').style.display = 'none';
+}
+
+function renderCartoes() {
+    const lista = document.getElementById('lista-cartoes');
+    if (!lista) return;
+    lista.innerHTML = '';
+    if (cartoes.length === 0) {
+        lista.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;">Nenhum cartão cadastrado ainda.</p>';
+        return;
+    }
+    cartoes.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'conta-fixa-card';
+        div.innerHTML = `
+            <div class="conta-fixa-info">
+                <span class="conta-fixa-nome"><i class="fas fa-credit-card" style="margin-right:0.4rem;"></i> ${c.nome}</span>
+                <span class="conta-fixa-valor">${formatarMoeda(parseFloat(c.limite))}</span>
+                <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> Vence dia ${c.vencimento}</span>
+                <span class="conta-fixa-badge badge-pag-boleto"><i class="fas fa-lock"></i> Fecha dia ${c.fechamento}</span>
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+            </div>
+            <div class="conta-fixa-acoes">
+                <button class="action-btn edit-btn" title="Editar" onclick="editarCartao(${i})">✎</button>
+                <button class="action-btn delete-btn" title="Excluir" onclick="excluirCartao(${i})">×</button>
+            </div>`;
+        lista.appendChild(div);
+    });
+}
+
+function excluirCartao(index) {
+    if (!confirm(`Excluir cartão "${cartoes[index].nome}"?`)) return;
+    cartoes.splice(index, 1);
+    salvarFirebase('cartoes', cartoes);
+    carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
+}
+
+function editarCartao(index) {
+    const c = cartoes[index];
+    document.getElementById('cart-nome').value = c.nome;
+    document.getElementById('cart-limite').value = c.limite;
+    document.getElementById('cart-vencimento').value = c.vencimento;
+    document.getElementById('cart-fechamento').value = c.fechamento;
+    document.getElementById('cart-ciclo').value = c.ciclo;
+    document.getElementById('cart-edit-index').value = index;
+    document.getElementById('form-cartao-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Cartão';
+    document.getElementById('form-add-cartao-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-cartao').style.display = 'none';
+}
+
+/* ===== CONTAS FIXAS ===== */
+function prazoLabel(c) {
+    const map = { dia15: 'Todo dia 15', dia30: 'Todo dia 30', perder: 'A perder de vista', parcelas: `${c.parcelas || '?'} parcelas`, personalizado: c.dataVenc || '' };
+    return map[c.prazo] || c.prazo;
+}
+function prazoBadgeClass(prazo) {
+    if (prazo === 'perder') return 'badge-prazo-perder';
+    if (prazo === 'parcelas') return 'badge-prazo-parcelas';
+    return 'badge-prazo-fixo';
+}
+function pagBadgeClass(pag) {
+    if (pag === 'Cartão Nubank') return 'badge-pag-nubank';
+    if (pag === 'Cartão Inter') return 'badge-pag-inter';
+    if (pag === 'Cartão Sofisa') return 'badge-pag-sofisa';
+    if (pag === 'PIX') return 'badge-pag-pix';
+    return 'badge-pag-boleto';
+}
+
+function renderContasFixas() {
+    const lista = document.getElementById('lista-contas-fixas');
+    lista.innerHTML = '';
+    if (contasFixas.length === 0) {
+        lista.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;">Nenhuma conta cadastrada ainda.</p>';
+        return;
+    }
+    contasFixas.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'conta-fixa-card';
+        div.innerHTML = `
+            <div class="conta-fixa-info">
+                <span class="conta-fixa-nome">${c.nome}</span>
+                ${c.variavel === 'sim'
+                    ? `<input type="number" class="valor-variavel-input" value="${parseFloat(c.valor).toFixed(2)}" step="0.01" min="0" onchange="atualizarValorContaFixa(${i}, this.value)">`
+                    : `<span class="conta-fixa-valor">${formatarMoeda(parseFloat(c.valor))}</span>`}
+                <span class="conta-fixa-badge ${prazoBadgeClass(c.prazo)}"><i class="fas fa-calendar-alt"></i> ${prazoLabel(c)}</span>
+                <span class="conta-fixa-badge ${pagBadgeClass(c.pagamento)}">${c.pagamento}</span>
+                ${c.variavel === 'sim' ? '<span class="conta-fixa-badge badge-variavel"><i class="fas fa-edit"></i> Variável</span>' : ''}
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+                <span class="toggle-destaque ${c.destaque ? 'ativo' : 'inativo'}" onclick="toggleDestaque(${i})" title="Destacar no relatório de pagamentos">
+                    <i class="fas fa-star"></i> ${c.destaque ? 'Destacado' : 'Destacar'}
+                </span>
+            </div>
+            <div class="conta-fixa-acoes">
+                <button class="action-btn edit-btn" title="Editar" onclick="editarContaFixa(${i})">✎</button>
+                <button class="action-btn delete-btn" title="Excluir" onclick="excluirContaFixa(${i})">×</button>
+            </div>`;
+        lista.appendChild(div);
+    });
+}
+
+function toggleDestaque(index) {
+    contasFixas[index].destaque = !contasFixas[index].destaque;
+    salvarFirebase('contasFixas', contasFixas);
+    renderContasFixas();
+    atualizarPagamentos();
+}
+
+function atualizarValorContaFixa(index, novoValor) {
+    contasFixas[index].valor = parseFloat(novoValor) || 0;
+    salvarFirebase('contasFixas', contasFixas);
+    atualizarDashboard(); atualizarPagamentos();
+}
+
+function excluirTodasParcelas(grupoNome, formaPagamento) {
+    const count = lancamentos.filter(l => l.parcelado && l.descricao.replace(/ \(\d+\/\d+\)$/, '') === grupoNome && l.formaPagamento === formaPagamento).length;
+    if (!confirm(`Excluir todas as ${count} parcelas de "${grupoNome}"?`)) return;
+    lancamentos = lancamentos.filter(l => !(l.parcelado && l.descricao.replace(/ \(\d+\/\d+\)$/, '') === grupoNome && l.formaPagamento === formaPagamento));
+    salvarFirebase('lancamentos', lancamentos);
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+}
+
+function excluirContaFixa(index) {
+    if (!confirm(`Excluir "${contasFixas[index].nome}"?`)) return;
+    contasFixas.splice(index, 1);
+    salvarFirebase('contasFixas', contasFixas);
+    renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
+}
+
+function editarContaFixa(index) {
+    const c = contasFixas[index];
+    document.getElementById('cf-nome').value = c.nome;
+    document.getElementById('cf-valor').value = c.valor;
+    document.getElementById('cf-variavel').value = c.variavel || 'nao';
+    document.getElementById('cf-prazo').value = c.prazo;
+    document.getElementById('cf-pagamento').value = c.pagamento;
+    document.getElementById('cf-ciclo').value = c.ciclo;
+    document.getElementById('cf-parcelas').value = c.parcelas || '';
+    document.getElementById('cf-data-venc').value = c.dataVenc || '';
+    document.getElementById('cf-destaque').checked = c.destaque || false;
+    document.getElementById('cf-codbarras').value = c.codbarras || '';
+    document.getElementById('cf-codbarras-group').style.display = c.pagamento === 'Boleto' ? '' : 'none';
+    document.getElementById('cf-edit-index').value = index;
+    document.getElementById('form-conta-titulo').innerHTML = '<i class="fas fa-edit"></i> Editar Conta';
+    document.getElementById('form-add-conta-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-conta').style.display = 'none';
+    atualizarVisibilidadePrazo();
+}
+
+function atualizarVisibilidadePrazo() {
+    const prazo = document.getElementById('cf-prazo').value;
+    document.getElementById('cf-parcelas-group').style.display = prazo === 'parcelas' ? '' : 'none';
+    document.getElementById('cf-data-group').style.display = prazo === 'personalizado' ? '' : 'none';
+}
+
+/* ===== APARTAMENTO ===== */
+function statusBadgeApt(situacao) {
+    if (situacao === 'PAGO') return 'badge-receita';
+    if (situacao === 'CURY CHEGA MAIS') return 'badge-cury';
+    if (situacao === 'EVOLUÇÃO DE OBRA') return 'badge-evolucao';
+    return 'badge-despesa';
+}
+
+function atualizarTabelaApartamento() {
+    const tbody = document.querySelector('#tabela-apartamento tbody');
+    tbody.innerHTML = '';
+    let pagas = 0, totalPago = 0, totalConstrucao = 0;
+    parcelasApartamento.forEach((p, i) => {
+        const [ano, mes, dia] = p.data.split("-");
+        const isPago = p.situacao === 'PAGO' || p.situacao === 'CURY CHEGA MAIS' || p.situacao === 'EVOLUÇÃO DE OBRA';
+        if (isPago) { pagas++; totalPago += p.parcelaTotal; }
+        totalConstrucao += p.construcao;
+        const construcaoText = p.construcao > 0 ? p.construcao.toFixed(3) + '%' : '-';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${p.mes}</td><td>${dia}/${mes}/${ano}</td>
+            <td>${formatarMoeda(p.parcelaEntrada)}</td><td>${construcaoText}</td>
+            <td>${formatarMoeda(p.evolucaoObra)}</td><td><strong>${formatarMoeda(p.parcelaTotal)}</strong></td>
+            <td><span class="status-badge ${statusBadgeApt(p.situacao)}">${p.situacao}</span></td>
+            <td>
+                <button class="action-btn edit-btn" onclick="abrirModalEdicaoApartamento(${i})">✎</button>
+                <button class="action-btn" style="background-color:${isPago ? 'var(--danger-color)' : 'var(--success-color)'};" onclick="ciclaSituacaoApt(${i})" title="Alternar situação">${isPago ? '✗' : '✓'}</button>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+    document.getElementById('parcelas-pagas').textContent = pagas + ' / ' + parcelasApartamento.length;
+    document.getElementById('parcelas-pendentes').textContent = parcelasApartamento.length - pagas;
+    document.getElementById('total-pago-apt').textContent = formatarMoeda(totalPago);
+    document.getElementById('total-construcao-apt').textContent = totalConstrucao.toFixed(3) + '%';
+}
+
+function ciclaSituacaoApt(index) {
+    const ciclo = ['NÃO PAGO', 'PAGO', 'CURY CHEGA MAIS', 'EVOLUÇÃO DE OBRA'];
+    const atual = parcelasApartamento[index].situacao;
+    const pos = ciclo.indexOf(atual);
+    parcelasApartamento[index].situacao = ciclo[(pos + 1) % ciclo.length];
+    salvarFirebase('parcelasApartamento', parcelasApartamento);
+    atualizarTabelaApartamento();
+}
+
+function toggleSituacaoParcela(index) { ciclaSituacaoApt(index); }
+
+function abrirModalEdicaoApartamento(index) {
+    const p = parcelasApartamento[index];
+    document.getElementById('edit-mes').value = p.mes;
+    document.getElementById('edit-data-apt').value = p.data;
+    document.getElementById('edit-parcela-entrada').value = p.parcelaEntrada;
+    document.getElementById('edit-construcao').value = p.construcao;
+    document.getElementById('edit-evolucao-obra').value = p.evolucaoObra;
+    document.getElementById('edit-parcela-total').value = p.parcelaTotal;
+    document.getElementById('edit-index-apt').value = index;
+    document.getElementById('editModalApartamento').style.display = 'block';
+}
+
+function calcularParcelaTotal() {
+    const e = parseFloat(document.getElementById('edit-parcela-entrada').value) || 0;
+    const o = parseFloat(document.getElementById('edit-evolucao-obra').value) || 0;
+    document.getElementById('edit-parcela-total').value = (e + o).toFixed(2);
+}
+
+function emojiConta(nome) {
+    const n = nome.toLowerCase();
+    if (n.includes('aluguel') || n.includes('mora')) return '🏠';
+    if (n.includes('apart') || n.includes('imov')) return '🏢';
+    if (n.includes('gym') || n.includes('acad') || n.includes('palest')) return '🏋';
+    if (n.includes('internet') || n.includes('wifi') || n.includes('net')) return '📡';
+    if (n.includes('celular') || n.includes('tel') || n.includes('claro') || n.includes('vivo') || n.includes('tim')) return '📱';
+    if (n.includes('luz') || n.includes('energia') || n.includes('eletric')) return '💡';
+    if (n.includes('água') || n.includes('sabesp') || n.includes('saneamento')) return '🚰';
+    if (n.includes('gas') || n.includes('gás')) return '🔥';
+    if (n.includes('transporte') || n.includes('vale') || n.includes('metro') || n.includes('ônibus')) return '🚌';
+    if (n.includes('seguro')) return '🛡️';
+    if (n.includes('plano') || n.includes('saúde') || n.includes('médic')) return '🏥';
+    if (n.includes('streaming') || n.includes('netflix') || n.includes('spotify') || n.includes('disney') || n.includes('prime')) return '🎬';
+    if (n.includes('escola') || n.includes('facul') || n.includes('curso') || n.includes('educa')) return '🎓';
+    if (n.includes('mercado') || n.includes('supermercado') || n.includes('compras')) return '🛒';
+    if (n.includes('evolu') || n.includes('obra')) return '🏗️';
+    if (n.includes('antecipa')) return '💰';
+    return '📌';
+}
+
+function gerarRelatorioPagamento(dia) {
+    let relatorio = '';
+    const faturaNubankVal = calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
+    const faturaInterVal = calcularFaturaInter() + somaContasFixasCartao('Cartão Inter');
+    const faturaSofisaVal = calcularFaturaSofisa();
+    const fixas15 = somaContasFixasCiclo('dia15', true);
+    const fixas30 = somaContasFixasCiclo('dia30', true);
+    const invest15 = Math.max(0, (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal);
+    const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
+    const total15 = parseFloat(configuracoes.salario1) || 0;
+    const total30 = parseFloat(configuracoes.salario2) || 0;
+    if (dia === 15) {
+        relatorio += `📊 *Pagamentos do dia 15:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nome do cartão dia15 nos cartoes cadastrados
+        const cartaoDia15 = cartoes.find(c => c.ciclo === 'dia15');
+        const nomeFatura15 = cartaoDia15 ? cartaoDia15.nome : 'Nubank';
+        relatorio += `💳 Fatura ${nomeFatura15}: ${formatarMoeda(faturaNubankVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
+    }
+    if (dia === 30) {
+        relatorio += `📊 *Pagamentos do dia 30:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nomes dos cartões dia30
+        const cartoesDia30 = cartoes.filter(c => c.ciclo === 'dia30');
+        const nomeInter  = cartoesDia30.find(c => c.nome.toLowerCase().includes('inter'))?.nome  || 'Inter';
+        const nomeSofisa = cartoesDia30.find(c => c.nome.toLowerCase().includes('sofisa'))?.nome || 'Sofisa';
+        relatorio += `💳 Fatura ${nomeInter}: ${formatarMoeda(faturaInterVal)}\n`;
+        relatorio += `💳 Fatura ${nomeSofisa}: ${formatarMoeda(faturaSofisaVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
+    }
+    salvarFirebase('lancamentos', lancamentos);
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+    navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
+}
+
+/* ===== EVENT LISTENERS ===== */
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab).classList.add('active');
+    });
+});
+
+document.getElementById('form-lancamento').addEventListener('submit', function(e) {
+    e.preventDefault();
+    lancamentos.push({
+        data: document.getElementById('data').value,
+        tipo: document.getElementById('tipo').value,
+        descricao: document.getElementById('descricao').value,
+        valor: document.getElementById('valor').value,
+        categoria: document.getElementById('categoria').value,
+        formaPagamento: document.getElementById('forma-pagamento').value
+    });
+    salvarFirebase('lancamentos', lancamentos);
+    this.reset();
+    document.getElementById('data').value = new Date().toISOString().split('T')[0];
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+});
+// ─── Salário event listeners ───────────────────────────
+document.getElementById('btn-show-form-salario').addEventListener('click', () => {
+    document.getElementById('sal-edit-index').value = -1;
+    document.getElementById('form-salario-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Salário';
+    document.getElementById('sal-data').value = new Date().toISOString().split('T')[0];
+    document.getElementById('sal-valor').value = '';
+    document.getElementById('form-add-salario-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-salario').style.display = 'none';
+});
+document.getElementById('btn-cancelar-salario').addEventListener('click', () => {
+    document.getElementById('form-add-salario-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-salario').style.display = '';
+});
+document.getElementById('btn-salvar-salario').addEventListener('click', () => {
+    const data  = document.getElementById('sal-data').value;
+    const valor = parseFloat(document.getElementById('sal-valor').value) || 0;
+    const ciclo = document.getElementById('sal-ciclo').value;
+    if (!data || valor <= 0) { alert('Preencha a data e o valor do salário.'); return; }
+    const sal = { data, valor, ciclo };
+    const editIndex = parseInt(document.getElementById('sal-edit-index').value);
+    if (editIndex >= 0) salarios[editIndex] = sal;
+    else salarios.push(sal);
+    salvarFirebase('salarios', salarios);
+    document.getElementById('form-add-salario-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-salario').style.display = '';
+    carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
+});
+
+// ─── Cartão event listeners ────────────────────────────
+document.getElementById('btn-show-form-cartao').addEventListener('click', () => {
+    document.getElementById('cart-edit-index').value = -1;
+    document.getElementById('form-cartao-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Cartão';
+    document.getElementById('cart-nome').value = '';
+    document.getElementById('cart-limite').value = '';
+    document.getElementById('cart-vencimento').value = '';
+    document.getElementById('cart-fechamento').value = '';
+    document.getElementById('form-add-cartao-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-cartao').style.display = 'none';
+});
+document.getElementById('btn-cancelar-cartao').addEventListener('click', () => {
+    document.getElementById('form-add-cartao-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-cartao').style.display = '';
+});
+document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
+    const nome       = document.getElementById('cart-nome').value.trim();
+    const limite     = parseFloat(document.getElementById('cart-limite').value) || 0;
+    const vencimento = parseInt(document.getElementById('cart-vencimento').value) || 0;
+    const fechamento = parseInt(document.getElementById('cart-fechamento').value) || 0;
+    const ciclo      = document.getElementById('cart-ciclo').value;
+    if (!nome || limite <= 0 || vencimento <= 0 || fechamento <= 0) { alert('Preencha todos os campos do cartão.'); return; }
+    const cart = { nome, limite, vencimento, fechamento, ciclo };
+    const editIndex = parseInt(document.getElementById('cart-edit-index').value);
+    if (editIndex >= 0) cartoes[editIndex] = cart;
+    else cartoes.push(cart);
+    salvarFirebase('cartoes', cartoes);
+    document.getElementById('form-add-cartao-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-cartao').style.display = '';
+    carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
+});
+
+document.querySelectorAll('input[name="payment-date"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('payment-dia15').classList.toggle('hidden', this.value !== '15');
+        document.getElementById('payment-dia30').classList.toggle('hidden', this.value !== '30');
+    });
+});
+
+document.getElementById('form-edicao').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = parseInt(document.getElementById('edit-index').value);
+    lancamentos[idx] = {
+        data: document.getElementById('edit-data').value,
+        tipo: document.getElementById('edit-tipo').value,
+        descricao: document.getElementById('edit-descricao').value,
+        valor: document.getElementById('edit-valor').value,
+        categoria: document.getElementById('edit-categoria').value,
+        formaPagamento: document.getElementById('edit-forma-pagamento').value
+    };
+    salvarFirebase('lancamentos', lancamentos);
+    modal.style.display = 'none';
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+});
+
+document.getElementById('relatorio-nubank').addEventListener('click', () => gerarRelatorioPagamento(15));
+document.getElementById('relatorio-inter').addEventListener('click', () => gerarRelatorioPagamento(30));
+
+const modalApartamento = document.getElementById('editModalApartamento');
+document.getElementById('closeApartamento').addEventListener('click', () => modalApartamento.style.display = 'none');
+window.addEventListener('click', e => { if (e.target == modalApartamento) modalApartamento.style.display = 'none'; });
+document.getElementById('edit-parcela-entrada').addEventListener('input', calcularParcelaTotal);
+document.getElementById('edit-evolucao-obra').addEventListener('input', calcularParcelaTotal);
+
+document.getElementById('form-edicao-apartamento').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = parseInt(document.getElementById('edit-index-apt').value);
+    const pe = parseFloat(document.getElementById('edit-parcela-entrada').value);
+    const eo = parseFloat(document.getElementById('edit-evolucao-obra').value);
+    parcelasApartamento[idx] = {
+        mes: document.getElementById('edit-mes').value,
+        data: document.getElementById('edit-data-apt').value,
+        parcelaEntrada: pe,
+        construcao: parseFloat(document.getElementById('edit-construcao').value) || 0,
+        evolucaoObra: eo,
+        parcelaTotal: pe + eo,
+        situacao: parcelasApartamento[idx].situacao
+    };
+    salvarFirebase('parcelasApartamento', parcelasApartamento);
+    modalApartamento.style.display = 'none';
+    atualizarTabelaApartamento();
+});
+
+document.getElementById('cf-prazo').addEventListener('change', atualizarVisibilidadePrazo);
+
+// Mostrar/ocultar campo de código de barras conforme forma de pagamento
+document.getElementById('cf-pagamento').addEventListener('change', function() {
+    document.getElementById('cf-codbarras-group').style.display = this.value === 'Boleto' ? '' : 'none';
+});
+
+document.getElementById('btn-show-form-conta').addEventListener('click', () => {
+    document.getElementById('cf-edit-index').value = -1;
+    document.getElementById('form-conta-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Nova Conta';
+    document.getElementById('cf-destaque').checked = false;
+    document.getElementById('form-add-conta-wrapper').style.display = 'block';
+    document.getElementById('btn-show-form-conta').style.display = 'none';
+});
+
+document.getElementById('btn-cancelar-conta').addEventListener('click', () => {
+    document.getElementById('form-add-conta-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-conta').style.display = '';
+});
+
+document.getElementById('btn-salvar-conta').addEventListener('click', () => {
+    const nome = document.getElementById('cf-nome').value.trim();
+    const valor = parseFloat(document.getElementById('cf-valor').value) || 0;
+    if (!nome || valor <= 0) { alert('Preencha nome e valor.'); return; }
+    const pagamento = document.getElementById('cf-pagamento').value;
+    const conta = {
+        nome, valor,
+        variavel: document.getElementById('cf-variavel').value,
+        prazo: document.getElementById('cf-prazo').value,
+        pagamento,
+        ciclo: document.getElementById('cf-ciclo').value,
+        parcelas: document.getElementById('cf-parcelas').value || null,
+        dataVenc: document.getElementById('cf-data-venc').value || null,
+        destaque: document.getElementById('cf-destaque').checked,
+        codbarras: pagamento === 'Boleto' ? (document.getElementById('cf-codbarras').value.trim() || null) : null
+    };
+    const editIndex = parseInt(document.getElementById('cf-edit-index').value);
+    if (editIndex >= 0) contasFixas[editIndex] = conta;
+    else contasFixas.push(conta);
+    salvarFirebase('contasFixas', contasFixas);
+    document.getElementById('form-add-conta-wrapper').style.display = 'none';
+    document.getElementById('btn-show-form-conta').style.display = '';
+    renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('data').value = new Date().toISOString().split('T')[0];
+    // Os dados são carregados pelo Firebase onSnapshot acima
+});
+</script>
+</body>
+</html>
