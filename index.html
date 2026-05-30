@@ -1695,9 +1695,10 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
-        // Zerar contas fixas variáveis ou de data específica do ciclo dia15
+        // Excluir contas de data específica do ciclo dia15; zerar apenas as variáveis
+        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia15' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
-            if (c.ciclo === 'dia15' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
+            if (c.ciclo === 'dia15' && c.variavel === 'sim')
                 contasFixas[i].valor = 0;
         });
         salvarFirebase('contasFixas', contasFixas);
@@ -1720,9 +1721,10 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
-        // Zerar contas fixas variáveis ou de data específica do ciclo dia30
+        // Excluir contas de data específica do ciclo dia30; zerar apenas as variáveis
+        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia30' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
-            if (c.ciclo === 'dia30' && (c.variavel === 'sim' || c.prazo === 'personalizado'))
+            if (c.ciclo === 'dia30' && c.variavel === 'sim')
                 contasFixas[i].valor = 0;
         });
         salvarFirebase('contasFixas', contasFixas);
