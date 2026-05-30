@@ -386,9 +386,6 @@
                     <label for="forma-pagamento">Forma de Pagamento</label>
                     <select id="forma-pagamento" required>
                         <option value="">Selecione</option>
-                        <option value="Cartão Nubank">Cartão Nubank</option>
-                        <option value="Cartão Inter">Cartão Inter</option>
-                        <option value="Cartão Sofisa">Cartão Sofisa</option>
                         <option value="PIX">PIX</option>
                         <option value="Boleto">Boleto</option>
                         <option value="Débito Automático">Débito Automático</option>
@@ -575,9 +572,6 @@
                     <div class="form-group">
                         <label>Forma de Pagamento</label>
                         <select id="cf-pagamento">
-                            <option value="Cartão Nubank">Cartão Nubank</option>
-                            <option value="Cartão Inter">Cartão Inter</option>
-                            <option value="Cartão Sofisa">Cartão Sofisa</option>
                             <option value="PIX">PIX</option>
                             <option value="Boleto">Boleto</option>
                             <option value="Débito Automático">Débito Automático</option>
@@ -694,9 +688,6 @@
             <div class="form-group">
                 <label>Forma de Pagamento</label>
                 <select id="cf-pagamento-m">
-                    <option value="Cartão Nubank">Cartão Nubank</option>
-                    <option value="Cartão Inter">Cartão Inter</option>
-                    <option value="Cartão Sofisa">Cartão Sofisa</option>
                     <option value="PIX">PIX</option>
                     <option value="Boleto">Boleto</option>
                     <option value="Débito Automático">Débito Automático</option>
@@ -841,7 +832,7 @@
                 <div class="form-group"><label for="edit-categoria">Categoria</label>
                     <select id="edit-categoria" required><option value="">Selecione</option><option value="Alimentação">Alimentação</option><option value="Transporte">Transporte</option><option value="Saúde">Saúde</option><option value="Lazer">Lazer</option><option value="Educação">Educação</option><option value="Outros">Outros</option></select></div>
                 <div class="form-group"><label for="edit-forma-pagamento">Forma de Pagamento</label>
-                    <select id="edit-forma-pagamento" required><option value="">Selecione</option><option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option><option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option></select></div>
+                    <select id="edit-forma-pagamento" required><option value="">Selecione</option><option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option></select></div>
                 <div class="form-group"><label for="edit-data">Data</label><input type="date" id="edit-data" required></div>
             </div>
             <input type="hidden" id="edit-index">
@@ -1076,13 +1067,11 @@ function renderDashboardCartoes() {
     if (!dashboard) return;
     dashboard.innerHTML = '';
     const coresFallback = ['#8307bf|#9d33d9','#ff7a00|#ff9a3c','#1a1a1a|#2d2d2d','#0ea5e9|#38bdf8','#10b981|#34d399','#f59e0b|#fbbf24'];
-    // Fallback: se nenhum cartão cadastrado, mostrar os 3 antigos
-    const lista = cartoes.length > 0 ? cartoes : [
-        { nome: 'Nubank', limite: configuracoes.saldoLivreNubank||0, vencimento: 15, fechamento: 12, ciclo: 'dia15' },
-        { nome: 'Inter',  limite: configuracoes.saldoLivreInter||0,  vencimento: 30, fechamento: 24, ciclo: 'dia30' },
-        { nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa||0, vencimento: 1,  fechamento: 26, ciclo: 'dia30' }
-    ];
-    lista.forEach((c, i) => {
+    if (cartoes.length === 0) {
+        dashboard.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;width:100%;">Nenhum cartão cadastrado. Adicione cartões na aba Configurações.</p>';
+        return;
+    }
+    cartoes.forEach((c, i) => {
         const corStr = (c.cor || coresFallback[i % coresFallback.length]);
         const [cor1, cor2] = corStr.split('|');
         const bandeiraIcons = {visa:'fab fa-cc-visa',mastercard:'fab fa-cc-mastercard',elo:'fas fa-credit-card',amex:'fab fa-cc-amex',hipercard:'fas fa-credit-card'};
@@ -1184,16 +1173,8 @@ function atualizarPagamentos() {
     const cartoes15 = cartoes.filter(c => c.ciclo === 'dia15');
     const cartoes30 = cartoes.filter(c => c.ciclo === 'dia30');
 
-    const faturas15 = cartoes15.length > 0
-        ? cartoes15.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }))
-        : [{ nome: 'Nubank', fatura: calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank'), limite: configuracoes.saldoLivreNubank||0 }];
-
-    const faturas30 = cartoes30.length > 0
-        ? cartoes30.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }))
-        : [
-            { nome: 'Inter',  fatura: calcularFaturaInter()  + somaContasFixasCartao('Cartão Inter'),  limite: configuracoes.saldoLivreInter||0 },
-            { nome: 'Sofisa', fatura: calcularFaturaSofisa(),                                           limite: configuracoes.saldoLivreSofisa||0 }
-          ];
+    const faturas15 = cartoes15.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
+    const faturas30 = cartoes30.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
 
     const totalFaturas15 = faturas15.reduce((t,f) => t + f.fatura, 0);
     const totalFaturas30 = faturas30.reduce((t,f) => t + f.fatura, 0);
@@ -1279,14 +1260,8 @@ function atualizarResumoFinanceiro() {
     const totalDespesasFixas = contasFixas.reduce((t, c) => t + (parseFloat(c.valor) || 0), 0);
 
     // INVESTIMENTOS: calculado igual à aba Pagamentos (sobra do salário após despesas de cada ciclo)
-    const faturas15tot = (cartoes.filter(c=>c.ciclo==='dia15').length > 0
-        ? cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome))
-        : [calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank')]
-    ).reduce((t,v)=>t+v, 0);
-    const faturas30tot = (cartoes.filter(c=>c.ciclo==='dia30').length > 0
-        ? cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome))
-        : [calcularFaturaInter() + somaContasFixasCartao('Cartão Inter'), calcularFaturaSofisa()]
-    ).reduce((t,v)=>t+v, 0);
+    const faturas15tot = cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
+    const faturas30tot = cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
     const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
     const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
     const investimentoDia15 = Math.max(0, salario1 - despesasDia15);
@@ -1356,9 +1331,7 @@ function atualizarGraficoBalanco(entradas, despesas, investimentos, saldo) {
 
 /* ===== ATUALIZAR SELECTS DE FORMA DE PAGAMENTO COM CARTÕES DINÂMICOS ===== */
 function atualizarSelectsPagamento() {
-    const cartaoOpts = cartoes.length > 0
-        ? cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('')
-        : '<option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option>';
+    const cartaoOpts = cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('');
     const base = `<option value="">Selecione</option>${cartaoOpts}<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>`;
     ['forma-pagamento','edit-forma-pagamento'].forEach(id => {
         const sel = document.getElementById(id);
@@ -2128,9 +2101,7 @@ function atualizarSelectContaFixaModal() {
     const sel = document.getElementById('cf-pagamento-m');
     if (!sel) return;
     const cur = sel.value;
-    const cartaoOpts = cartoes.length > 0
-        ? cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('')
-        : '<option value="Cartão Nubank">Cartão Nubank</option><option value="Cartão Inter">Cartão Inter</option><option value="Cartão Sofisa">Cartão Sofisa</option>';
+    const cartaoOpts = cartoes.map(c => `<option value="Cartão ${c.nome}">Cartão ${c.nome}</option>`).join('');
     sel.innerHTML = cartaoOpts + '<option value="PIX">PIX</option><option value="Boleto">Boleto</option><option value="Débito Automático">Débito Automático</option>';
     if (cur) sel.value = cur;
 }
