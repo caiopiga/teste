@@ -958,14 +958,19 @@ function setStatus(msg, tipo) {
     el.className = 'status-' + tipo;
 }
 
+let _saving = false;
+
 async function salvarFirebase(chave, dados) {
     if (!DOC_REF) return;
     try {
         setStatus('💾 Salvando...', 'sync');
+        _saving = true;
         await DOC_REF.set({ [chave]: dados }, { merge: true });
+        _saving = false;
         setStatus('✅ Sincronizado', 'ok');
         setTimeout(() => setStatus('☁️ Online', 'ok'), 2000);
     } catch (e) {
+        _saving = false;
         setStatus('❌ Erro ao salvar', 'err');
         console.error('Erro Firebase:', e);
     }
@@ -996,6 +1001,7 @@ auth.onAuthStateChanged(user => {
 function iniciarSincronizacao() {
     if (snapshotUnsubscribe) snapshotUnsubscribe();
     snapshotUnsubscribe = DOC_REF.onSnapshot(doc => {
+    if (_saving) return; // ignorar snapshot disparado pelo próprio save
     const dados = doc.data();
     if (!dados) {
         // Primeira vez: salvar dados padrão
