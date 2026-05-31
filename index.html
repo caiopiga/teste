@@ -1019,7 +1019,8 @@ function iniciarSincronizacao() {
             { id: 'dia15', nome: 'Dia 15', dia: 15 },
             { id: 'dia30', nome: 'Dia 30', dia: 30 }
         ];
-        salvarFirebase('ciclos', ciclos);
+        // Salvar de forma assíncrona sem bloquear o render
+        setTimeout(() => salvarFirebase('ciclos', ciclos), 100);
     }
 
     // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
@@ -2081,8 +2082,7 @@ document.getElementById('form-edicao').addEventListener('submit', function(e) {
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 });
 
-document.getElementById('relatorio-nubank').addEventListener('click', () => gerarRelatorioPagamento(15));
-document.getElementById('relatorio-inter').addEventListener('click', () => gerarRelatorioPagamento(30));
+// Botões de pagamento são criados dinamicamente em atualizarPagamentos()
 
 const modalApartamento = document.getElementById('editModalApartamento');
 document.getElementById('closeApartamento').addEventListener('click', () => modalApartamento.style.display = 'none');
