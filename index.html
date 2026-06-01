@@ -171,14 +171,10 @@
         @media (max-width: 480px) { body { padding: 0.25rem; } .header { padding: 0.75rem 1rem; margin-bottom: 1rem; } .header h1 { font-size: 1.15rem; } .tab-content { padding: 0.75rem; } .form-group { min-width: 100%; } input, select { padding: 0.65rem 0.85rem; font-size: 0.9rem; } button { padding: 0.65rem 1.25rem; font-size: 0.9rem; } .action-btn { padding: 0.3rem 0.45rem; font-size: 0.8rem; width: 2rem; height: 2rem; } table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.8rem; } th, td { padding: 0.5rem 0.35rem; font-size: 0.8rem; } .card { padding: 1rem; } .card h3 { font-size: 1.1rem; margin-bottom: 1rem; } .card-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; } .resumo-icon { width: 40px; height: 40px; font-size: 1.1rem; } .resumo-value { font-size: 1.1rem; } .payment-option { font-size: 0.85rem; padding: 0.4rem 0.6rem; } }
 
         /* ===== TOOLTIPS APARTAMENTO ===== */
-        .apt-tooltip-card { position: relative; cursor: default; }
-        .apt-tooltip-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .apt-tooltip-box {
+        .apt-tooltip-card { cursor: default; }
+        #apt-floating-tooltip {
             display: none;
-            position: absolute;
-            bottom: calc(100% + 10px);
-            left: 50%;
-            transform: translateX(-50%);
+            position: fixed;
             background: #1f2937;
             color: #f9fafb;
             border-radius: 0.6rem;
@@ -186,26 +182,25 @@
             font-size: 0.82rem;
             line-height: 1.6;
             white-space: nowrap;
-            z-index: 999;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            z-index: 99999;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
             pointer-events: none;
-            min-width: 180px;
+            min-width: 190px;
         }
-        .apt-tooltip-box::after {
+        #apt-floating-tooltip::after {
             content: '';
             position: absolute;
             top: 100%;
             left: 50%;
             transform: translateX(-50%);
-            border: 6px solid transparent;
+            border: 7px solid transparent;
             border-top-color: #1f2937;
         }
-        .apt-tooltip-card:hover .apt-tooltip-box { display: block; }
-        .apt-tooltip-box .tt-row { display: flex; justify-content: space-between; gap: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.2rem 0; }
-        .apt-tooltip-box .tt-row:last-child { border-bottom: none; }
-        .apt-tooltip-box .tt-label { opacity: 0.75; font-weight: 400; }
-        .apt-tooltip-box .tt-value { font-weight: 600; color: #a5b4fc; }
-        .apt-tooltip-box .tt-total .tt-value { color: #34d399; }
+        #apt-floating-tooltip .tt-row { display: flex; justify-content: space-between; gap: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.25rem 0; }
+        #apt-floating-tooltip .tt-row:last-child { border-bottom: none; }
+        #apt-floating-tooltip .tt-label { opacity: 0.75; font-weight: 400; }
+        #apt-floating-tooltip .tt-value { font-weight: 600; color: #a5b4fc; }
+        #apt-floating-tooltip .tt-total .tt-value { color: #34d399; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <!-- Firebase SDK -->
@@ -460,35 +455,18 @@
             <div class="resumo-card apt-tooltip-card" id="card-parcelas-pagas">
                 <div class="resumo-icon" style="background-color:var(--success-color);"><i class="fas fa-check-circle"></i></div>
                 <div class="resumo-content"><span class="resumo-title">Parcelas Pagas</span><span class="resumo-value" id="parcelas-pagas">0</span></div>
-                <div class="apt-tooltip-box" id="tooltip-parcelas-pagas">
-                    <div class="tt-row"><span class="tt-label">Parcelas pagas</span><span class="tt-value" id="tt-pp-pagas">—</span></div>
-                    <div class="tt-row"><span class="tt-label">Evolução de Obra</span><span class="tt-value" id="tt-pp-evolucao">—</span></div>
-                    <div class="tt-row"><span class="tt-label">Cury Chega Mais</span><span class="tt-value" id="tt-pp-cury">—</span></div>
-                </div>
             </div>
             <div class="resumo-card apt-tooltip-card" id="card-parcelas-pendentes">
                 <div class="resumo-icon" style="background-color:var(--warning-color);"><i class="fas fa-clock"></i></div>
                 <div class="resumo-content"><span class="resumo-title">Parcelas Pendentes</span><span class="resumo-value" id="parcelas-pendentes">0</span></div>
-                <div class="apt-tooltip-box" id="tooltip-parcelas-pendentes">
-                    <div class="tt-row"><span class="tt-label">Quitação prevista</span><span class="tt-value" id="tt-pend-data">—</span></div>
-                </div>
             </div>
             <div class="resumo-card apt-tooltip-card" id="card-total-pago">
                 <div class="resumo-icon" style="background-color:var(--primary-color);"><i class="fas fa-wallet"></i></div>
                 <div class="resumo-content"><span class="resumo-title">Total Pago</span><span class="resumo-value" id="total-pago-apt">R$ 0,00</span></div>
-                <div class="apt-tooltip-box" id="tooltip-total-pago">
-                    <div class="tt-row"><span class="tt-label">Parcela Entrada</span><span class="tt-value" id="tt-tp-entrada">—</span></div>
-                    <div class="tt-row"><span class="tt-label">Evolução de Obra</span><span class="tt-value" id="tt-tp-evolucao">—</span></div>
-                    <div class="tt-row tt-total"><span class="tt-label">Total</span><span class="tt-value" id="tt-tp-total">—</span></div>
-                </div>
             </div>
             <div class="resumo-card apt-tooltip-card" id="card-construcao">
                 <div class="resumo-icon" style="background-color:var(--danger-color);"><i class="fas fa-money-bill"></i></div>
                 <div class="resumo-content"><span class="resumo-title">Construção</span><span class="resumo-value" id="total-construcao-apt">0.000%</span></div>
-                <div class="apt-tooltip-box" id="tooltip-construcao">
-                    <div class="tt-row"><span class="tt-label">Concluído</span><span class="tt-value" id="tt-con-feito">—</span></div>
-                    <div class="tt-row"><span class="tt-label">Faltam</span><span class="tt-value" id="tt-con-falta" style="color:#fca5a5;">—</span></div>
-                </div>
             </div>
         </div>
         <table id="tabela-apartamento">
