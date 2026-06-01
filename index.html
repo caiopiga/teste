@@ -232,6 +232,72 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* ===== CICLOS DINÂMICOS ===== */
+        .ciclo-badge { display:inline-flex;align-items:center;padding:0.25rem 0.7rem;border-radius:1rem;font-size:0.8rem;font-weight:600;gap:0.3rem;background:rgba(99,102,241,0.1);color:var(--primary-color); }
+
+        /* ===== BANNER AVISO FATURA ===== */
+        #banner-fatura {
+            display:none; width:100%; margin-bottom:1rem;
+            border-radius:var(--border-radius); padding:0.75rem 1.25rem;
+            background:linear-gradient(135deg,#7c3aed,#5b21b6);
+            color:#fff; font-size:0.9rem; font-weight:500;
+            align-items:center; gap:0.75rem; flex-wrap:wrap;
+            box-shadow:var(--shadow-md); position:relative;
+            animation:fadeIn 0.4s ease;
+        }
+        #banner-fatura.show { display:flex; }
+        #banner-fatura .banner-icon { font-size:1.3rem; }
+        #banner-fatura .banner-text { flex:1; line-height:1.5; }
+        #banner-fatura .banner-close { cursor:pointer; opacity:0.75; font-size:1.2rem; line-height:1; margin-left:auto; }
+        #banner-fatura .banner-close:hover { opacity:1; }
+
+        /* ===== MODAL AVISO FATURA ===== */
+        #modalAvisoFatura {
+            display:none; position:fixed; inset:0; z-index:10000;
+            background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+            align-items:center; justify-content:center;
+            animation:fadeIn 0.3s ease;
+        }
+        #modalAvisoFatura.open { display:flex; }
+        .aviso-fatura-box {
+            background:var(--bg-white); border-radius:var(--border-radius-lg);
+            box-shadow:var(--shadow-lg); padding:2rem 2.5rem;
+            width:90%; max-width:480px; text-align:center;
+            animation:slideIn 0.3s ease;
+        }
+        .aviso-fatura-box .aviso-emoji { font-size:3rem; margin-bottom:0.75rem; }
+        .aviso-fatura-box h3 { font-size:1.3rem; font-weight:700; color:var(--text-dark); margin-bottom:0.5rem; }
+        .aviso-fatura-box p { color:var(--text-light); font-size:0.95rem; line-height:1.6; margin-bottom:1.5rem; }
+        .aviso-fatura-box .aviso-cards { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem; }
+        .aviso-fatura-box .aviso-card-item {
+            background:var(--bg-light); border:1px solid var(--border-light);
+            border-radius:var(--border-radius); padding:0.65rem 1rem;
+            display:flex; justify-content:space-between; align-items:center;
+            font-size:0.9rem;
+        }
+        .aviso-fatura-box .aviso-card-item strong { color:var(--primary-color); }
+        .aviso-fatura-box .btn-aviso-ok {
+            background:linear-gradient(135deg,#7c3aed,#5b21b6);
+            color:#fff; border:none; border-radius:var(--border-radius);
+            padding:0.75rem 2rem; font-weight:600; font-size:0.95rem;
+            cursor:pointer; width:100%;
+        }
+        .aviso-fatura-box .btn-aviso-ok:hover { opacity:0.9; }
+
+        /* ===== STATUS CICLO NO CARD DO DASHBOARD ===== */
+        .card-ciclo-status {
+            font-size:0.78rem; margin-top:0.5rem; opacity:0.85;
+            display:flex; align-items:center; gap:0.4rem;
+            background:rgba(255,255,255,0.15); border-radius:0.4rem;
+            padding:0.3rem 0.6rem;
+        }
+        .card-ciclo-status.fechou { background:rgba(255,255,100,0.25); color:#fffde7; font-weight:600; }
+        .card-ciclo-status.aberto { background:rgba(255,255,255,0.12); }
+
+        /* ===== CONFIGURAÇÕES — CICLOS ===== */
+        .ciclo-config-card { background:var(--bg-white); border:1px solid var(--border-light); border-radius:var(--border-radius); padding:1rem 1.25rem; margin-bottom:0.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; box-shadow:var(--shadow-sm); }
+
         @media (max-width: 900px) { body { padding: 0.75rem; } .container { padding: 0; } .dashboard { flex-direction: column; } .card { min-width: 100%; } .tab { padding: 0.75rem 0.5rem; font-size: 0.85rem; } .resumo-cards { flex-direction: column; } .resumo-card { min-width: 100%; } }
         @media (max-width: 768px) { body { padding: 0.5rem; font-size: 0.9rem; } .header { padding: 1rem 1.5rem; } .header h1 { font-size: 1.35rem; } .tab-content { padding: 1rem; } .tab span { display: none; } .tab i { margin-right: 0; font-size: 1.2rem; } .form-row { flex-direction: column; } .form-group { min-width: 100%; } table { font-size: 0.85rem; } th, td { padding: 0.6rem 0.4rem; font-size: 0.85rem; } .modal-content { padding: 1.25rem; margin: 5% auto; width: 95%; } .card { padding: 1.25rem; } .card h3 { font-size: 1.25rem; } }
         @media (max-width: 480px) { body { padding: 0.25rem; } .header { padding: 0.75rem 1rem; margin-bottom: 1rem; } .header h1 { font-size: 1.15rem; } .tab-content { padding: 0.75rem; } .form-group { min-width: 100%; } input, select { padding: 0.65rem 0.85rem; font-size: 0.9rem; } button { padding: 0.65rem 1.25rem; font-size: 0.9rem; } .action-btn { padding: 0.3rem 0.45rem; font-size: 0.8rem; width: 2rem; height: 2rem; } table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.8rem; } th, td { padding: 0.5rem 0.35rem; font-size: 0.8rem; } .card { padding: 1rem; } .card h3 { font-size: 1.1rem; margin-bottom: 1rem; } .card-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; } .resumo-icon { width: 40px; height: 40px; font-size: 1.1rem; } .resumo-value { font-size: 1.1rem; } .payment-option { font-size: 0.85rem; padding: 0.4rem 0.6rem; } }
@@ -326,6 +392,25 @@
     <div class="header">
         <h1><i class="fas fa-wallet"></i> Controle Financeiro</h1>
         <button id="btn-logout" onclick="firebase.auth().signOut()" class="btn-logout-header">⬡ Sair</button>
+    </div>
+
+
+    <!-- ===== BANNER AVISO FATURA ===== -->
+    <div id="banner-fatura">
+        <span class="banner-icon">💳</span>
+        <span class="banner-text" id="banner-fatura-text"></span>
+        <span class="banner-close" onclick="document.getElementById('banner-fatura').classList.remove('show')">✕</span>
+    </div>
+
+    <!-- ===== MODAL AVISO FATURA ===== -->
+    <div id="modalAvisoFatura">
+        <div class="aviso-fatura-box">
+            <div class="aviso-emoji">💳</div>
+            <h3 id="aviso-titulo">Fatura Fechada!</h3>
+            <p id="aviso-subtitulo">Hoje é o melhor dia para compras.</p>
+            <div class="aviso-cards" id="aviso-cards-lista"></div>
+            <button class="btn-aviso-ok" onclick="document.getElementById('modalAvisoFatura').classList.remove('open')">Entendido!</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -455,28 +540,7 @@
     <!-- ===== PAGAMENTOS ===== -->
     <div class="tab-content" id="pagamentos">
         <h2><i class="fas fa-money-bill-wave"></i> Pagamentos</h2>
-        <div class="payment-options">
-            <label class="payment-option">
-                <input type="radio" name="payment-date" value="15" checked> Contas do dia 15
-            </label>
-            <label class="payment-option">
-                <input type="radio" name="payment-date" value="30"> Contas do dia 30
-            </label>
-        </div>
-
-        <div id="payment-dia15" class="payment-details">
-            <div id="payment-dia15-items"></div>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
-                <button id="relatorio-nubank" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
-            </div>
-        </div>
-
-        <div id="payment-dia30" class="payment-details hidden">
-            <div id="payment-dia30-items"></div>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
-                <button id="relatorio-inter" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
-            </div>
-        </div>
+        <!-- Painéis de ciclos gerados dinamicamente por atualizarPagamentos() -->
     </div>
 
     <!-- ===== APARTAMENTO ===== -->
@@ -518,6 +582,16 @@
     <!-- ===== CONFIGURAÇÕES ===== -->
     <div class="tab-content" id="configuracoes">
         <h2><i class="fas fa-sliders-h"></i> Configurações</h2>
+
+        <!-- CICLOS DE PAGAMENTO -->
+        <div class="contas-fixas-section">
+            <h3><i class="fas fa-sync-alt"></i> Ciclos de Pagamento / Recebimento</h3>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Defina os ciclos do sistema. Cada ciclo tem um nome e um dia de vencimento. Os cartões, salários, contas fixas e pagamentos serão associados aos ciclos cadastrados aqui.</p>
+            <div id="lista-ciclos"></div>
+            <button class="btn-add-conta" id="btn-show-form-ciclo" type="button"><i class="fas fa-plus"></i> Adicionar Ciclo</button>
+        </div>
+
+        <div class="section-divider"></div>
 
         <!-- SALÁRIOS -->
         <div class="contas-fixas-section">
@@ -674,6 +748,7 @@
                     <option value="dia15">Dia 15</option>
                     <option value="dia30">Dia 30</option>
                 </select>
+                <small style="color:var(--text-light);font-size:0.78rem;">Ciclos configurados em Configurações → Ciclos.</small>
             </div>
         </div>
         <input type="hidden" id="sal-edit-index-m" value="-1">
@@ -764,6 +839,38 @@
 </div>
 
 
+
+<!-- ===== MODAL CICLO ===== -->
+<div id="modalCiclo" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:420px;">
+        <span class="close" onclick="document.getElementById('modalCiclo').style.display='none'">&times;</span>
+        <h2 id="form-ciclo-titulo-modal"><i class="fas fa-plus-circle"></i> Novo Ciclo</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nome do Ciclo</label>
+                <input type="text" id="ciclo-nome-m" placeholder="Ex: Dia 15, Dia 30, Dia 10">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Dia de Vencimento</label>
+                <input type="number" id="ciclo-dia-m" min="1" max="31" placeholder="Ex: 15">
+                <small style="color:var(--text-light);font-size:0.8rem;">Dia do mês em que as contas deste ciclo vencem.</small>
+            </div>
+            <div class="form-group">
+                <label>ID interno (sem espaços)</label>
+                <input type="text" id="ciclo-id-m" placeholder="Ex: dia15, dia10, dia30">
+                <small style="color:var(--text-light);font-size:0.8rem;">Identificador único. Use letras e números.</small>
+            </div>
+        </div>
+        <input type="hidden" id="ciclo-edit-index-m" value="-1">
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+            <button type="button" id="btn-salvar-ciclo-m"><i class="fas fa-save"></i> Salvar Ciclo</button>
+            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalCiclo').style.display='none'"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <!-- ===== MODAL CARTÃO ===== -->
 <div id="modalCartao" class="modal" style="display:none;">
   <div class="modal-content" style="max-width:520px;max-height:92vh;overflow-y:auto;">
@@ -795,6 +902,7 @@
           <option value="dia15">Dia 15</option>
           <option value="dia30">Dia 30</option>
         </select>
+        <small style="color:var(--text-light);font-size:0.78rem;">Os ciclos são configurados na aba Configurações → Ciclos.</small>
       </div>
       <div class="form-group">
         <label>Bandeira</label>
@@ -934,6 +1042,14 @@ let configuracoes = { salario1: 0, salario2: 0, saldoLivreNubank: 0, saldoLivreI
 let contasFixas = [];
 let salarios = []; // [{data, valor, ciclo}]
 let cartoes = [];  // [{nome, limite, vencimento, fechamento, ciclo}]
+let ciclos = [];   // [{id, nome, dia}] — ciclos de pagamento/recebimento configurados pelo usuário
+// Ciclos padrão usados se o usuário ainda não configurou nenhum
+const ciclosPadrao = [
+    { id: 'dia15', nome: 'Dia 15', dia: 15 },
+    { id: 'dia30', nome: 'Dia 30', dia: 30 }
+];
+// Última data em que o aviso de fatura foi exibido (chave por cartão)
+let avisosFaturaExibidos = {};
 // Dados padrão do apartamento (usados apenas na 1ª vez que o Firebase estiver vazio)
 const parcelasApartamentoPadrao = [
     { mes: "Ato", data: "2025-08-17", parcelaEntrada: 800.00, construcao: 0.000, evolucaoObra: 0.00, parcelaTotal: 800.00, situacao: "PAGO" },
@@ -1035,7 +1151,14 @@ function iniciarSincronizacao() {
     contasFixas          = dados.contasFixas          || [];
     salarios             = dados.salarios             || [];
     cartoes              = dados.cartoes              || [];
+    ciclos               = dados.ciclos               || [];
+    avisosFaturaExibidos = dados.avisosFaturaExibidos || {};
     parcelasApartamento  = dados.parcelasApartamento  || [...parcelasApartamentoPadrao];
+    // Se não há ciclos configurados, usar os padrão (migração silenciosa)
+    if (ciclos.length === 0) {
+        ciclos = [...ciclosPadrao];
+        salvarFirebase('ciclos', ciclos);
+    }
 
     // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
     if (salarios.length === 0 && (configuracoes.salario1 > 0 || configuracoes.salario2 > 0)) {
@@ -1053,11 +1176,13 @@ function iniciarSincronizacao() {
     document.getElementById('loading-overlay').style.display = 'none';
     setStatus('☁️ Online', 'ok');
     carregarConfiguracoes();
+    renderCiclos();
     renderContasFixas();
     atualizarTabelaLancamentos();
     atualizarDashboard();
     atualizarPagamentos();
     atualizarTabelaApartamento();
+    verificarAvisosFatura();
     }, err => {
         document.getElementById('loading-overlay').style.display = 'none';
         setStatus('❌ Sem conexão', 'err');
@@ -1072,6 +1197,119 @@ let balancoChart;
 
 function formatarMoeda(valor) {
     return 'R$ ' + valor.toFixed(2).replace('.', ',');
+}
+
+/* ===== HELPERS DE CICLOS ===== */
+function getCiclos() {
+    return ciclos.length > 0 ? ciclos : ciclosPadrao;
+}
+function getCicloById(id) {
+    return getCiclos().find(c => c.id === id) || null;
+}
+function getCicloLabel(id) {
+    const c = getCicloById(id);
+    return c ? c.nome : id;
+}
+// Retorna o cicloId ao qual um lançamento pertence, baseado na data de fechamento dos cartões
+function getCicloLancamento(lancamento) {
+    const cartao = cartoes.find(c => 'Cartão ' + c.nome === lancamento.formaPagamento);
+    if (!cartao) return null; // não é cartão, não tem ciclo de fatura
+    return cartao.ciclo;
+}
+
+/* ===== VERIFICAÇÃO E AVISOS DE FATURA ===== */
+function verificarAvisosFatura() {
+    const hoje = new Date();
+    const diaHoje = hoje.getDate();
+    const chaveHoje = hoje.toISOString().split('T')[0]; // "2026-06-01"
+
+    const diasSemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const nomeDia = diasSemana[hoje.getDay()];
+
+    const cartoesFechados = cartoes.filter(c => parseInt(c.fechamento) === diaHoje);
+
+    if (cartoesFechados.length === 0) {
+        document.getElementById('banner-fatura').classList.remove('show');
+        return;
+    }
+
+    // Montar textos
+    const nomes = cartoesFechados.map(c => c.nome).join(', ');
+    const textosBanner = cartoesFechados.map(c => {
+        const fatura = getFaturaCartao(c.nome);
+        return `<strong>${c.nome}</strong>: ${formatarMoeda(fatura)}`;
+    }).join(' • ');
+
+    const banner = document.getElementById('banner-fatura');
+    const bannerText = document.getElementById('banner-fatura-text');
+    bannerText.innerHTML = `📅 Hoje é dia ${diaHoje}, ${nomeDia}. Fatura fechada: ${textosBanner} — agora é o melhor momento para novas compras!`;
+    banner.classList.add('show');
+
+    // Verificar se o modal já foi exibido hoje para estes cartões
+    const jaMostrou = cartoesFechados.every(c => avisosFaturaExibidos[c.nome] === chaveHoje);
+    if (!jaMostrou) {
+        // Montar modal
+        document.getElementById('aviso-titulo').textContent = `🗓️ Hoje é dia ${diaHoje}, ${nomeDia}`;
+        document.getElementById('aviso-subtitulo').textContent =
+            `${cartoesFechados.length > 1 ? 'As faturas fecharam' : 'A fatura fechou'} hoje! Agora é o melhor momento para fazer compras no cartão — elas entrarão apenas na próxima fatura.`;
+
+        const lista = document.getElementById('aviso-cards-lista');
+        lista.innerHTML = '';
+        cartoesFechados.forEach(c => {
+            const fatura = getFaturaCartao(c.nome);
+            const item = document.createElement('div');
+            item.className = 'aviso-card-item';
+            item.innerHTML = `<span>💳 ${c.nome}</span><strong>${formatarMoeda(fatura)}</strong>`;
+            lista.appendChild(item);
+        });
+
+        document.getElementById('modalAvisoFatura').classList.add('open');
+
+        // Marcar como exibido hoje
+        cartoesFechados.forEach(c => { avisosFaturaExibidos[c.nome] = chaveHoje; });
+        salvarFirebase('avisosFaturaExibidos', avisosFaturaExibidos);
+    }
+}
+
+/* ===== LÓGICA DE CICLO DA FATURA (qual ciclo pertence um lançamento) =====
+ * Regra: se o cartão fechou no dia X do mês M, lançamentos com data > X/M
+ * pertencem ao próximo ciclo de pagamento (M+1).
+ * Para fins de exibição na aba Pagamentos, calculamos a fatura "corrente"
+ * de cada cartão incluindo apenas lançamentos cujo período ainda não fechou.
+ */
+function getLancamentosDaFaturaAtual(nomeCartao) {
+    const cartao = cartoes.find(c => c.nome === nomeCartao);
+    if (!cartao) {
+        return lancamentos.filter(l => l.formaPagamento === 'Cartão ' + nomeCartao);
+    }
+    const hoje = new Date();
+    const diaHoje = hoje.getDate();
+    const fechamento = parseInt(cartao.fechamento);
+    const mesHoje = hoje.getMonth();
+    const anoHoje = hoje.getFullYear();
+
+    // Data de início do ciclo atual: logo após o último fechamento
+    let inicioAno = anoHoje, inicioMes = mesHoje;
+    if (diaHoje > fechamento) {
+        // Fechamento já passou este mês: ciclo corrente vai de (fechamento+1/mesHoje) até hoje
+        inicioMes = mesHoje;
+    } else {
+        // Fechamento ainda não chegou: ciclo corrente vai de (fechamento+1/mesPassado) até hoje
+        inicioMes = mesHoje - 1;
+        if (inicioMes < 0) { inicioMes = 11; inicioAno--; }
+    }
+    const inicioData = new Date(inicioAno, inicioMes, fechamento + 1);
+
+    return lancamentos.filter(l => {
+        if (l.formaPagamento !== 'Cartão ' + nomeCartao) return false;
+        const [a, m, d] = l.data.split('-').map(Number);
+        const dataLanc = new Date(a, m - 1, d);
+        return dataLanc >= inicioData;
+    });
+}
+
+function calcularFaturaCartaoAtual(nomeCartao) {
+    return getLancamentosDaFaturaAtual(nomeCartao).reduce((t, l) => t + parseFloat(l.valor), 0);
 }
 
 /* ===== CÁLCULOS ===== */
@@ -1138,6 +1376,19 @@ function renderDashboardCartoes() {
                 <div class="card-footer">
                     <i class="far fa-calendar-alt"></i> Fecha dia ${c.fechamento} • Vence dia ${c.vencimento}
                 </div>
+                ${(function(){
+                    const hoje = new Date();
+                    const diaHoje = hoje.getDate();
+                    const fechouHoje = parseInt(c.fechamento) === diaHoje;
+                    const diasParaFechar = ((parseInt(c.fechamento) - diaHoje + 31) % 31) || 31;
+                    if (fechouHoje) {
+                        return '<div class="card-ciclo-status fechou"><i class="fas fa-lock"></i> Fatura fechou hoje! Ótimo dia para compras 🛍️</div>';
+                    } else if (diasParaFechar <= 3) {
+                        return `<div class="card-ciclo-status" style="background:rgba(245,158,11,0.25);color:#fef3c7;font-weight:600;"><i class="fas fa-exclamation-triangle"></i> Fecha em ${diasParaFechar} dia${diasParaFechar > 1 ? 's' : ''}</div>`;
+                    } else {
+                        return `<div class="card-ciclo-status aberto"><i class="fas fa-unlock"></i> Fecha em ${diasParaFechar} dias</div>`;
+                    }
+                })()}
             </div>`;
         dashboard.appendChild(div);
     });
@@ -1198,6 +1449,12 @@ window.addEventListener('click', e => { if (e.target == modal) modal.style.displ
 
 /* ===== PAGAMENTOS ===== */
 function getFaturaCartao(nomeCartao) {
+    // Usa cálculo baseado no ciclo de fechamento se o cartão estiver cadastrado
+    const cartaoObj = cartoes.find(c => c.nome === nomeCartao);
+    if (cartaoObj) {
+        return calcularFaturaCartaoAtual(nomeCartao) + somaContasFixasCartao('Cartão ' + nomeCartao);
+    }
+    // Fallback legado
     const nome = nomeCartao.toLowerCase();
     if (nome.includes('nubank')) return calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
     if (nome.includes('inter'))  return calcularFaturaInter()  + somaContasFixasCartao('Cartão Inter');
@@ -1208,123 +1465,145 @@ function getFaturaCartao(nomeCartao) {
 }
 
 function atualizarPagamentos() {
-    const salario15 = getSalarioCiclo('dia15');
-    const salario30 = getSalarioCiclo('dia30');
+    const container = document.getElementById('pagamentos');
 
-    // Montar lista de faturas por ciclo a partir dos cartões cadastrados
-    const cartoes15 = cartoes.filter(c => c.ciclo === 'dia15');
-    const cartoes30 = cartoes.filter(c => c.ciclo === 'dia30');
-
-    const faturas15 = cartoes15.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
-    const faturas30 = cartoes30.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
-
-    const totalFaturas15 = faturas15.reduce((t,f) => t + f.fatura, 0);
-    const totalFaturas30 = faturas30.reduce((t,f) => t + f.fatura, 0);
-    const fixasDia15SemCartao = somaContasFixasCiclo('dia15', true);
-    const fixasDia30SemCartao = somaContasFixasCiclo('dia30', true);
-
-    function criarItemPagamento(label, valor) {
-        const div = document.createElement('div');
-        div.className = 'payment-item';
-        div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
-        return div;
-    }
-
-    function criarItemFaturaCartao(label, valor, limite) {
-        const saldoDisp = limite - valor;
-        const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-        const div = document.createElement('div');
-        div.className = 'payment-item';
-        div.innerHTML = `
-            <span>${label}:</span>
-            <span style="display:flex;flex-direction:column;align-items:flex-end;">
-                <span style="font-weight:600;">${formatarMoeda(valor)}</span>
-                ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
-            </span>`;
-        return div;
-    }
-
-    /* --- DIA 15 --- */
-    const items15 = document.getElementById('payment-dia15-items');
-    items15.innerHTML = '';
-    contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
-        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
-        if (c.pagamento === 'Boleto' && c.codbarras) {
-            const barcodeDiv = document.createElement('div');
-            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
-            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
-            item.style.flexWrap = 'wrap';
-            item.appendChild(barcodeDiv);
-        }
-        items15.appendChild(item);
+    // Limpa os painéis de ciclos anteriores (exceto o h2 e os radio buttons)
+    const h2 = container.querySelector('h2');
+    // Remove tudo exceto o h2
+    Array.from(container.children).forEach(el => {
+        if (el !== h2) el.remove();
     });
-    faturas15.forEach(f => items15.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
-    const despesasDia15 = fixasDia15SemCartao + totalFaturas15;
-    const investimentoDia15 = Math.max(0, salario15 - despesasDia15);
-    items15.appendChild(criarItemPagamento('Investir', investimentoDia15));
-    const totalItem15 = criarItemPagamento('Total', salario15);
-    totalItem15.style.fontWeight = '600'; totalItem15.style.fontSize = '1.05rem';
-    totalItem15.style.paddingTop = '1.25rem'; totalItem15.style.borderBottom = 'none';
-    items15.appendChild(totalItem15);
 
-    /* --- DIA 30 --- */
-    const items30 = document.getElementById('payment-dia30-items');
-    items30.innerHTML = '';
-    contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
-        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
-        if (c.pagamento === 'Boleto' && c.codbarras) {
-            const barcodeDiv = document.createElement('div');
-            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
-            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
-            item.style.flexWrap = 'wrap';
-            item.appendChild(barcodeDiv);
-        }
-        items30.appendChild(item);
+    const ciclosAtivos = getCiclos();
+
+    // Opções de ciclo (radio buttons)
+    const opcoesDiv = document.createElement('div');
+    opcoesDiv.className = 'payment-options';
+    ciclosAtivos.forEach((ciclo, idx) => {
+        const label = document.createElement('label');
+        label.className = 'payment-option';
+        label.innerHTML = `<input type="radio" name="payment-date" value="${ciclo.id}" ${idx === 0 ? 'checked' : ''}> Contas ${ciclo.nome}`;
+        opcoesDiv.appendChild(label);
     });
-    faturas30.forEach(f => items30.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
-    const despesasDia30 = fixasDia30SemCartao + totalFaturas30;
-    const investimentoDia30 = Math.max(0, salario30 - despesasDia30);
-    items30.appendChild(criarItemPagamento('Investir', investimentoDia30));
-    const totalItem30 = criarItemPagamento('Total', salario30);
-    totalItem30.style.fontWeight = '600'; totalItem30.style.fontSize = '1.05rem';
-    totalItem30.style.paddingTop = '1.25rem'; totalItem30.style.borderBottom = 'none';
-    items30.appendChild(totalItem30);
+    container.appendChild(opcoesDiv);
+
+    // Painéis de pagamento por ciclo
+    ciclosAtivos.forEach((ciclo, idx) => {
+        const salarioCiclo = getSalarioCiclo(ciclo.id);
+        const cartoesCiclo = cartoes.filter(c => c.ciclo === ciclo.id);
+        const faturasCiclo = cartoesCiclo.map(c => ({
+            nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite) || 0
+        }));
+        const totalFaturas = faturasCiclo.reduce((t, f) => t + f.fatura, 0);
+        const fixasSemCartao = somaContasFixasCiclo(ciclo.id, true);
+
+        const panel = document.createElement('div');
+        panel.id = `payment-ciclo-${ciclo.id}`;
+        panel.className = 'payment-details' + (idx > 0 ? ' hidden' : '');
+
+        const itemsDiv = document.createElement('div');
+        itemsDiv.id = `payment-ciclo-items-${ciclo.id}`;
+
+        // Contas em destaque
+        contasFixas.filter(c => c.ciclo === ciclo.id && c.destaque).forEach(c => {
+            const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                const barcodeDiv = document.createElement('div');
+                barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
+                barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
+                item.style.flexWrap = 'wrap';
+                item.appendChild(barcodeDiv);
+            }
+            itemsDiv.appendChild(item);
+        });
+
+        // Faturas dos cartões
+        faturasCiclo.forEach(f => itemsDiv.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+
+        // Investimento
+        const despesasCiclo = fixasSemCartao + totalFaturas;
+        const investimento = Math.max(0, salarioCiclo - despesasCiclo);
+        itemsDiv.appendChild(criarItemPagamento('Investir', investimento));
+
+        // Total
+        const totalItem = criarItemPagamento('Total', salarioCiclo);
+        totalItem.style.fontWeight = '600';
+        totalItem.style.fontSize = '1.05rem';
+        totalItem.style.paddingTop = '1.25rem';
+        totalItem.style.borderBottom = 'none';
+        itemsDiv.appendChild(totalItem);
+
+        panel.appendChild(itemsDiv);
+
+        // Botão Pagar Contas
+        const btnDiv = document.createElement('div');
+        btnDiv.style.cssText = 'display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;';
+        const btn = document.createElement('button');
+        btn.className = 'pay-btn';
+        btn.innerHTML = `<i class="fas fa-file-alt"></i> Pagar Contas`;
+        btn.onclick = () => gerarRelatorioPagamento(ciclo.id);
+        btnDiv.appendChild(btn);
+        panel.appendChild(btnDiv);
+
+        container.appendChild(panel);
+    });
+
+    // Event listeners para os radio buttons
+    container.querySelectorAll('input[name="payment-date"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            container.querySelectorAll('.payment-details').forEach(p => p.classList.add('hidden'));
+            const panel = document.getElementById(`payment-ciclo-${this.value}`);
+            if (panel) panel.classList.remove('hidden');
+        });
+    });
+}
+
+function criarItemPagamento(label, valor) {
+    const div = document.createElement('div');
+    div.className = 'payment-item';
+    div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
+    return div;
+}
+
+function criarItemFaturaCartao(label, valor, limite) {
+    const saldoDisp = limite - valor;
+    const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+    const div = document.createElement('div');
+    div.className = 'payment-item';
+    div.innerHTML = `
+        <span>${label}:</span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;">
+            <span style="font-weight:600;">${formatarMoeda(valor)}</span>
+            ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
+        </span>`;
+    return div;
 }
 
 /* ===== RESUMO / GRÁFICO ===== */
 function atualizarResumoFinanceiro() {
-    // ENTRADAS: soma dos salários configurados
-    const salario1 = parseFloat(configuracoes.salario1) || 0;
-    const salario2 = parseFloat(configuracoes.salario2) || 0;
-    const totalEntradas = salario1 + salario2;
+    // ENTRADAS: soma de todos os salários dos ciclos ativos
+    const totalEntradas = getCiclos().reduce((t, c) => t + getSalarioCiclo(c.id), 0);
 
     // DESPESAS FIXAS: soma de TODAS as contas fixas/monitoradas cadastradas
     const totalDespesasFixas = contasFixas.reduce((t, c) => t + (parseFloat(c.valor) || 0), 0);
 
     // INVESTIMENTOS: calculado igual à aba Pagamentos (sobra do salário após despesas de cada ciclo)
-    const faturas15tot = cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
-    const faturas30tot = cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
-    const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
-    const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
-    const investimentoDia15 = Math.max(0, salario1 - despesasDia15);
-    const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
-    const totalInvestimentos = investimentoDia15 + investimentoDia30;
+    const totalInvestimentos = getCiclos().reduce((total, ciclo) => {
+        const faturasCicloTot = cartoes.filter(c => c.ciclo === ciclo.id).map(c => getFaturaCartao(c.nome)).reduce((t, v) => t + v, 0);
+        const despesasCiclo = somaContasFixasCiclo(ciclo.id, true) + faturasCicloTot;
+        const invest = Math.max(0, getSalarioCiclo(ciclo.id) - despesasCiclo);
+        return total + invest;
+    }, 0);
 
-    // LIVRE: soma dos gastos reais nos cartões (lançamentos)
-    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0) || (configuracoes.saldoLivreNubank||0) + (configuracoes.saldoLivreInter||0) + (configuracoes.saldoLivreSofisa||0);
-    const gastoNubank = calcularFaturaNubank();
-    const gastoInter  = calcularFaturaInter();
-    const gastoSofisa = lancamentos.filter(l => l.formaPagamento === 'Cartão Sofisa').reduce((t, l) => t + parseFloat(l.valor), 0);
-    let totalLivre = gastoNubank + gastoInter + gastoSofisa;
-
-    // limites individuais para cálculo de excesso
-    const limiteNubank  = parseFloat(configuracoes.saldoLivreNubank)  || 0;
-    const limiteInter   = parseFloat(configuracoes.saldoLivreInter)   || 0;
-    const limiteSofisa  = parseFloat(configuracoes.saldoLivreSofisa)  || 0;
-    const excessoNubank = Math.max(0, gastoNubank - limiteNubank);
-    const excessoInter  = Math.max(0, gastoInter  - limiteInter);
-    const excessoSofisa = Math.max(0, gastoSofisa - limiteSofisa);
-    const totalExcesso  = excessoNubank + excessoInter + excessoSofisa;
+    // LIVRE: soma dos gastos reais nos cartões (lançamentos do ciclo atual)
+    const limiteTotal = cartoes.reduce((t, c) => t + (parseFloat(c.limite) || 0), 0);
+    let totalLivre = 0;
+    let totalExcesso = 0;
+    cartoes.forEach(c => {
+        const gasto = calcularFaturaCartaoAtual(c.nome);
+        totalLivre += gasto;
+        totalExcesso += Math.max(0, gasto - (parseFloat(c.limite) || 0));
+    });
     const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
 
     // PERCENTUAIS em relação às entradas
@@ -1421,7 +1700,114 @@ function carregarConfiguracoes() {
     renderSalarios();
     renderCartoes();
     atualizarSelectsPagamento();
+    atualizarSelectsCiclos(); // atualiza todos os selects de ciclo dinamicamente
 }
+
+/* ===== ATUALIZA SELECTS DE CICLO EM TODOS OS FORMULÁRIOS ===== */
+function atualizarSelectsCiclos() {
+    const ciclosAtivos = getCiclos();
+    const opts = ciclosAtivos.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+    const ids = [
+        'sal-ciclo', 'sal-ciclo-m',
+        'cf-ciclo', 'cf-ciclo-m',
+        'cf-prazo', 'cf-prazo-m',
+        'cart-ciclo'
+    ];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const cur = el.value;
+        // Para prazo/vencimento, adicionar também as opções não-ciclo
+        if (id.startsWith('cf-prazo')) {
+            const optsExtra = ciclosAtivos.map(c => `<option value="${c.id}">Todo dia ${c.dia} (${c.nome})</option>`).join('');
+            el.innerHTML = optsExtra +
+                '<option value="perder">A perder de vista (sem prazo)</option>' +
+                '<option value="parcelas">Parcelado</option>' +
+                '<option value="personalizado">Data específica</option>';
+        } else {
+            el.innerHTML = opts;
+        }
+        if (cur) el.value = cur;
+    });
+}
+
+/* ===== RENDERIZA CICLOS NA ABA CONFIGURAÇÕES ===== */
+function renderCiclos() {
+    const lista = document.getElementById('lista-ciclos');
+    if (!lista) return;
+    lista.innerHTML = '';
+    const ciclosAtivos = getCiclos();
+    if (ciclosAtivos.length === 0) {
+        lista.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;">Nenhum ciclo cadastrado ainda.</p>';
+        return;
+    }
+    ciclosAtivos.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'ciclo-config-card conta-fixa-card';
+        div.innerHTML = `
+            <div class="conta-fixa-info">
+                <span class="conta-fixa-nome"><i class="fas fa-sync-alt" style="color:var(--primary-color);margin-right:0.4rem;"></i> ${c.nome}</span>
+                <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> Vence dia ${c.dia}</span>
+                <span class="conta-fixa-badge" style="background:rgba(107,114,128,0.1);color:var(--text-light);">ID: ${c.id}</span>
+            </div>
+            <div class="conta-fixa-acoes">
+                <button class="action-btn edit-btn" title="Editar" onclick="editarCiclo(${i})">✎</button>
+                ${ciclosAtivos.length > 1 ? `<button class="action-btn delete-btn" title="Excluir" onclick="excluirCiclo(${i})">×</button>` : ''}
+            </div>`;
+        lista.appendChild(div);
+    });
+}
+
+function excluirCiclo(index) {
+    if (!confirm(`Excluir ciclo "${ciclos[index].nome}"? Contas e salários vinculados a ele perderão o ciclo.`)) return;
+    ciclos.splice(index, 1);
+    salvarFirebase('ciclos', ciclos);
+    renderCiclos(); atualizarSelectsCiclos(); atualizarPagamentos();
+}
+
+function editarCiclo(index) {
+    const c = ciclos[index];
+    document.getElementById('ciclo-nome-m').value = c.nome;
+    document.getElementById('ciclo-dia-m').value = c.dia;
+    document.getElementById('ciclo-id-m').value = c.id;
+    document.getElementById('ciclo-edit-index-m').value = index;
+    document.getElementById('form-ciclo-titulo-modal').innerHTML = '<i class="fas fa-edit"></i> Editar Ciclo';
+    document.getElementById('modalCiclo').style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Botão adicionar ciclo
+    document.getElementById('btn-show-form-ciclo').addEventListener('click', () => {
+        document.getElementById('ciclo-nome-m').value = '';
+        document.getElementById('ciclo-dia-m').value = '';
+        document.getElementById('ciclo-id-m').value = '';
+        document.getElementById('ciclo-edit-index-m').value = -1;
+        document.getElementById('form-ciclo-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Ciclo';
+        document.getElementById('modalCiclo').style.display = 'block';
+    });
+
+    document.getElementById('btn-salvar-ciclo-m').addEventListener('click', () => {
+        const nome = document.getElementById('ciclo-nome-m').value.trim();
+        const dia  = parseInt(document.getElementById('ciclo-dia-m').value) || 0;
+        let id     = document.getElementById('ciclo-id-m').value.trim().replace(/\s+/g, '');
+        if (!nome || !dia || !id) { alert('Preencha nome, dia e ID do ciclo.'); return; }
+        const editIndex = parseInt(document.getElementById('ciclo-edit-index-m').value);
+        if (editIndex >= 0) {
+            ciclos[editIndex] = { id, nome, dia };
+        } else {
+            if (ciclos.find(c => c.id === id)) { alert('Já existe um ciclo com este ID.'); return; }
+            ciclos.push({ id, nome, dia });
+        }
+        salvarFirebase('ciclos', ciclos);
+        document.getElementById('modalCiclo').style.display = 'none';
+        renderCiclos(); atualizarSelectsCiclos(); atualizarPagamentos(); renderSalarios();
+    });
+
+    window.addEventListener('click', e => {
+        if (e.target === document.getElementById('modalCiclo'))
+            document.getElementById('modalCiclo').style.display = 'none';
+    });
+});
 
 function renderSalarios() {
     const lista = document.getElementById('lista-salarios');
@@ -1439,7 +1825,7 @@ function renderSalarios() {
         div.className = 'conta-fixa-card';
         div.innerHTML = `
             <div class="conta-fixa-info">
-                <span class="conta-fixa-nome"><i class="fas fa-money-bill-wave" style="color:var(--success-color);margin-right:0.4rem;"></i> ${s.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+                <span class="conta-fixa-nome"><i class="fas fa-money-bill-wave" style="color:var(--success-color);margin-right:0.4rem;"></i> ${getCicloLabel(s.ciclo)}</span>
                 <span class="conta-fixa-valor">${formatarMoeda(parseFloat(s.valor))}</span>
                 <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> ${dia}/${mes}/${ano}</span>
             </div>
@@ -1487,7 +1873,7 @@ function renderCartoes() {
                 <span class="conta-fixa-valor">${formatarMoeda(parseFloat(c.limite))}</span>
                 <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> Vence dia ${c.vencimento}</span>
                 <span class="conta-fixa-badge badge-pag-boleto"><i class="fas fa-lock"></i> Fecha dia ${c.fechamento}</span>
-                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${getCicloLabel(c.ciclo)}</span>
             </div>
             <div class="conta-fixa-acoes">
                 <button class="action-btn edit-btn" title="Editar" onclick="editarCartao(${i})">✎</button>
@@ -1521,13 +1907,16 @@ function editarCartao(index) {
 
 /* ===== CONTAS FIXAS ===== */
 function prazoLabel(c) {
-    const map = { dia15: 'Todo dia 15', dia30: 'Todo dia 30', perder: 'A perder de vista', parcelas: `${c.parcelas || '?'} parcelas`, personalizado: c.dataVenc || '' };
-    return map[c.prazo] || c.prazo;
+    const cicloLabel = getCicloLabel(c.prazo);
+    const map = { perder: 'A perder de vista', parcelas: `${c.parcelas || '?'} parcelas`, personalizado: c.dataVenc || '' };
+    if (map[c.prazo] !== undefined) return map[c.prazo];
+    return cicloLabel; // é um id de ciclo dinâmico
 }
 function prazoBadgeClass(prazo) {
     if (prazo === 'perder') return 'badge-prazo-perder';
     if (prazo === 'parcelas') return 'badge-prazo-parcelas';
-    return 'badge-prazo-fixo';
+    if (prazo === 'personalizado') return 'badge-prazo-fixo';
+    return 'badge-prazo-fixo'; // ciclo dinâmico
 }
 function pagBadgeClass(pag) {
     if (pag === 'Cartão Nubank') return 'badge-pag-nubank';
@@ -1556,7 +1945,7 @@ function renderContasFixas() {
                 <span class="conta-fixa-badge ${prazoBadgeClass(c.prazo)}"><i class="fas fa-calendar-alt"></i> ${prazoLabel(c)}</span>
                 <span class="conta-fixa-badge ${pagBadgeClass(c.pagamento)}">${c.pagamento}</span>
                 ${c.variavel === 'sim' ? '<span class="conta-fixa-badge badge-variavel"><i class="fas fa-edit"></i> Variável</span>' : ''}
-                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${getCicloLabel(c.ciclo)}</span>
                 <span class="toggle-destaque ${c.destaque ? 'ativo' : 'inativo'}" onclick="toggleDestaque(${i})" title="Destacar no relatório de pagamentos">
                     <i class="fas fa-star"></i> ${c.destaque ? 'Destacado' : 'Destacar'}
                 </span>
@@ -1678,8 +2067,8 @@ function atualizarTabelaApartamento() {
     const ttPagas = document.getElementById('tooltip-pagas');
     if (ttPagas) {
         ttPagas.innerHTML =
-            `✅ Parcelas pagas: <strong>${pagasPuro}</strong><br>` +
-            `🏗️ Evolução de Obra: <strong>${pagasEvolucao}</strong><br>` +
+            `✅ Parcelas Pagas: <strong>${pagasPuro}</strong><br>` +
+            `📄 Parcelas Antecipadas: <strong>${pagasEvolucao}</strong><br>` +
             `🏢 Cury Chega Mais: <strong>${pagasCury}</strong>`;
     }
 
@@ -1688,7 +2077,7 @@ function atualizarTabelaApartamento() {
     if (ttPendentes) {
         if (ultimaPendente) {
             const [ap, mp, dp] = ultimaPendente.data.split("-");
-            ttPendentes.innerHTML = `📅 Quitação prevista: <strong>${dp}/${mp}/${ap}</strong>`;
+            ttPendentes.innerHTML = `📅 Última parcela em aberto: <strong>${dp}/${mp}/${ap}</strong>`;
         } else {
             ttPendentes.innerHTML = `🎉 Todas as parcelas estão quitadas!`;
         }
@@ -1698,7 +2087,7 @@ function atualizarTabelaApartamento() {
     const ttTotalPago = document.getElementById('tooltip-total-pago');
     if (ttTotalPago) {
         ttTotalPago.innerHTML =
-            `🏠 Parcela Entrada: <strong>${formatarMoeda(totalEntrada)}</strong><br>` +
+            `🏠 Parcelas de Entrada: <strong>${formatarMoeda(totalEntrada)}</strong><br>` +
             `🏗️ Evolução de Obra: <strong>${formatarMoeda(totalEvolucaoObra)}</strong><br>` +
             `💰 Total: <strong>${formatarMoeda(totalPago)}</strong>`;
     }
@@ -1761,69 +2150,46 @@ function emojiConta(nome) {
     return '📌';
 }
 
-function gerarRelatorioPagamento(dia) {
-    let relatorio = '';
-    const faturaNubankVal = calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
-    const faturaInterVal = calcularFaturaInter() + somaContasFixasCartao('Cartão Inter');
-    const faturaSofisaVal = calcularFaturaSofisa();
-    const fixas15 = somaContasFixasCiclo('dia15', true);
-    const fixas30 = somaContasFixasCiclo('dia30', true);
-    const invest15 = Math.max(0, (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal);
-    const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
-    const total15 = parseFloat(configuracoes.salario1) || 0;
-    const total30 = parseFloat(configuracoes.salario2) || 0;
-    if (dia === 15) {
-        relatorio += `📊 *Pagamentos do dia 15:*\n\n`;
-        contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
-            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
-            if (c.pagamento === 'Boleto' && c.codbarras) {
-                relatorio += `\n   📋 Código: ${c.codbarras}`;
-            }
-            relatorio += `\n`;
-        });
-        // Buscar nome do cartão dia15 nos cartoes cadastrados
-        const cartaoDia15 = cartoes.find(c => c.ciclo === 'dia15');
-        const nomeFatura15 = cartaoDia15 ? cartaoDia15.nome : 'Nubank';
-        relatorio += `💳 Fatura ${nomeFatura15}: ${formatarMoeda(faturaNubankVal)}\n`;
-        relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
-        relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
-        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
-        // Excluir contas de data específica do ciclo dia15; zerar apenas as variáveis
-        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia15' && c.prazo === 'personalizado'));
-        contasFixas.forEach((c,i) => {
-            if (c.ciclo === 'dia15' && c.variavel === 'sim')
-                contasFixas[i].valor = 0;
-        });
-        salvarFirebase('contasFixas', contasFixas);
-    }
-    if (dia === 30) {
-        relatorio += `📊 *Pagamentos do dia 30:*\n\n`;
-        contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
-            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
-            if (c.pagamento === 'Boleto' && c.codbarras) {
-                relatorio += `\n   📋 Código: ${c.codbarras}`;
-            }
-            relatorio += `\n`;
-        });
-        // Buscar nomes dos cartões dia30
-        const cartoesDia30 = cartoes.filter(c => c.ciclo === 'dia30');
-        const nomeInter  = cartoesDia30.find(c => c.nome.toLowerCase().includes('inter'))?.nome  || 'Inter';
-        const nomeSofisa = cartoesDia30.find(c => c.nome.toLowerCase().includes('sofisa'))?.nome || 'Sofisa';
-        relatorio += `💳 Fatura ${nomeInter}: ${formatarMoeda(faturaInterVal)}\n`;
-        relatorio += `💳 Fatura ${nomeSofisa}: ${formatarMoeda(faturaSofisaVal)}\n`;
-        relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
-        relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
-        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
-        // Excluir contas de data específica do ciclo dia30; zerar apenas as variáveis
-        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia30' && c.prazo === 'personalizado'));
-        contasFixas.forEach((c,i) => {
-            if (c.ciclo === 'dia30' && c.variavel === 'sim')
-                contasFixas[i].valor = 0;
-        });
-        salvarFirebase('contasFixas', contasFixas);
-    }
+function gerarRelatorioPagamento(cicloId) {
+    const ciclo = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
+    const salarioCiclo = getSalarioCiclo(cicloId);
+    const cartoesCiclo = cartoes.filter(c => c.ciclo === cicloId);
+    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
+    const totalFaturas = cartoesCiclo.reduce((t, c) => t + getFaturaCartao(c.nome), 0);
+    const invest = Math.max(0, salarioCiclo - fixasSemCartao - totalFaturas);
+
+    let relatorio = `📊 *Pagamentos ${ciclo.nome}:*\n\n`;
+    contasFixas.filter(c => c.ciclo === cicloId && c.destaque).forEach(c => {
+        relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+        if (c.pagamento === 'Boleto' && c.codbarras) {
+            relatorio += `\n   📋 Código: ${c.codbarras}`;
+        }
+        relatorio += `\n`;
+    });
+    cartoesCiclo.forEach(c => {
+        relatorio += `💳 Fatura ${c.nome}: ${formatarMoeda(getFaturaCartao(c.nome))}\n`;
+    });
+    relatorio += `📈 Investir: ${formatarMoeda(invest)}\n`;
+    relatorio += `\n💰 *Total*: ${formatarMoeda(salarioCiclo)}`;
+
+    // Ao pagar: mantém lançamentos visíveis mas cicla o período
+    // Lançamentos deste ciclo ficam como estão (não são deletados)
+    // Zerar contas variáveis e remover datas específicas do ciclo
+    contasFixas = contasFixas.filter(c => !(c.ciclo === cicloId && c.prazo === 'personalizado'));
+    contasFixas.forEach((c, i) => {
+        if (c.ciclo === cicloId && c.variavel === 'sim') contasFixas[i].valor = 0;
+    });
+    salvarFirebase('contasFixas', contasFixas);
+    // Marcar lançamentos deste ciclo como pagos (adiciona campo cicloPago)
+    const nomeCartoesCiclo = cartoesCiclo.map(c => 'Cartão ' + c.nome);
+    lancamentos = lancamentos.map(l => {
+        if (nomeCartoesCiclo.includes(l.formaPagamento) && !l.cicloPago) {
+            return { ...l, cicloPago: cicloId + '_' + new Date().toISOString().split('T')[0] };
+        }
+        return l;
+    });
     salvarFirebase('lancamentos', lancamentos);
-    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+    renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
     navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
 }
 
@@ -2069,31 +2435,7 @@ document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
     carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
 });
 
-document.querySelectorAll('input[name="payment-date"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        document.getElementById('payment-dia15').classList.toggle('hidden', this.value !== '15');
-        document.getElementById('payment-dia30').classList.toggle('hidden', this.value !== '30');
-    });
-});
-
 document.getElementById('form-edicao').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const idx = parseInt(document.getElementById('edit-index').value);
-    lancamentos[idx] = {
-        data: document.getElementById('edit-data').value,
-        tipo: document.getElementById('edit-tipo').value,
-        descricao: document.getElementById('edit-descricao').value,
-        valor: document.getElementById('edit-valor').value,
-        categoria: document.getElementById('edit-categoria').value,
-        formaPagamento: document.getElementById('edit-forma-pagamento').value
-    };
-    salvarFirebase('lancamentos', lancamentos);
-    modal.style.display = 'none';
-    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
-});
-
-document.getElementById('relatorio-nubank').addEventListener('click', () => gerarRelatorioPagamento(15));
-document.getElementById('relatorio-inter').addEventListener('click', () => gerarRelatorioPagamento(30));
 
 const modalApartamento = document.getElementById('editModalApartamento');
 document.getElementById('closeApartamento').addEventListener('click', () => modalApartamento.style.display = 'none');
@@ -2161,7 +2503,8 @@ document.getElementById('btn-show-form-salario').addEventListener('click', () =>
     document.getElementById('form-salario-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Salário';
     document.getElementById('sal-data-m').value = new Date().toISOString().split('T')[0];
     document.getElementById('sal-valor-m').value = '';
-    document.getElementById('sal-ciclo-m').value = 'dia15';
+    atualizarSelectsCiclos();
+    document.getElementById('sal-ciclo-m').value = getCiclos()[0]?.id || 'dia15';
     document.getElementById('modalSalario').style.display = 'block';
 });
 
@@ -2207,8 +2550,8 @@ document.getElementById('btn-show-form-conta').addEventListener('click', () => {
     document.getElementById('cf-nome-m').value = '';
     document.getElementById('cf-valor-m').value = '';
     document.getElementById('cf-variavel-m').value = 'nao';
-    document.getElementById('cf-prazo-m').value = 'dia15';
-    document.getElementById('cf-ciclo-m').value = 'dia15';
+    document.getElementById('cf-prazo-m').value = getCiclos()[0]?.id || 'dia15';
+    document.getElementById('cf-ciclo-m').value = getCiclos()[0]?.id || 'dia15';
     document.getElementById('cf-destaque-m').checked = false;
     document.getElementById('cf-codbarras-m').value = '';
     document.getElementById('cf-codbarras-group-m').style.display = 'none';
