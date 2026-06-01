@@ -2436,6 +2436,20 @@ document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
 });
 
 document.getElementById('form-edicao').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = parseInt(document.getElementById('edit-index').value);
+    lancamentos[idx] = {
+        data: document.getElementById('edit-data').value,
+        tipo: document.getElementById('edit-tipo').value,
+        descricao: document.getElementById('edit-descricao').value,
+        valor: document.getElementById('edit-valor').value,
+        categoria: document.getElementById('edit-categoria').value,
+        formaPagamento: document.getElementById('edit-forma-pagamento').value
+    };
+    salvarFirebase('lancamentos', lancamentos);
+    modal.style.display = 'none';
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+});
 
 const modalApartamento = document.getElementById('editModalApartamento');
 document.getElementById('closeApartamento').addEventListener('click', () => modalApartamento.style.display = 'none');
