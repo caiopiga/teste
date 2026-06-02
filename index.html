@@ -1173,16 +1173,23 @@ function iniciarSincronizacao() {
         if (configuracoes.saldoLivreSofisa > 0) cartoes.push({ nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa, vencimento: 1,  fechamento: 26, ciclo: 'dia30' });
     }
 
-    document.getElementById('loading-overlay').style.display = 'none';
-    setStatus('☁️ Online', 'ok');
-    carregarConfiguracoes();
-    renderCiclos();
-    renderContasFixas();
-    atualizarTabelaLancamentos();
-    atualizarDashboard();
-    atualizarPagamentos();
-    atualizarTabelaApartamento();
-    verificarAvisosFatura();
+    try {
+        document.getElementById('loading-overlay').style.display = 'none';
+        setStatus('☁️ Online', 'ok');
+        carregarConfiguracoes();
+        renderCiclos();
+        renderContasFixas();
+        atualizarTabelaLancamentos();
+        atualizarDashboard();
+        atualizarPagamentos();
+        atualizarTabelaApartamento();
+        verificarAvisosFatura();
+    } catch(runtimeErr) {
+        document.getElementById('loading-overlay').style.display = 'none';
+        setStatus('⚠️ Erro', 'err');
+        console.error('ERRO RUNTIME:', runtimeErr);
+        alert('Erro: ' + runtimeErr.message);
+    }
     }, err => {
         document.getElementById('loading-overlay').style.display = 'none';
         setStatus('❌ Sem conexão', 'err');
@@ -1218,57 +1225,145 @@ function getCicloLancamento(lancamento) {
 }
 
 /* ===== VERIFICAÇÃO E AVISOS DE FATURA ===== */
+/* ─────────────────────────────────────────────────
+   AVISOS INTELIGENTES DE CICLO
+   Tipos de aviso:
+     "fechamento"  — dia em que a fatura fecha (ótimo para compras)
+     "pre_fechamento" — X dias antes de fechar (aviso antecipado)
+     "vencimento"  — dia em que a fatura vence (hora de pagar)
+   ───────────────────────────────────────────────── */
+const DIAS_AVISO_PRE_FECHAMENTO = 3; // dias antes do fechamento para avisar
+
 function verificarAvisosFatura() {
     const hoje = new Date();
     const diaHoje = hoje.getDate();
-    const chaveHoje = hoje.toISOString().split('T')[0]; // "2026-06-01"
-
+    const chaveHoje = hoje.toISOString().split('T')[0];
     const diasSemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
     const nomeDia = diasSemana[hoje.getDay()];
 
-    const cartoesFechados = cartoes.filter(c => parseInt(c.fechamento) === diaHoje);
-
-    if (cartoesFechados.length === 0) {
+    if (cartoes.length === 0) {
         document.getElementById('banner-fatura').classList.remove('show');
         return;
     }
 
-    // Montar textos
-    const nomes = cartoesFechados.map(c => c.nome).join(', ');
-    const textosBanner = cartoesFechados.map(c => {
-        const fatura = getFaturaCartao(c.nome);
-        return `<strong>${c.nome}</strong>: ${formatarMoeda(fatura)}`;
-    }).join(' • ');
+    // Classificar cada cartão em qual tipo de aviso se aplica hoje
+    const fechaHoje      = cartoes.filter(c => parseInt(c.fechamento) === diaHoje);
+    const venceHoje      = cartoes.filter(c => parseInt(c.vencimento) === diaHoje);
+    const fechaEmBreve   = cartoes.filter(c => {
+        const diff = ((parseInt(c.fechamento) - diaHoje + 31) % 31);
+        return diff > 0 && diff <= DIAS_AVISO_PRE_FECHAMENTO;
+    });
 
-    const banner = document.getElementById('banner-fatura');
-    const bannerText = document.getElementById('banner-fatura-text');
-    bannerText.innerHTML = `📅 Hoje é dia ${diaHoje}, ${nomeDia}. Fatura fechada: ${textosBanner} — agora é o melhor momento para novas compras!`;
-    banner.classList.add('show');
+    // ── BANNER ──
+    const banner    = document.getElementById('banner-fatura');
+    const bannerTxt = document.getElementById('banner-fatura-text');
+    const partes = [];
 
-    // Verificar se o modal já foi exibido hoje para estes cartões
-    const jaMostrou = cartoesFechados.every(c => avisosFaturaExibidos[c.nome] === chaveHoje);
-    if (!jaMostrou) {
-        // Montar modal
-        document.getElementById('aviso-titulo').textContent = `🗓️ Hoje é dia ${diaHoje}, ${nomeDia}`;
-        document.getElementById('aviso-subtitulo').textContent =
-            `${cartoesFechados.length > 1 ? 'As faturas fecharam' : 'A fatura fechou'} hoje! Agora é o melhor momento para fazer compras no cartão — elas entrarão apenas na próxima fatura.`;
-
-        const lista = document.getElementById('aviso-cards-lista');
-        lista.innerHTML = '';
-        cartoesFechados.forEach(c => {
-            const fatura = getFaturaCartao(c.nome);
-            const item = document.createElement('div');
-            item.className = 'aviso-card-item';
-            item.innerHTML = `<span>💳 ${c.nome}</span><strong>${formatarMoeda(fatura)}</strong>`;
-            lista.appendChild(item);
-        });
-
-        document.getElementById('modalAvisoFatura').classList.add('open');
-
-        // Marcar como exibido hoje
-        cartoesFechados.forEach(c => { avisosFaturaExibidos[c.nome] = chaveHoje; });
-        salvarFirebase('avisosFaturaExibidos', avisosFaturaExibidos);
+    if (fechaHoje.length > 0) {
+        const txt = fechaHoje.map(c => `<strong>${c.nome}</strong>: ${formatarMoeda(getFaturaCartao(c.nome))}`).join(' • ');
+        partes.push(`🔒 Fatura fechada hoje — ${txt}. Ótimo momento para novas compras!`);
     }
+    if (venceHoje.length > 0) {
+        const txt = venceHoje.map(c => `<strong>${c.nome}</strong>: ${formatarMoeda(getFaturaCartao(c.nome))}`).join(' • ');
+        partes.push(`⏰ Vence hoje — ${txt}. Não esqueça de pagar!`);
+    }
+    if (fechaEmBreve.length > 0) {
+        const txt = fechaEmBreve.map(c => {
+            const diff = ((parseInt(c.fechamento) - diaHoje + 31) % 31);
+            return `<strong>${c.nome}</strong> fecha em ${diff} dia${diff > 1 ? 's' : ''}`;
+        }).join(' • ');
+        partes.push(`📅 Atenção: ${txt}`);
+    }
+
+    if (partes.length > 0) {
+        bannerTxt.innerHTML = partes.join(' &nbsp;|&nbsp; ');
+        banner.classList.add('show');
+    } else {
+        banner.classList.remove('show');
+    }
+
+    // ── MODAL (apenas uma vez por dia por tipo de evento) ──
+    const eventos = [];
+
+    // Fechamento hoje
+    const cartoesFechaNaoVistos = fechaHoje.filter(c => avisosFaturaExibidos['fech_' + c.nome] !== chaveHoje);
+    if (cartoesFechaNaoVistos.length > 0) {
+        eventos.push({
+            titulo: `🗓️ Hoje é dia ${diaHoje}, ${nomeDia}`,
+            subtitulo: `${cartoesFechaNaoVistos.length > 1 ? 'As faturas fecharam' : 'A fatura fechou'} hoje! Agora é o melhor momento para fazer compras — as novas entram apenas na próxima fatura.`,
+            cartoes: cartoesFechaNaoVistos,
+            chave: 'fech_',
+            cor: '#7c3aed'
+        });
+        cartoesFechaNaoVistos.forEach(c => { avisosFaturaExibidos['fech_' + c.nome] = chaveHoje; });
+    }
+
+    // Vencimento hoje
+    const cartoesVenceNaoVistos = venceHoje.filter(c => avisosFaturaExibidos['venc_' + c.nome] !== chaveHoje);
+    if (cartoesVenceNaoVistos.length > 0) {
+        eventos.push({
+            titulo: `⏰ Fatura vencendo hoje!`,
+            subtitulo: `${cartoesVenceNaoVistos.length > 1 ? 'As faturas vencem' : 'A fatura vence'} hoje. Verifique os valores e efetue o pagamento para evitar juros.`,
+            cartoes: cartoesVenceNaoVistos,
+            chave: 'venc_',
+            cor: '#dc2626'
+        });
+        cartoesVenceNaoVistos.forEach(c => { avisosFaturaExibidos['venc_' + c.nome] = chaveHoje; });
+    }
+
+    // Pré-fechamento
+    const cartoesPrefechNaoVistos = fechaEmBreve.filter(c => avisosFaturaExibidos['pre_' + c.nome] !== chaveHoje);
+    if (cartoesPrefechNaoVistos.length > 0) {
+        eventos.push({
+            titulo: `📅 Fatura fechando em breve`,
+            subtitulo: `Seus cartões abaixo estão prestes a fechar. Verifique os gastos do período.`,
+            cartoes: cartoesPrefechNaoVistos,
+            chave: 'pre_',
+            cor: '#d97706',
+            mostrarDias: true
+        });
+        cartoesPrefechNaoVistos.forEach(c => { avisosFaturaExibidos['pre_' + c.nome] = chaveHoje; });
+    }
+
+    if (eventos.length > 0) {
+        salvarFirebase('avisosFaturaExibidos', avisosFaturaExibidos);
+        mostrarProximoAviso(eventos, 0);
+    }
+}
+
+function mostrarProximoAviso(eventos, idx) {
+    if (idx >= eventos.length) return;
+    const ev = eventos[idx];
+
+    const modal = document.getElementById('modalAvisoFatura');
+    const box   = modal.querySelector('.aviso-fatura-box');
+
+    document.getElementById('aviso-titulo').textContent    = ev.titulo;
+    document.getElementById('aviso-subtitulo').textContent = ev.subtitulo;
+    box.style.borderTop = `4px solid ${ev.cor}`;
+
+    const lista = document.getElementById('aviso-cards-lista');
+    lista.innerHTML = '';
+    ev.cartoes.forEach(c => {
+        const diff = ((parseInt(c.fechamento) - new Date().getDate() + 31) % 31);
+        const item = document.createElement('div');
+        item.className = 'aviso-card-item';
+        if (ev.mostrarDias) {
+            item.innerHTML = `<span>💳 ${c.nome}</span><strong>fecha em ${diff} dia${diff>1?'s':''}</strong>`;
+        } else {
+            item.innerHTML = `<span>💳 ${c.nome}</span><strong>${formatarMoeda(getFaturaCartao(c.nome))}</strong>`;
+        }
+        lista.appendChild(item);
+    });
+
+    // Botão OK fecha este e abre o próximo se houver
+    const btnOk = modal.querySelector('.btn-aviso-ok');
+    btnOk.onclick = () => {
+        modal.classList.remove('open');
+        if (idx + 1 < eventos.length) setTimeout(() => mostrarProximoAviso(eventos, idx + 1), 300);
+    };
+
+    modal.classList.add('open');
 }
 
 /* ===== LÓGICA DE CICLO DA FATURA (qual ciclo pertence um lançamento) =====
@@ -1277,34 +1372,69 @@ function verificarAvisosFatura() {
  * Para fins de exibição na aba Pagamentos, calculamos a fatura "corrente"
  * de cada cartão incluindo apenas lançamentos cujo período ainda não fechou.
  */
+/* ─────────────────────────────────────────────────
+   PERÍODO DE FATURA
+   Lógica: o período vigente vai do dia seguinte ao último fechamento
+   até o próximo fechamento (inclusive).
+
+   Exemplo: fechamento dia 24
+     - Hoje = dia 10/jun → período: 25/mai até 24/jun
+     - Hoje = dia 26/jun → período: 25/jun até 24/jul
+   ───────────────────────────────────────────────── */
+function getPeriodoFaturaAtual(cartao) {
+    const hoje   = new Date();
+    const diaHoje = hoje.getDate();
+    const fechamento = parseInt(cartao.fechamento);
+
+    let anoInicio, mesInicio, anoFim, mesFim;
+
+    if (diaHoje <= fechamento) {
+        // Ainda não fechou este mês: período = (fechamento+1 do mês passado) → fechamento deste mês
+        mesInicio = hoje.getMonth() - 1;
+        anoInicio = hoje.getFullYear();
+        if (mesInicio < 0) { mesInicio = 11; anoInicio--; }
+        mesFim = hoje.getMonth();
+        anoFim = hoje.getFullYear();
+    } else {
+        // Já fechou este mês: período = (fechamento+1 deste mês) → fechamento do próximo mês
+        mesInicio = hoje.getMonth();
+        anoInicio = hoje.getFullYear();
+        mesFim = hoje.getMonth() + 1;
+        anoFim = hoje.getFullYear();
+        if (mesFim > 11) { mesFim = 0; anoFim++; }
+    }
+
+    const inicio = new Date(anoInicio, mesInicio, fechamento + 1);
+    const fim    = new Date(anoFim,    mesFim,    fechamento);
+    return { inicio, fim };
+}
+
 function getLancamentosDaFaturaAtual(nomeCartao) {
     const cartao = cartoes.find(c => c.nome === nomeCartao);
     if (!cartao) {
         return lancamentos.filter(l => l.formaPagamento === 'Cartão ' + nomeCartao);
     }
-    const hoje = new Date();
-    const diaHoje = hoje.getDate();
-    const fechamento = parseInt(cartao.fechamento);
-    const mesHoje = hoje.getMonth();
-    const anoHoje = hoje.getFullYear();
-
-    // Data de início do ciclo atual: logo após o último fechamento
-    let inicioAno = anoHoje, inicioMes = mesHoje;
-    if (diaHoje > fechamento) {
-        // Fechamento já passou este mês: ciclo corrente vai de (fechamento+1/mesHoje) até hoje
-        inicioMes = mesHoje;
-    } else {
-        // Fechamento ainda não chegou: ciclo corrente vai de (fechamento+1/mesPassado) até hoje
-        inicioMes = mesHoje - 1;
-        if (inicioMes < 0) { inicioMes = 11; inicioAno--; }
-    }
-    const inicioData = new Date(inicioAno, inicioMes, fechamento + 1);
+    const { inicio, fim } = getPeriodoFaturaAtual(cartao);
 
     return lancamentos.filter(l => {
         if (l.formaPagamento !== 'Cartão ' + nomeCartao) return false;
         const [a, m, d] = l.data.split('-').map(Number);
         const dataLanc = new Date(a, m - 1, d);
-        return dataLanc >= inicioData;
+        return dataLanc >= inicio && dataLanc <= fim;
+    });
+}
+
+// Retorna lançamentos de um período de fatura JÁ ENCERRADO (último ciclo fechado)
+function getLancamentosFaturaEncerrada(nomeCartao) {
+    const cartao = cartoes.find(c => c.nome === nomeCartao);
+    if (!cartao) return [];
+    const { inicio } = getPeriodoFaturaAtual(cartao);
+    // Período anterior: tudo antes do início atual que pertence a esse cartão
+    return lancamentos.filter(l => {
+        if (l.formaPagamento !== 'Cartão ' + nomeCartao) return false;
+        const [a, m, d] = l.data.split('-').map(Number);
+        const dataLanc = new Date(a, m - 1, d);
+        return dataLanc < inicio;
     });
 }
 
@@ -1492,7 +1622,8 @@ function atualizarPagamentos() {
         const salarioCiclo = getSalarioCiclo(ciclo.id);
         const cartoesCiclo = cartoes.filter(c => c.ciclo === ciclo.id);
         const faturasCiclo = cartoesCiclo.map(c => ({
-            nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite) || 0
+            nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite) || 0,
+            cartao: c
         }));
         const totalFaturas = faturasCiclo.reduce((t, f) => t + f.fatura, 0);
         const fixasSemCartao = somaContasFixasCiclo(ciclo.id, true);
@@ -1501,12 +1632,22 @@ function atualizarPagamentos() {
         panel.id = `payment-ciclo-${ciclo.id}`;
         panel.className = 'payment-details' + (idx > 0 ? ' hidden' : '');
 
+        // Período da fatura (baseado no primeiro cartão do ciclo, se houver)
+        if (cartoesCiclo.length > 0) {
+            const { inicio, fim } = getPeriodoFaturaAtual(cartoesCiclo[0]);
+            const fmtDate = d => d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
+            const periodoDiv = document.createElement('div');
+            periodoDiv.style.cssText = 'font-size:0.8rem;color:var(--text-light);margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem;';
+            periodoDiv.innerHTML = `<i class="fas fa-calendar-alt" style="color:var(--primary-color)"></i> Período: <strong>${fmtDate(inicio)}</strong> → <strong>${fmtDate(fim)}</strong>`;
+            panel.appendChild(periodoDiv);
+        }
+
         const itemsDiv = document.createElement('div');
         itemsDiv.id = `payment-ciclo-items-${ciclo.id}`;
 
         // Contas em destaque
         contasFixas.filter(c => c.ciclo === ciclo.id && c.destaque).forEach(c => {
-            const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+            const item = criarItemPagamento(c.nome, parseFloat(c.valor), c);
             if (c.pagamento === 'Boleto' && c.codbarras) {
                 const barcodeDiv = document.createElement('div');
                 barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
@@ -1518,7 +1659,7 @@ function atualizarPagamentos() {
         });
 
         // Faturas dos cartões
-        faturasCiclo.forEach(f => itemsDiv.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+        faturasCiclo.forEach(f => itemsDiv.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite, f.cartao)));
 
         // Investimento
         const despesasCiclo = fixasSemCartao + totalFaturas;
@@ -1558,20 +1699,43 @@ function atualizarPagamentos() {
     });
 }
 
-function criarItemPagamento(label, valor) {
+function criarItemPagamento(label, valor, conta) {
     const div = document.createElement('div');
     div.className = 'payment-item';
-    div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
+    let extra = '';
+    if (conta && conta.prazo === 'parcelas' && conta.parcelas) {
+        extra = `<small style="font-size:0.75rem;color:var(--primary-color);font-weight:600;margin-left:0.4rem;">${conta.parcelas}x restante${conta.parcelas > 1 ? 's' : ''}</small>`;
+    }
+    div.innerHTML = `<span>${label}:${extra}</span><span>${formatarMoeda(valor)}</span>`;
     return div;
 }
 
-function criarItemFaturaCartao(label, valor, limite) {
+function criarItemFaturaCartao(label, valor, limite, cartao) {
     const saldoDisp = limite - valor;
     const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+    // Mostrar status do período
+    let statusPeriodo = '';
+    if (cartao) {
+        const hoje = new Date();
+        const diaHoje = hoje.getDate();
+        const fechamento = parseInt(cartao.fechamento);
+        const vencimento = parseInt(cartao.vencimento);
+        const diasFecha = ((fechamento - diaHoje + 31) % 31) || 31;
+        const diasVence = ((vencimento - diaHoje + 31) % 31) || 31;
+        if (parseInt(cartao.fechamento) === diaHoje) {
+            statusPeriodo = '<small style="color:#a78bfa;font-weight:600;">🔒 Fechou hoje</small>';
+        } else if (diasFecha <= 3) {
+            statusPeriodo = `<small style="color:#f59e0b;font-weight:600;">⚠️ Fecha em ${diasFecha}d</small>`;
+        } else if (parseInt(cartao.vencimento) === diaHoje) {
+            statusPeriodo = '<small style="color:#dc2626;font-weight:600;">⏰ Vence hoje!</small>';
+        } else if (diasVence <= 3) {
+            statusPeriodo = `<small style="color:#dc2626;font-weight:600;">⏰ Vence em ${diasVence}d</small>`;
+        }
+    }
     const div = document.createElement('div');
     div.className = 'payment-item';
     div.innerHTML = `
-        <span>${label}:</span>
+        <span style="display:flex;flex-direction:column;gap:0.15rem;">${label}${statusPeriodo ? '<br>' + statusPeriodo : ''}</span>
         <span style="display:flex;flex-direction:column;align-items:flex-end;">
             <span style="font-weight:600;">${formatarMoeda(valor)}</span>
             ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
@@ -2150,47 +2314,91 @@ function emojiConta(nome) {
     return '📌';
 }
 
+/* ─────────────────────────────────────────────────
+   PAGAR CONTAS
+   O que acontece ao clicar:
+   1. Gera relatório para copiar/WhatsApp
+   2. Reduz parcelas das contas fixas parceladas deste ciclo
+      → se chegar a 0, remove a conta fixa
+   3. Remove contas fixas de data específica (prazo = 'personalizado') deste ciclo
+   4. Zera contas variáveis deste ciclo
+   5. NÃO deleta lançamentos — eles ficam no histórico
+      O novo período de fatura começa automaticamente pelo getPeriodoFaturaAtual()
+   ───────────────────────────────────────────────── */
 function gerarRelatorioPagamento(cicloId) {
-    const ciclo = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
+    const ciclo        = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
     const salarioCiclo = getSalarioCiclo(cicloId);
     const cartoesCiclo = cartoes.filter(c => c.ciclo === cicloId);
-    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
+    const fixasCiclo   = contasFixas.filter(c => c.ciclo === cicloId && c.destaque);
     const totalFaturas = cartoesCiclo.reduce((t, c) => t + getFaturaCartao(c.nome), 0);
+    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
     const invest = Math.max(0, salarioCiclo - fixasSemCartao - totalFaturas);
 
-    let relatorio = `📊 *Pagamentos ${ciclo.nome}:*\n\n`;
-    contasFixas.filter(c => c.ciclo === cicloId && c.destaque).forEach(c => {
-        relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
-        if (c.pagamento === 'Boleto' && c.codbarras) {
-            relatorio += `\n   📋 Código: ${c.codbarras}`;
-        }
-        relatorio += `\n`;
+    // ── Monta relatório ──
+    let rel = `📊 *Pagamentos ${ciclo.nome}* — ${new Date().toLocaleDateString('pt-BR')}\n\n`;
+    fixasCiclo.forEach(c => {
+        rel += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+        if (c.prazo === 'parcelas' && c.parcelas) rel += ` (${c.parcelas}x restantes)`;
+        if (c.pagamento === 'Boleto' && c.codbarras) rel += `\n   📋 ${c.codbarras}`;
+        rel += '\n';
     });
     cartoesCiclo.forEach(c => {
-        relatorio += `💳 Fatura ${c.nome}: ${formatarMoeda(getFaturaCartao(c.nome))}\n`;
+        rel += `💳 Fatura ${c.nome}: ${formatarMoeda(getFaturaCartao(c.nome))}\n`;
     });
-    relatorio += `📈 Investir: ${formatarMoeda(invest)}\n`;
-    relatorio += `\n💰 *Total*: ${formatarMoeda(salarioCiclo)}`;
+    rel += `\n📈 Investir: ${formatarMoeda(invest)}`;
+    rel += `\n💰 *Total entrada*: ${formatarMoeda(salarioCiclo)}`;
 
-    // Ao pagar: mantém lançamentos visíveis mas cicla o período
-    // Lançamentos deste ciclo ficam como estão (não são deletados)
-    // Zerar contas variáveis e remover datas específicas do ciclo
-    contasFixas = contasFixas.filter(c => !(c.ciclo === cicloId && c.prazo === 'personalizado'));
-    contasFixas.forEach((c, i) => {
-        if (c.ciclo === cicloId && c.variavel === 'sim') contasFixas[i].valor = 0;
-    });
-    salvarFirebase('contasFixas', contasFixas);
-    // Marcar lançamentos deste ciclo como pagos (adiciona campo cicloPago)
-    const nomeCartoesCiclo = cartoesCiclo.map(c => 'Cartão ' + c.nome);
-    lancamentos = lancamentos.map(l => {
-        if (nomeCartoesCiclo.includes(l.formaPagamento) && !l.cicloPago) {
-            return { ...l, cicloPago: cicloId + '_' + new Date().toISOString().split('T')[0] };
+    // ── Processar contas fixas deste ciclo ──
+    const novasContasFixas = [];
+    contasFixas.forEach(c => {
+        // Ignorar contas de outros ciclos — passam intactas
+        if (c.ciclo !== cicloId) { novasContasFixas.push(c); return; }
+
+        if (c.prazo === 'personalizado') {
+            // Data específica: remove após pagamento (conta única)
+            return; // não adiciona → removida
         }
-        return l;
+
+        if (c.prazo === 'parcelas') {
+            const restantes = parseInt(c.parcelas) || 0;
+            if (restantes <= 1) {
+                // Última parcela: remove automaticamente
+                return; // removida
+            }
+            // Ainda tem parcelas: reduz 1
+            novasContasFixas.push({ ...c, parcelas: restantes - 1 });
+            return;
+        }
+
+        if (c.variavel === 'sim') {
+            // Conta variável: zera o valor para o próximo ciclo
+            novasContasFixas.push({ ...c, valor: 0 });
+            return;
+        }
+
+        // Conta fixa recorrente normal: mantém
+        novasContasFixas.push(c);
     });
-    salvarFirebase('lancamentos', lancamentos);
-    renderContasFixas(); atualizarDashboard(); atualizarPagamentos();
-    navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
+
+    contasFixas = novasContasFixas;
+    salvarFirebase('contasFixas', contasFixas);
+
+    // ── Atualizar telas ──
+    renderContasFixas();
+    atualizarDashboard();
+    atualizarPagamentos();
+    atualizarTabelaLancamentos();
+
+    // ── Copiar relatório ──
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(rel)
+            .then(() => alert('✅ Ciclo encerrado!\n\nRelatório copiado — é só colar no WhatsApp 😉'))
+            .catch(() => {
+                prompt('Copie o relatório abaixo:', rel);
+            });
+    } else {
+        prompt('Copie o relatório abaixo:', rel);
+    }
 }
 
 /* ===== EVENT LISTENERS ===== */
