@@ -1690,8 +1690,14 @@ function renderDashboardCartoes() {
 function atualizarTabelaLancamentos() {
     const tbody = document.querySelector('#tabela-lancamentos tbody');
     tbody.innerHTML = '';
+
+    // Separar: ativos (ciclo corrente) vs arquivados (fatura fechada aguardando pagamento)
     lancamentos.forEach((lancamento, index) => {
+        const arquivado = !!lancamento.faturaFechadaId;
         const tr = document.createElement('tr');
+        if (arquivado) {
+            tr.style.cssText = 'opacity:0.45;background:rgba(99,102,241,0.03);';
+        }
         const [ano, mes, dia] = lancamento.data.split("-");
         const valorFloat = parseFloat(lancamento.valor);
         const valorFormatado = formatarMoeda(Math.abs(valorFloat));
@@ -1700,18 +1706,22 @@ function atualizarTabelaLancamentos() {
             : `<span style="color:green">${valorFormatado}</span>`;
         const parcelaInfo = lancamento.parcelado ? ` <small style='color:var(--primary-color);font-weight:600;'>(${lancamento.numeroParcela}/${lancamento.totalParcelas})</small>` : '';
         const grupoNome = lancamento.parcelado ? lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '') : '';
+        const arquivadoBadge = arquivado
+            ? `<small style="font-size:0.68rem;background:rgba(99,102,241,0.12);color:var(--primary-color);padding:0.1rem 0.35rem;border-radius:0.3rem;margin-left:0.3rem;">🔒 fatura fechada</small>`
+            : '';
         tr.innerHTML = `
             <td>${dia}/${mes}/${ano}</td>
-            <td>${lancamento.descricao}${parcelaInfo}</td>
+            <td>${lancamento.descricao}${parcelaInfo}${arquivadoBadge}</td>
             <td>${lancamento.formaPagamento}</td>
             <td>${valorHtml}</td>
             <td>
-                <button class="action-btn edit-btn" data-index="${index}">✎</button>
+                ${!arquivado ? `<button class="action-btn edit-btn" data-index="${index}">✎</button>` : ''}
                 <button class="action-btn delete-btn" data-index="${index}">×</button>
-                ${lancamento.parcelado ? `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>` : ''}
+                ${lancamento.parcelado && !arquivado ? `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>` : ''}
             </td>`;
         tbody.appendChild(tr);
     });
+
     document.querySelectorAll('#tabela-lancamentos .delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             lancamentos.splice(parseInt(this.dataset.index), 1);
@@ -1893,6 +1903,17 @@ function atualizarPagamentos() {
         itemsDiv.appendChild(totalItem);
 
         panel.appendChild(itemsDiv);
+
+        // Botão Pagar Contas (só aparece se houver fatura fechada neste ciclo)
+        const btnDiv = document.createElement('div');
+        btnDiv.style.cssText = 'display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;';
+        const btn = document.createElement('button');
+        btn.className = 'pay-btn';
+        btn.innerHTML = `<i class="fas fa-file-alt"></i> Pagar Contas`;
+        btn.onclick = () => gerarRelatorioPagamento(ciclo.id);
+        btnDiv.appendChild(btn);
+        panel.appendChild(btnDiv);
+
         container.appendChild(panel);
     });
 
@@ -2599,12 +2620,79 @@ function verDetalhesFaturaFechada(nomeCartao) {
 
 // Mantido por compatibilidade (chamado em alguns lugares antigos)
 function gerarRelatorioPagamento(cicloId) {
-    // Pagar todas as faturas fechadas deste ciclo
-    const cartoesCiclo = cartoes.filter(c => c.ciclo === cicloId && faturasFechadas[c.nome]);
-    if (cartoesCiclo.length > 0) {
-        cartoesCiclo.forEach(c => pagarFaturaCartao(c.nome));
+    const ciclo        = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
+    const salarioCiclo = getSalarioCiclo(cicloId);
+    const cartoesCiclo = cartoes.filter(c => c.ciclo === cicloId);
+
+    // Verificar se há pelo menos uma fatura fechada neste ciclo
+    const cartoesFechados = cartoesCiclo.filter(c => faturasFechadas[c.nome]);
+    if (cartoesFechados.length === 0) {
+        alert('Nenhuma fatura fechada neste ciclo.\n\nPrimeiro confirme o fechamento da fatura quando o sistema avisar no dia do fechamento do cartão.');
+        return;
+    }
+
+    const fixasCiclo     = contasFixas.filter(c => c.ciclo === cicloId && c.destaque);
+    const totalFaturas   = cartoesFechados.reduce((t, c) => t + faturasFechadas[c.nome].valor, 0);
+    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
+    const invest         = Math.max(0, salarioCiclo - fixasSemCartao - totalFaturas);
+
+    // ── Monta relatório ──
+    let rel = `📊 *Pagamentos ${ciclo.nome}* — ${new Date().toLocaleDateString('pt-BR')}\n\n`;
+    fixasCiclo.forEach(c => {
+        rel += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+        if (c.prazo === 'parcelas' && c.parcelas) rel += ` (${c.parcelas}x restantes)`;
+        if (c.pagamento === 'Boleto' && c.codbarras) rel += `\n   📋 ${c.codbarras}`;
+        rel += '\n';
+    });
+    cartoesFechados.forEach(c => {
+        rel += `💳 Fatura ${c.nome}: ${formatarMoeda(faturasFechadas[c.nome].valor)}\n`;
+    });
+    rel += `\n📈 Investir: ${formatarMoeda(invest)}`;
+    rel += `\n💰 *Total entrada*: ${formatarMoeda(salarioCiclo)}`;
+
+    // ── Processar contas fixas deste ciclo ──
+    const novasContasFixas = [];
+    contasFixas.forEach(c => {
+        if (c.ciclo !== cicloId) { novasContasFixas.push(c); return; }
+        if (c.prazo === 'personalizado') return; // data específica: remove
+        if (c.prazo === 'parcelas') {
+            const restantes = parseInt(c.parcelas) || 0;
+            if (restantes <= 1) return; // última parcela: remove
+            novasContasFixas.push({ ...c, parcelas: restantes - 1 });
+            return;
+        }
+        if (c.variavel === 'sim') { novasContasFixas.push({ ...c, valor: 0 }); return; }
+        novasContasFixas.push(c);
+    });
+    contasFixas = novasContasFixas;
+    salvarFirebase('contasFixas', contasFixas);
+
+    // ── Limpar faturas congeladas e desarquivar lançamentos ──
+    cartoesFechados.forEach(c => {
+        const faturaKey = c.nome + '_' + faturasFechadas[c.nome].dataFechamento;
+        lancamentos = lancamentos.map(l =>
+            l.faturaFechadaId === faturaKey
+                ? { ...l, faturaFechadaId: null, faturaFechadaPaga: faturaKey }
+                : l
+        );
+        delete faturasFechadas[c.nome];
+    });
+    salvarFirebase('faturasFechadas', faturasFechadas);
+    salvarFirebase('lancamentos', lancamentos);
+
+    // ── Atualizar telas ──
+    renderContasFixas();
+    atualizarDashboard();
+    atualizarPagamentos();
+    atualizarTabelaLancamentos();
+    verificarAvisosFatura();
+
+    // ── Copiar relatório ──
+    const msg = '✅ Contas pagas!\n\nRelatório copiado — é só colar no WhatsApp 😉\nNovos lançamentos já entram no próximo ciclo.';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(rel).then(() => alert(msg)).catch(() => prompt('Copie:', rel));
     } else {
-        alert('Nenhuma fatura fechada encontrada para este ciclo.\nConfirme o fechamento da fatura primeiro.');
+        prompt('Copie o relatório abaixo:', rel);
     }
 }
 
