@@ -92,7 +92,7 @@
         .payment-option { display: inline-flex; align-items: center; margin-right: 1.5rem; cursor: pointer; font-weight: 500; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); transition: var(--transition); background-color: var(--bg-light); }
         .payment-option:hover { background-color: rgba(99, 102, 241, 0.1); }
         .payment-option input { margin-right: 0.5rem; cursor: pointer; width: auto; }
-        .payment-details { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .payment-details { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); contain: layout; }
         .payment-item { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid var(--border-light); align-items: center; }
         .payment-item:last-child { border-bottom: none; font-weight: 600; padding-top: 1.25rem; font-size: 1.05rem; }
         .payment-item span:first-child { font-weight: 500; }
@@ -232,72 +232,6 @@
             visibility: visible;
             opacity: 1;
         }
-
-        /* ===== CICLOS DINÂMICOS ===== */
-        .ciclo-badge { display:inline-flex;align-items:center;padding:0.25rem 0.7rem;border-radius:1rem;font-size:0.8rem;font-weight:600;gap:0.3rem;background:rgba(99,102,241,0.1);color:var(--primary-color); }
-
-        /* ===== BANNER AVISO FATURA ===== */
-        #banner-fatura {
-            display:none; width:100%; margin-bottom:1rem;
-            border-radius:var(--border-radius); padding:0.75rem 1.25rem;
-            background:linear-gradient(135deg,#7c3aed,#5b21b6);
-            color:#fff; font-size:0.9rem; font-weight:500;
-            align-items:center; gap:0.75rem; flex-wrap:wrap;
-            box-shadow:var(--shadow-md); position:relative;
-            animation:fadeIn 0.4s ease;
-        }
-        #banner-fatura.show { display:flex; }
-        #banner-fatura .banner-icon { font-size:1.3rem; }
-        #banner-fatura .banner-text { flex:1; line-height:1.5; }
-        #banner-fatura .banner-close { cursor:pointer; opacity:0.75; font-size:1.2rem; line-height:1; margin-left:auto; }
-        #banner-fatura .banner-close:hover { opacity:1; }
-
-        /* ===== MODAL AVISO FATURA ===== */
-        #modalAvisoFatura {
-            display:none; position:fixed; inset:0; z-index:10000;
-            background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
-            align-items:center; justify-content:center;
-            animation:fadeIn 0.3s ease;
-        }
-        #modalAvisoFatura.open { display:flex; }
-        .aviso-fatura-box {
-            background:var(--bg-white); border-radius:var(--border-radius-lg);
-            box-shadow:var(--shadow-lg); padding:2rem 2.5rem;
-            width:90%; max-width:480px; text-align:center;
-            animation:slideIn 0.3s ease;
-        }
-        .aviso-fatura-box .aviso-emoji { font-size:3rem; margin-bottom:0.75rem; }
-        .aviso-fatura-box h3 { font-size:1.3rem; font-weight:700; color:var(--text-dark); margin-bottom:0.5rem; }
-        .aviso-fatura-box p { color:var(--text-light); font-size:0.95rem; line-height:1.6; margin-bottom:1.5rem; }
-        .aviso-fatura-box .aviso-cards { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem; }
-        .aviso-fatura-box .aviso-card-item {
-            background:var(--bg-light); border:1px solid var(--border-light);
-            border-radius:var(--border-radius); padding:0.65rem 1rem;
-            display:flex; justify-content:space-between; align-items:center;
-            font-size:0.9rem;
-        }
-        .aviso-fatura-box .aviso-card-item strong { color:var(--primary-color); }
-        .aviso-fatura-box .btn-aviso-ok {
-            background:linear-gradient(135deg,#7c3aed,#5b21b6);
-            color:#fff; border:none; border-radius:var(--border-radius);
-            padding:0.75rem 2rem; font-weight:600; font-size:0.95rem;
-            cursor:pointer; width:100%;
-        }
-        .aviso-fatura-box .btn-aviso-ok:hover { opacity:0.9; }
-
-        /* ===== STATUS CICLO NO CARD DO DASHBOARD ===== */
-        .card-ciclo-status {
-            font-size:0.78rem; margin-top:0.5rem; opacity:0.85;
-            display:flex; align-items:center; gap:0.4rem;
-            background:rgba(255,255,255,0.15); border-radius:0.4rem;
-            padding:0.3rem 0.6rem;
-        }
-        .card-ciclo-status.fechou { background:rgba(255,255,100,0.25); color:#fffde7; font-weight:600; }
-        .card-ciclo-status.aberto { background:rgba(255,255,255,0.12); }
-
-        /* ===== CONFIGURAÇÕES — CICLOS ===== */
-        .ciclo-config-card { background:var(--bg-white); border:1px solid var(--border-light); border-radius:var(--border-radius); padding:1rem 1.25rem; margin-bottom:0.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; box-shadow:var(--shadow-sm); }
-
         @media (max-width: 900px) { body { padding: 0.75rem; } .container { padding: 0; } .dashboard { flex-direction: column; } .card { min-width: 100%; } .tab { padding: 0.75rem 0.5rem; font-size: 0.85rem; } .resumo-cards { flex-direction: column; } .resumo-card { min-width: 100%; } }
         @media (max-width: 768px) { body { padding: 0.5rem; font-size: 0.9rem; } .header { padding: 1rem 1.5rem; } .header h1 { font-size: 1.35rem; } .tab-content { padding: 1rem; } .tab span { display: none; } .tab i { margin-right: 0; font-size: 1.2rem; } .form-row { flex-direction: column; } .form-group { min-width: 100%; } table { font-size: 0.85rem; } th, td { padding: 0.6rem 0.4rem; font-size: 0.85rem; } .modal-content { padding: 1.25rem; margin: 5% auto; width: 95%; } .card { padding: 1.25rem; } .card h3 { font-size: 1.25rem; } }
         @media (max-width: 480px) { body { padding: 0.25rem; } .header { padding: 0.75rem 1rem; margin-bottom: 1rem; } .header h1 { font-size: 1.15rem; } .tab-content { padding: 0.75rem; } .form-group { min-width: 100%; } input, select { padding: 0.65rem 0.85rem; font-size: 0.9rem; } button { padding: 0.65rem 1.25rem; font-size: 0.9rem; } .action-btn { padding: 0.3rem 0.45rem; font-size: 0.8rem; width: 2rem; height: 2rem; } table { display: block; overflow-x: auto; white-space: nowrap; font-size: 0.8rem; } th, td { padding: 0.5rem 0.35rem; font-size: 0.8rem; } .card { padding: 1rem; } .card h3 { font-size: 1.1rem; margin-bottom: 1rem; } .card-info { flex-direction: column; align-items: flex-start; gap: 0.25rem; } .resumo-icon { width: 40px; height: 40px; font-size: 1.1rem; } .resumo-value { font-size: 1.1rem; } .payment-option { font-size: 0.85rem; padding: 0.4rem 0.6rem; } }
@@ -392,25 +326,6 @@
     <div class="header">
         <h1><i class="fas fa-wallet"></i> Controle Financeiro</h1>
         <button id="btn-logout" onclick="firebase.auth().signOut()" class="btn-logout-header">⬡ Sair</button>
-    </div>
-
-
-    <!-- ===== BANNER AVISO FATURA ===== -->
-    <div id="banner-fatura">
-        <span class="banner-icon">💳</span>
-        <span class="banner-text" id="banner-fatura-text"></span>
-        <span class="banner-close" onclick="document.getElementById('banner-fatura').classList.remove('show')">✕</span>
-    </div>
-
-    <!-- ===== MODAL AVISO FATURA ===== -->
-    <div id="modalAvisoFatura">
-        <div class="aviso-fatura-box">
-            <div class="aviso-emoji">💳</div>
-            <h3 id="aviso-titulo">Fatura Fechada!</h3>
-            <p id="aviso-subtitulo">Hoje é o melhor dia para compras.</p>
-            <div class="aviso-cards" id="aviso-cards-lista"></div>
-            <button class="btn-aviso-ok" onclick="document.getElementById('modalAvisoFatura').classList.remove('open')">Entendido!</button>
-        </div>
     </div>
 
     <div class="tabs">
@@ -519,6 +434,20 @@
                     <input type="date" id="data" required>
                 </div>
             </div>
+            <!-- Parcelamento -->
+            <div class="form-row">
+                <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;padding-top:1.5rem;min-width:auto;flex:none;">
+                    <input type="checkbox" id="eh-parcelado" style="width:auto;cursor:pointer;">
+                    <label for="eh-parcelado" style="margin:0;cursor:pointer;font-size:0.9rem;">
+                        <i class="fas fa-layer-group" style="color:var(--primary-color);"></i> É uma compra parcelada?
+                    </label>
+                </div>
+                <div class="form-group" id="grupo-num-parcelas" style="display:none;">
+                    <label for="num-parcelas">Nº de Parcelas</label>
+                    <input type="number" id="num-parcelas" min="2" max="120" placeholder="Ex: 5" style="max-width:160px;">
+                    <small style="color:var(--text-light);font-size:0.78rem;display:block;margin-top:0.3rem;">O valor inserido acima será <strong>por parcela</strong>. O sistema irá decrementar a cada "Pagar Contas".</small>
+                </div>
+            </div>
             <button type="submit"><i class="fas fa-save"></i> Adicionar Lançamento</button>
         </form>
         <div class="section-divider"></div>
@@ -540,7 +469,28 @@
     <!-- ===== PAGAMENTOS ===== -->
     <div class="tab-content" id="pagamentos">
         <h2><i class="fas fa-money-bill-wave"></i> Pagamentos</h2>
-        <!-- Painéis de ciclos gerados dinamicamente por atualizarPagamentos() -->
+        <div class="payment-options">
+            <label class="payment-option">
+                <input type="radio" name="payment-date" value="15" checked> Contas do dia 15
+            </label>
+            <label class="payment-option">
+                <input type="radio" name="payment-date" value="30"> Contas do dia 30
+            </label>
+        </div>
+
+        <div id="payment-dia15" class="payment-details">
+            <div id="payment-dia15-items"></div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
+                <button id="relatorio-nubank" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
+            </div>
+        </div>
+
+        <div id="payment-dia30" class="payment-details hidden">
+            <div id="payment-dia30-items"></div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;">
+                <button id="relatorio-inter" class="pay-btn"><i class="fas fa-file-alt"></i> Pagar Contas</button>
+            </div>
+        </div>
     </div>
 
     <!-- ===== APARTAMENTO ===== -->
@@ -582,16 +532,6 @@
     <!-- ===== CONFIGURAÇÕES ===== -->
     <div class="tab-content" id="configuracoes">
         <h2><i class="fas fa-sliders-h"></i> Configurações</h2>
-
-        <!-- CICLOS DE PAGAMENTO -->
-        <div class="contas-fixas-section">
-            <h3><i class="fas fa-sync-alt"></i> Ciclos de Pagamento / Recebimento</h3>
-            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">Defina os ciclos do sistema. Cada ciclo tem um nome e um dia de vencimento. Os cartões, salários, contas fixas e pagamentos serão associados aos ciclos cadastrados aqui.</p>
-            <div id="lista-ciclos"></div>
-            <button class="btn-add-conta" id="btn-show-form-ciclo" type="button"><i class="fas fa-plus"></i> Adicionar Ciclo</button>
-        </div>
-
-        <div class="section-divider"></div>
 
         <!-- SALÁRIOS -->
         <div class="contas-fixas-section">
@@ -748,7 +688,6 @@
                     <option value="dia15">Dia 15</option>
                     <option value="dia30">Dia 30</option>
                 </select>
-                <small style="color:var(--text-light);font-size:0.78rem;">Ciclos configurados em Configurações → Ciclos.</small>
             </div>
         </div>
         <input type="hidden" id="sal-edit-index-m" value="-1">
@@ -839,38 +778,6 @@
 </div>
 
 
-
-<!-- ===== MODAL CICLO ===== -->
-<div id="modalCiclo" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:420px;">
-        <span class="close" onclick="document.getElementById('modalCiclo').style.display='none'">&times;</span>
-        <h2 id="form-ciclo-titulo-modal"><i class="fas fa-plus-circle"></i> Novo Ciclo</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Nome do Ciclo</label>
-                <input type="text" id="ciclo-nome-m" placeholder="Ex: Dia 15, Dia 30, Dia 10">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Dia de Vencimento</label>
-                <input type="number" id="ciclo-dia-m" min="1" max="31" placeholder="Ex: 15">
-                <small style="color:var(--text-light);font-size:0.8rem;">Dia do mês em que as contas deste ciclo vencem.</small>
-            </div>
-            <div class="form-group">
-                <label>ID interno (sem espaços)</label>
-                <input type="text" id="ciclo-id-m" placeholder="Ex: dia15, dia10, dia30">
-                <small style="color:var(--text-light);font-size:0.8rem;">Identificador único. Use letras e números.</small>
-            </div>
-        </div>
-        <input type="hidden" id="ciclo-edit-index-m" value="-1">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
-            <button type="button" id="btn-salvar-ciclo-m"><i class="fas fa-save"></i> Salvar Ciclo</button>
-            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalCiclo').style.display='none'"><i class="fas fa-times"></i> Cancelar</button>
-        </div>
-    </div>
-</div>
-
 <!-- ===== MODAL CARTÃO ===== -->
 <div id="modalCartao" class="modal" style="display:none;">
   <div class="modal-content" style="max-width:520px;max-height:92vh;overflow-y:auto;">
@@ -902,7 +809,6 @@
           <option value="dia15">Dia 15</option>
           <option value="dia30">Dia 30</option>
         </select>
-        <small style="color:var(--text-light);font-size:0.78rem;">Os ciclos são configurados na aba Configurações → Ciclos.</small>
       </div>
       <div class="form-group">
         <label>Bandeira</label>
@@ -1042,16 +948,6 @@ let configuracoes = { salario1: 0, salario2: 0, saldoLivreNubank: 0, saldoLivreI
 let contasFixas = [];
 let salarios = []; // [{data, valor, ciclo}]
 let cartoes = [];  // [{nome, limite, vencimento, fechamento, ciclo}]
-let ciclos = [];   // [{id, nome, dia}] — ciclos de pagamento/recebimento configurados pelo usuário
-// Ciclos padrão usados se o usuário ainda não configurou nenhum
-const ciclosPadrao = [
-    { id: 'dia15', nome: 'Dia 15', dia: 15 },
-    { id: 'dia30', nome: 'Dia 30', dia: 30 }
-];
-// Última data em que o aviso de fatura foi exibido (chave por cartão)
-let avisosFaturaExibidos = {};
-// Faturas congeladas aguardando pagamento: { [nomeCartao]: { valor, lancamentosIds[], dataFechamento, dataVencimento, cicloId } }
-let faturasFechadas = {};
 // Dados padrão do apartamento (usados apenas na 1ª vez que o Firebase estiver vazio)
 const parcelasApartamentoPadrao = [
     { mes: "Ato", data: "2025-08-17", parcelaEntrada: 800.00, construcao: 0.000, evolucaoObra: 0.00, parcelaTotal: 800.00, situacao: "PAGO" },
@@ -1153,15 +1049,7 @@ function iniciarSincronizacao() {
     contasFixas          = dados.contasFixas          || [];
     salarios             = dados.salarios             || [];
     cartoes              = dados.cartoes              || [];
-    ciclos               = dados.ciclos               || [];
-    avisosFaturaExibidos = dados.avisosFaturaExibidos || {};
-    faturasFechadas      = dados.faturasFechadas      || {};
     parcelasApartamento  = dados.parcelasApartamento  || [...parcelasApartamentoPadrao];
-    // Se não há ciclos configurados, usar os padrão (migração silenciosa)
-    if (ciclos.length === 0) {
-        ciclos = [...ciclosPadrao];
-        salvarFirebase('ciclos', ciclos);
-    }
 
     // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
     if (salarios.length === 0 && (configuracoes.salario1 > 0 || configuracoes.salario2 > 0)) {
@@ -1176,23 +1064,14 @@ function iniciarSincronizacao() {
         if (configuracoes.saldoLivreSofisa > 0) cartoes.push({ nome: 'Sofisa', limite: configuracoes.saldoLivreSofisa, vencimento: 1,  fechamento: 26, ciclo: 'dia30' });
     }
 
-    try {
-        document.getElementById('loading-overlay').style.display = 'none';
-        setStatus('☁️ Online', 'ok');
-        carregarConfiguracoes();
-        renderCiclos();
-        renderContasFixas();
-        atualizarTabelaLancamentos();
-        atualizarDashboard();
-        atualizarPagamentos();
-        atualizarTabelaApartamento();
-        verificarAvisosFatura();
-    } catch(runtimeErr) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        setStatus('⚠️ Erro', 'err');
-        console.error('ERRO RUNTIME:', runtimeErr);
-        alert('Erro: ' + runtimeErr.message);
-    }
+    document.getElementById('loading-overlay').style.display = 'none';
+    setStatus('☁️ Online', 'ok');
+    carregarConfiguracoes();
+    renderContasFixas();
+    atualizarTabelaLancamentos();
+    atualizarDashboard();
+    atualizarPagamentos();
+    atualizarTabelaApartamento();
     }, err => {
         document.getElementById('loading-overlay').style.display = 'none';
         setStatus('❌ Sem conexão', 'err');
@@ -1207,401 +1086,6 @@ let balancoChart;
 
 function formatarMoeda(valor) {
     return 'R$ ' + valor.toFixed(2).replace('.', ',');
-}
-
-/* ===== HELPERS DE CICLOS ===== */
-function getCiclos() {
-    return ciclos.length > 0 ? ciclos : ciclosPadrao;
-}
-function getCicloById(id) {
-    return getCiclos().find(c => c.id === id) || null;
-}
-function getCicloLabel(id) {
-    const c = getCicloById(id);
-    return c ? c.nome : id;
-}
-// Retorna o cicloId ao qual um lançamento pertence, baseado na data de fechamento dos cartões
-function getCicloLancamento(lancamento) {
-    const cartao = cartoes.find(c => 'Cartão ' + c.nome === lancamento.formaPagamento);
-    if (!cartao) return null; // não é cartão, não tem ciclo de fatura
-    return cartao.ciclo;
-}
-
-/* ===== VERIFICAÇÃO E AVISOS DE FATURA ===== */
-/* ─────────────────────────────────────────────────
-   AVISOS INTELIGENTES DE CICLO
-   Fluxo de fechamento de fatura:
-   1. Dia do fechamento → modal "SUA FATURA FECHOU" com [Revisar] [Confirmar]
-   2. Usuário confirma → fatura congelada, lançamentos arquivados (status='fechado')
-   3. Aba Pagamentos exibe a fatura congelada com "Pagar Contas"
-   4. Usuário paga → parcelas reduzidas, próximo ciclo liberado
-   ───────────────────────────────────────────────── */
-const DIAS_AVISO_PRE_FECHAMENTO = 3;
-
-function verificarAvisosFatura() {
-    const hoje     = new Date();
-    const diaHoje  = hoje.getDate();
-    const chaveHoje = hoje.toISOString().split('T')[0];
-    const diasSemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-    const nomeDia  = diasSemana[hoje.getDay()];
-
-    if (cartoes.length === 0) {
-        document.getElementById('banner-fatura').classList.remove('show');
-        return;
-    }
-
-    // ── Classificar eventos de hoje ──
-    const fechaHoje    = cartoes.filter(c => parseInt(c.fechamento) === diaHoje);
-    const venceHoje    = cartoes.filter(c => parseInt(c.vencimento) === diaHoje);
-    const fechaEmBreve = cartoes.filter(c => {
-        const diff = ((parseInt(c.fechamento) - diaHoje + 31) % 31);
-        return diff > 0 && diff <= DIAS_AVISO_PRE_FECHAMENTO;
-    });
-
-    // ── BANNER persistente ──
-    const banner    = document.getElementById('banner-fatura');
-    const bannerTxt = document.getElementById('banner-fatura-text');
-    const partes    = [];
-
-    // Cartões que fecharam e ainda têm fatura pendente de confirmação
-    const fechadosPendentes = fechaHoje.filter(c => !faturasFechadas[c.nome]);
-    const fechadosConfirmados = Object.keys(faturasFechadas).map(n => cartoes.find(c => c.nome === n)).filter(Boolean);
-
-    if (fechadosPendentes.length > 0) {
-        const txt = fechadosPendentes.map(c => `<strong>${c.nome}</strong>`).join(', ');
-        partes.push(`🔒 Fatura fechou: ${txt} — <a href="#" onclick="abrirModalFaturaFechou()" style="color:#fff;font-weight:700;text-decoration:underline;">Confirmar fechamento</a>`);
-    }
-    if (fechadosConfirmados.length > 0) {
-        const txt = fechadosConfirmados.map(c => `<strong>${c.nome}</strong>: ${formatarMoeda(faturasFechadas[c.nome].valor)}`).join(' • ');
-        partes.push(`💳 Aguardando pagamento: ${txt}`);
-    }
-    if (venceHoje.length > 0) {
-        const txt = venceHoje.map(c => `<strong>${c.nome}</strong>`).join(', ');
-        partes.push(`⏰ Vence hoje: ${txt} — não esqueça de pagar!`);
-    }
-    if (fechaEmBreve.length > 0) {
-        const txt = fechaEmBreve.map(c => {
-            const d = ((parseInt(c.fechamento) - diaHoje + 31) % 31);
-            return `<strong>${c.nome}</strong> em ${d}d`;
-        }).join(' • ');
-        partes.push(`📅 Fecha em breve: ${txt}`);
-    }
-
-    if (partes.length > 0) {
-        bannerTxt.innerHTML = partes.join('&nbsp;&nbsp;|&nbsp;&nbsp;');
-        banner.classList.add('show');
-    } else {
-        banner.classList.remove('show');
-    }
-
-    // ── Modais (uma vez por dia) ──
-    const eventos = [];
-
-    // Fechamento hoje (ainda não confirmado)
-    const fechaNaoConfirmados = fechaHoje.filter(c =>
-        !faturasFechadas[c.nome] &&
-        avisosFaturaExibidos['fech_' + c.nome] !== chaveHoje
-    );
-    if (fechaNaoConfirmados.length > 0) {
-        eventos.push({ tipo: 'fechamento', cartoes: fechaNaoConfirmados, chaveHoje, diaHoje, nomeDia });
-        fechaNaoConfirmados.forEach(c => { avisosFaturaExibidos['fech_' + c.nome] = chaveHoje; });
-    }
-
-    // Vencimento hoje (aviso de pagamento)
-    const venceNaoVistos = venceHoje.filter(c => avisosFaturaExibidos['venc_' + c.nome] !== chaveHoje);
-    if (venceNaoVistos.length > 0) {
-        eventos.push({ tipo: 'vencimento', cartoes: venceNaoVistos, chaveHoje, diaHoje, nomeDia });
-        venceNaoVistos.forEach(c => { avisosFaturaExibidos['venc_' + c.nome] = chaveHoje; });
-    }
-
-    // Pré-fechamento
-    const preNaoVistos = fechaEmBreve.filter(c => avisosFaturaExibidos['pre_' + c.nome] !== chaveHoje);
-    if (preNaoVistos.length > 0) {
-        eventos.push({ tipo: 'pre_fechamento', cartoes: preNaoVistos, chaveHoje, diaHoje });
-        preNaoVistos.forEach(c => { avisosFaturaExibidos['pre_' + c.nome] = chaveHoje; });
-    }
-
-    if (eventos.length > 0) {
-        salvarFirebase('avisosFaturaExibidos', avisosFaturaExibidos);
-        mostrarProximoAviso(eventos, 0);
-    }
-}
-
-// Abre o modal de fechamento manualmente (via link no banner)
-function abrirModalFaturaFechou() {
-    const hoje    = new Date();
-    const diaHoje = hoje.getDate();
-    const diasSemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-    const fechaNaoConf = cartoes.filter(c =>
-        parseInt(c.fechamento) === diaHoje && !faturasFechadas[c.nome]
-    );
-    if (fechaNaoConf.length === 0) return;
-    mostrarProximoAviso([{ tipo: 'fechamento', cartoes: fechaNaoConf,
-        chaveHoje: hoje.toISOString().split('T')[0], diaHoje, nomeDia: diasSemana[hoje.getDay()] }], 0);
-}
-
-function mostrarProximoAviso(eventos, idx) {
-    if (idx >= eventos.length) return;
-    const ev  = eventos[idx];
-    const modal = document.getElementById('modalAvisoFatura');
-    const box   = modal.querySelector('.aviso-fatura-box');
-    const lista = document.getElementById('aviso-cards-lista');
-    const btnOk = modal.querySelector('.btn-aviso-ok');
-
-    lista.innerHTML = '';
-
-    if (ev.tipo === 'fechamento') {
-        // ── Modal de fechamento de fatura ──
-        box.style.borderTop = '4px solid #7c3aed';
-        document.getElementById('aviso-titulo').textContent = `🔒 Sua fatura fechou!`;
-        document.getElementById('aviso-subtitulo').innerHTML =
-            `Hoje é dia ${ev.diaHoje}, ${ev.nomeDia}. ` +
-            `As compras abaixo estão <strong>congeladas</strong> nesta fatura.<br>` +
-            `Novas compras entrarão automaticamente na próxima fatura.`;
-
-        ev.cartoes.forEach(c => {
-            const lancs = getLancamentosDaFaturaQueFecharamHoje(c);
-            const totalLancs = lancs.reduce((t, l) => t + parseFloat(l.valor), 0);
-            const totalFixas = somaContasFixasCartao('Cartão ' + c.nome);
-            const total = totalLancs + totalFixas;
-
-            const itemCartao = document.createElement('div');
-            itemCartao.className = 'aviso-card-item';
-            itemCartao.style.flexDirection = 'column';
-            itemCartao.style.alignItems = 'stretch';
-            itemCartao.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-                    <span style="font-weight:700;font-size:1rem;">💳 ${c.nome}</span>
-                    <strong style="color:var(--primary-color);font-size:1.05rem;">${formatarMoeda(total)}</strong>
-                </div>
-                <div style="font-size:0.78rem;color:var(--text-light);">
-                    ${lancs.length} lançamento${lancs.length !== 1 ? 's' : ''} • Vence dia ${c.vencimento}
-                </div>
-                ${lancs.slice(0, 3).map(l => `
-                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;padding:0.15rem 0;border-top:1px solid var(--border-light);margin-top:0.2rem;">
-                        <span>${l.descricao}</span>
-                        <span>${formatarMoeda(parseFloat(l.valor))}</span>
-                    </div>`).join('')}
-                ${lancs.length > 3 ? `<div style="font-size:0.75rem;color:var(--text-light);margin-top:0.2rem;">+ ${lancs.length - 3} mais...</div>` : ''}`;
-            lista.appendChild(itemCartao);
-        });
-
-        // Botões: Revisar (vai para lançamentos) + Confirmar fechamento
-        btnOk.style.display = 'none';
-        // Remover botões extras anteriores
-        box.querySelectorAll('.btn-extra').forEach(b => b.remove());
-
-        const btnsDiv = document.createElement('div');
-        btnsDiv.className = 'btn-extra';
-        btnsDiv.style.cssText = 'display:flex;gap:0.75rem;margin-top:1rem;';
-
-        const btnRevisar = document.createElement('button');
-        btnRevisar.className = 'btn-aviso-ok';
-        btnRevisar.style.cssText = 'flex:1;background:var(--bg-light);color:var(--text-dark);border:1px solid var(--border-light);';
-        btnRevisar.innerHTML = '🔍 Revisar lançamentos';
-        btnRevisar.onclick = () => {
-            modal.classList.remove('open');
-            // Navega para aba lançamentos
-            document.querySelector('[data-tab="lancamentos"]').click();
-        };
-
-        const btnConfirmar = document.createElement('button');
-        btnConfirmar.className = 'btn-aviso-ok';
-        btnConfirmar.style.cssText = 'flex:1;background:linear-gradient(135deg,#7c3aed,#5b21b6);';
-        btnConfirmar.innerHTML = '✅ Confirmar fechamento';
-        btnConfirmar.onclick = () => {
-            confirmarFechamentoFatura(ev.cartoes);
-            modal.classList.remove('open');
-            btnOk.style.display = '';
-            btnsDiv.remove();
-            if (idx + 1 < eventos.length) setTimeout(() => mostrarProximoAviso(eventos, idx + 1), 300);
-        };
-
-        btnsDiv.appendChild(btnRevisar);
-        btnsDiv.appendChild(btnConfirmar);
-        box.appendChild(btnsDiv);
-        btnOk.onclick = null; // desativa o botão padrão enquanto temos os custom
-
-    } else if (ev.tipo === 'vencimento') {
-        box.style.borderTop = '4px solid #dc2626';
-        document.getElementById('aviso-titulo').textContent = `⏰ Fatura vencendo hoje!`;
-        document.getElementById('aviso-subtitulo').textContent =
-            `Hoje é dia ${ev.diaHoje}. Sua fatura vence hoje — efetue o pagamento para evitar juros.`;
-        ev.cartoes.forEach(c => {
-            const fatura = faturasFechadas[c.nome] ? faturasFechadas[c.nome].valor : getFaturaCartao(c.nome);
-            const item = document.createElement('div');
-            item.className = 'aviso-card-item';
-            item.innerHTML = `<span>💳 ${c.nome}</span><strong style="color:#dc2626">${formatarMoeda(fatura)}</strong>`;
-            lista.appendChild(item);
-        });
-        btnOk.style.display = '';
-        box.querySelectorAll('.btn-extra').forEach(b => b.remove());
-        btnOk.textContent = '✅ Entendido!';
-        btnOk.onclick = () => {
-            modal.classList.remove('open');
-            if (idx + 1 < eventos.length) setTimeout(() => mostrarProximoAviso(eventos, idx + 1), 300);
-        };
-
-    } else if (ev.tipo === 'pre_fechamento') {
-        box.style.borderTop = '4px solid #d97706';
-        document.getElementById('aviso-titulo').textContent = `📅 Fatura fechando em breve`;
-        document.getElementById('aviso-subtitulo').textContent =
-            `Fique de olho — seus cartões abaixo vão fechar nos próximos ${DIAS_AVISO_PRE_FECHAMENTO} dias.`;
-        ev.cartoes.forEach(c => {
-            const diff = ((parseInt(c.fechamento) - ev.diaHoje + 31) % 31);
-            const fatura = getFaturaCartao(c.nome);
-            const item = document.createElement('div');
-            item.className = 'aviso-card-item';
-            item.innerHTML = `
-                <span>💳 ${c.nome} — fecha em <strong>${diff} dia${diff > 1 ? 's' : ''}</strong></span>
-                <strong>${formatarMoeda(fatura)}</strong>`;
-            lista.appendChild(item);
-        });
-        btnOk.style.display = '';
-        box.querySelectorAll('.btn-extra').forEach(b => b.remove());
-        btnOk.textContent = '✅ Entendido!';
-        btnOk.onclick = () => {
-            modal.classList.remove('open');
-            if (idx + 1 < eventos.length) setTimeout(() => mostrarProximoAviso(eventos, idx + 1), 300);
-        };
-    }
-
-    modal.classList.add('open');
-}
-
-/* Retorna os lançamentos que pertencem à fatura que ACABOU DE FECHAR hoje */
-function getLancamentosDaFaturaQueFecharamHoje(cartao) {
-    const hoje = new Date();
-    const fechamento = parseInt(cartao.fechamento);
-    // Período: do dia seguinte ao fechamento do mês passado até hoje (fechamento)
-    let mesInicio = hoje.getMonth() - 1;
-    let anoInicio = hoje.getFullYear();
-    if (mesInicio < 0) { mesInicio = 11; anoInicio--; }
-    const inicio = new Date(anoInicio, mesInicio, fechamento + 1);
-    const fim    = new Date(hoje.getFullYear(), hoje.getMonth(), fechamento);
-
-    return lancamentos.filter(l => {
-        if (l.formaPagamento !== 'Cartão ' + cartao.nome) return false;
-        if (l.faturaFechadaId) return false; // já arquivado em ciclo anterior
-        const [a, m, d] = l.data.split('-').map(Number);
-        const dt = new Date(a, m - 1, d);
-        return dt >= inicio && dt <= fim;
-    });
-}
-
-/* ─────────────────────────────────────────────────
-   CONFIRMAR FECHAMENTO DA FATURA
-   - Captura todos os lançamentos do período encerrado
-   - Remove-os do array principal (eles ficam em faturasFechadas)
-   - Salva o snapshot congelado no Firebase
-   ───────────────────────────────────────────────── */
-function confirmarFechamentoFatura(cartoesFechados) {
-    cartoesFechados.forEach(c => {
-        const lancs      = getLancamentosDaFaturaQueFecharamHoje(c);
-        const totalLancs = lancs.reduce((t, l) => t + parseFloat(l.valor), 0);
-        const totalFixas = somaContasFixasCartao('Cartão ' + c.nome);
-
-        // Snapshot congelado
-        faturasFechadas[c.nome] = {
-            valor:          totalLancs + totalFixas,
-            lancamentos:    lancs,                                      // cópia completa
-            dataFechamento: new Date().toISOString().split('T')[0],
-            vencimentoDia:  parseInt(c.vencimento),
-            cicloId:        c.ciclo,
-            cartaoNome:     c.nome
-        };
-
-        // Remove os lançamentos do período da lista principal
-        // (eles vivem agora em faturasFechadas[c.nome].lancamentos)
-        const idsRemover = new Set(lancs.map(l => l._id || JSON.stringify(l)));
-        lancamentos = lancamentos.filter(l => {
-            const key = l._id || JSON.stringify(l);
-            return !idsRemover.has(key);
-        });
-    });
-
-    salvarFirebase('faturasFechadas', faturasFechadas);
-    salvarFirebase('lancamentos', lancamentos);
-
-    atualizarTabelaLancamentos();
-    atualizarDashboard();
-    atualizarPagamentos();
-    verificarAvisosFatura();
-
-    const nomes = cartoesFechados.map(c => c.nome).join(', ');
-    setTimeout(() => {
-        alert(`✅ Fatura de ${nomes} confirmada e congelada!\n\nOs lançamentos foram removidos da aba Lançamentos.\nAcesse a aba Pagamentos para ver o valor e pagar.`);
-    }, 200);
-}
-
-/* ─────────────────────────────────────────────────
-   PERÍODO DE FATURA
-   Lógica: o período vigente vai do dia seguinte ao último fechamento
-   até o próximo fechamento (inclusive).
-
-   Exemplo: fechamento dia 24
-     - Hoje = dia 10/jun → período: 25/mai até 24/jun
-     - Hoje = dia 26/jun → período: 25/jun até 24/jul
-   ───────────────────────────────────────────────── */
-function getPeriodoFaturaAtual(cartao) {
-    const hoje   = new Date();
-    const diaHoje = hoje.getDate();
-    const fechamento = parseInt(cartao.fechamento);
-
-    let anoInicio, mesInicio, anoFim, mesFim;
-
-    if (diaHoje <= fechamento) {
-        // Ainda não fechou este mês: período = (fechamento+1 do mês passado) → fechamento deste mês
-        mesInicio = hoje.getMonth() - 1;
-        anoInicio = hoje.getFullYear();
-        if (mesInicio < 0) { mesInicio = 11; anoInicio--; }
-        mesFim = hoje.getMonth();
-        anoFim = hoje.getFullYear();
-    } else {
-        // Já fechou este mês: período = (fechamento+1 deste mês) → fechamento do próximo mês
-        mesInicio = hoje.getMonth();
-        anoInicio = hoje.getFullYear();
-        mesFim = hoje.getMonth() + 1;
-        anoFim = hoje.getFullYear();
-        if (mesFim > 11) { mesFim = 0; anoFim++; }
-    }
-
-    const inicio = new Date(anoInicio, mesInicio, fechamento + 1);
-    const fim    = new Date(anoFim,    mesFim,    fechamento);
-    return { inicio, fim };
-}
-
-function getLancamentosDaFaturaAtual(nomeCartao) {
-    const cartao = cartoes.find(c => c.nome === nomeCartao);
-    if (!cartao) {
-        return lancamentos.filter(l => l.formaPagamento === 'Cartão ' + nomeCartao);
-    }
-    const { inicio, fim } = getPeriodoFaturaAtual(cartao);
-
-    return lancamentos.filter(l => {
-        if (l.formaPagamento !== 'Cartão ' + nomeCartao) return false;
-        const [a, m, d] = l.data.split('-').map(Number);
-        const dataLanc = new Date(a, m - 1, d);
-        return dataLanc >= inicio && dataLanc <= fim;
-    });
-}
-
-// Retorna lançamentos de um período de fatura JÁ ENCERRADO (último ciclo fechado)
-function getLancamentosFaturaEncerrada(nomeCartao) {
-    const cartao = cartoes.find(c => c.nome === nomeCartao);
-    if (!cartao) return [];
-    const { inicio } = getPeriodoFaturaAtual(cartao);
-    // Período anterior: tudo antes do início atual que pertence a esse cartão
-    return lancamentos.filter(l => {
-        if (l.formaPagamento !== 'Cartão ' + nomeCartao) return false;
-        const [a, m, d] = l.data.split('-').map(Number);
-        const dataLanc = new Date(a, m - 1, d);
-        return dataLanc < inicio;
-    });
-}
-
-function calcularFaturaCartaoAtual(nomeCartao) {
-    return getLancamentosDaFaturaAtual(nomeCartao).reduce((t, l) => t + parseFloat(l.valor), 0);
 }
 
 /* ===== CÁLCULOS ===== */
@@ -1668,19 +1152,6 @@ function renderDashboardCartoes() {
                 <div class="card-footer">
                     <i class="far fa-calendar-alt"></i> Fecha dia ${c.fechamento} • Vence dia ${c.vencimento}
                 </div>
-                ${(function(){
-                    const hoje = new Date();
-                    const diaHoje = hoje.getDate();
-                    const fechouHoje = parseInt(c.fechamento) === diaHoje;
-                    const diasParaFechar = ((parseInt(c.fechamento) - diaHoje + 31) % 31) || 31;
-                    if (fechouHoje) {
-                        return '<div class="card-ciclo-status fechou"><i class="fas fa-lock"></i> Fatura fechou hoje! Ótimo dia para compras 🛍️</div>';
-                    } else if (diasParaFechar <= 3) {
-                        return `<div class="card-ciclo-status" style="background:rgba(245,158,11,0.25);color:#fef3c7;font-weight:600;"><i class="fas fa-exclamation-triangle"></i> Fecha em ${diasParaFechar} dia${diasParaFechar > 1 ? 's' : ''}</div>`;
-                    } else {
-                        return `<div class="card-ciclo-status aberto"><i class="fas fa-unlock"></i> Fecha em ${diasParaFechar} dias</div>`;
-                    }
-                })()}
             </div>`;
         dashboard.appendChild(div);
     });
@@ -1690,38 +1161,43 @@ function renderDashboardCartoes() {
 function atualizarTabelaLancamentos() {
     const tbody = document.querySelector('#tabela-lancamentos tbody');
     tbody.innerHTML = '';
-
-    // Separar: ativos (ciclo corrente) vs arquivados (fatura fechada aguardando pagamento)
     lancamentos.forEach((lancamento, index) => {
-        const arquivado = !!lancamento.faturaFechadaId;
         const tr = document.createElement('tr');
-        if (arquivado) {
-            tr.style.cssText = 'opacity:0.45;background:rgba(99,102,241,0.03);';
-        }
         const [ano, mes, dia] = lancamento.data.split("-");
         const valorFloat = parseFloat(lancamento.valor);
         const valorFormatado = formatarMoeda(Math.abs(valorFloat));
         const valorHtml = valorFloat < 0
             ? `<span style="color:red">-${valorFormatado}</span>`
             : `<span style="color:green">${valorFormatado}</span>`;
-        const parcelaInfo = lancamento.parcelado ? ` <small style='color:var(--primary-color);font-weight:600;'>(${lancamento.numeroParcela}/${lancamento.totalParcelas})</small>` : '';
-        const grupoNome = lancamento.parcelado ? lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '') : '';
-        const arquivadoBadge = arquivado
-            ? `<small style="font-size:0.68rem;background:rgba(99,102,241,0.12);color:var(--primary-color);padding:0.1rem 0.35rem;border-radius:0.3rem;margin-left:0.3rem;">🔒 fatura fechada</small>`
-            : '';
+
+        let parcelaInfo = '';
+        let acoesParcela = '';
+        if (lancamento.parcelado) {
+            const total = lancamento.totalParcelas;
+            const atual = lancamento.numeroParcela;
+            const restantes = total - atual + 1; // incluindo a atual
+            parcelaInfo = ` <small style='color:var(--primary-color);font-weight:600;'>(${atual}/${total}) — ${restantes} restante${restantes !== 1 ? 's' : ''}</small>`;
+            // Botão para excluir todas as parcelas do grupo
+            if (lancamento.grupoId) {
+                acoesParcela = `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelasGrupo('${lancamento.grupoId}')" title="Excluir todas as parcelas">🗑 todas</button>`;
+            } else {
+                // compatibilidade antiga (sem grupoId)
+                const grupoNome = lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '');
+                acoesParcela = `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>`;
+            }
+        }
         tr.innerHTML = `
             <td>${dia}/${mes}/${ano}</td>
-            <td>${lancamento.descricao}${parcelaInfo}${arquivadoBadge}</td>
+            <td>${lancamento.descricao}${parcelaInfo}</td>
             <td>${lancamento.formaPagamento}</td>
             <td>${valorHtml}</td>
             <td>
-                ${!arquivado ? `<button class="action-btn edit-btn" data-index="${index}">✎</button>` : ''}
+                <button class="action-btn edit-btn" data-index="${index}">✎</button>
                 <button class="action-btn delete-btn" data-index="${index}">×</button>
-                ${lancamento.parcelado && !arquivado ? `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>` : ''}
+                ${acoesParcela}
             </td>`;
         tbody.appendChild(tr);
     });
-
     document.querySelectorAll('#tabela-lancamentos .delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             lancamentos.splice(parseInt(this.dataset.index), 1);
@@ -1751,16 +1227,6 @@ window.addEventListener('click', e => { if (e.target == modal) modal.style.displ
 
 /* ===== PAGAMENTOS ===== */
 function getFaturaCartao(nomeCartao) {
-    // Se a fatura está congelada (usuário confirmou o fechamento), usa o valor snapshot
-    if (faturasFechadas[nomeCartao]) {
-        return faturasFechadas[nomeCartao].valor;
-    }
-    // Fatura em aberto: calcula pelo período atual
-    const cartaoObj = cartoes.find(c => c.nome === nomeCartao);
-    if (cartaoObj) {
-        return calcularFaturaCartaoAtual(nomeCartao) + somaContasFixasCartao('Cartão ' + nomeCartao);
-    }
-    // Fallback legado
     const nome = nomeCartao.toLowerCase();
     if (nome.includes('nubank')) return calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
     if (nome.includes('inter'))  return calcularFaturaInter()  + somaContasFixasCartao('Cartão Inter');
@@ -1771,231 +1237,123 @@ function getFaturaCartao(nomeCartao) {
 }
 
 function atualizarPagamentos() {
-    const container = document.getElementById('pagamentos');
+    const salario15 = getSalarioCiclo('dia15');
+    const salario30 = getSalarioCiclo('dia30');
 
-    // Limpa os painéis de ciclos anteriores (exceto o h2 e os radio buttons)
-    const h2 = container.querySelector('h2');
-    // Remove tudo exceto o h2
-    Array.from(container.children).forEach(el => {
-        if (el !== h2) el.remove();
-    });
+    // Montar lista de faturas por ciclo a partir dos cartões cadastrados
+    const cartoes15 = cartoes.filter(c => c.ciclo === 'dia15');
+    const cartoes30 = cartoes.filter(c => c.ciclo === 'dia30');
 
-    const ciclosAtivos = getCiclos();
+    const faturas15 = cartoes15.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
+    const faturas30 = cartoes30.map(c => ({ nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite)||0 }));
 
-    // Opções de ciclo (radio buttons)
-    const opcoesDiv = document.createElement('div');
-    opcoesDiv.className = 'payment-options';
-    ciclosAtivos.forEach((ciclo, idx) => {
-        const label = document.createElement('label');
-        label.className = 'payment-option';
-        label.innerHTML = `<input type="radio" name="payment-date" value="${ciclo.id}" ${idx === 0 ? 'checked' : ''}> Contas ${ciclo.nome}`;
-        opcoesDiv.appendChild(label);
-    });
-    container.appendChild(opcoesDiv);
+    const totalFaturas15 = faturas15.reduce((t,f) => t + f.fatura, 0);
+    const totalFaturas30 = faturas30.reduce((t,f) => t + f.fatura, 0);
+    const fixasDia15SemCartao = somaContasFixasCiclo('dia15', true);
+    const fixasDia30SemCartao = somaContasFixasCiclo('dia30', true);
 
-    // ── Faturas fechadas aguardando pagamento (topo, fora dos radio panels) ──
-    const faturasPendentes = Object.values(faturasFechadas);
-    if (faturasPendentes.length > 0) {
-        const pendDiv = document.createElement('div');
-        pendDiv.style.cssText = 'margin-bottom:1.5rem;';
-
-        const pendTitle = document.createElement('div');
-        pendTitle.style.cssText = 'font-size:0.8rem;font-weight:700;color:#dc2626;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;';
-        pendTitle.innerHTML = '<i class="fas fa-lock"></i> Faturas fechadas — aguardando pagamento';
-        pendDiv.appendChild(pendTitle);
-
-        faturasPendentes.forEach(fat => {
-            const cartao = cartoes.find(c => c.nome === fat.cartaoNome);
-            const fmtDate = s => new Date(s + 'T12:00:00').toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
-            const card = document.createElement('div');
-            card.style.cssText = 'border:2px solid #fca5a5;border-radius:var(--border-radius);padding:1rem 1.25rem;margin-bottom:0.75rem;background:rgba(254,226,226,0.3);';
-            card.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-                    <div>
-                        <span style="font-weight:700;font-size:1rem;">💳 ${fat.cartaoNome}</span>
-                        <div style="font-size:0.78rem;color:var(--text-light);margin-top:0.2rem;">
-                            Fechou em ${fmtDate(fat.dataFechamento)} • Vence dia ${fat.vencimentoDia}
-                        </div>
-                    </div>
-                    <span style="font-size:1.2rem;font-weight:700;color:#dc2626;">${formatarMoeda(fat.valor)}</span>
-                </div>
-                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-                    <button class="pay-btn" style="flex:1;min-width:140px;background:linear-gradient(135deg,#dc2626,#b91c1c);"
-                        onclick="pagarFaturaCartao('${fat.cartaoNome}')">
-                        <i class="fas fa-check-circle"></i> Pagar Contas
-                    </button>
-                    <button style="flex:1;min-width:140px;background:var(--bg-light);color:var(--text-dark);border:1px solid var(--border-light);border-radius:var(--border-radius);padding:0.65rem 1rem;cursor:pointer;font-weight:600;"
-                        onclick="verDetalhesFaturaFechada('${fat.cartaoNome}')">
-                        <i class="fas fa-list"></i> Ver detalhes
-                    </button>
-                </div>`;
-            pendDiv.appendChild(card);
-        });
-        container.appendChild(pendDiv);
-
-        // Divisor
-        const hr = document.createElement('div');
-        hr.style.cssText = 'border-top:1px solid var(--border-light);margin-bottom:1.5rem;';
-        container.appendChild(hr);
+    function criarItemPagamento(label, valor) {
+        const div = document.createElement('div');
+        div.className = 'payment-item';
+        div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
+        return div;
     }
 
-    // ── Painéis de ciclo aberto ──
-    ciclosAtivos.forEach((ciclo, idx) => {
-        const salarioCiclo = getSalarioCiclo(ciclo.id);
-        const cartoesCiclo = cartoes.filter(c => c.ciclo === ciclo.id);
-
-        // Cartões deste ciclo que já têm fatura fechada pendente — não exibir de novo aqui
-        const cartoesAbertos = cartoesCiclo.filter(c => !faturasFechadas[c.nome]);
-
-        const faturasCiclo = cartoesAbertos.map(c => ({
-            nome: c.nome, fatura: getFaturaCartao(c.nome), limite: parseFloat(c.limite) || 0,
-            cartao: c
-        }));
-        const totalFaturas = faturasCiclo.reduce((t, f) => t + f.fatura, 0);
-        const fixasSemCartao = somaContasFixasCiclo(ciclo.id, true);
-
-        const panel = document.createElement('div');
-        panel.id = `payment-ciclo-${ciclo.id}`;
-        panel.className = 'payment-details' + (idx > 0 ? ' hidden' : '');
-
-        // Período do ciclo aberto
-        if (cartoesAbertos.length > 0) {
-            const { inicio, fim } = getPeriodoFaturaAtual(cartoesAbertos[0]);
-            const fmtDate = d => d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
-            const periodoDiv = document.createElement('div');
-            periodoDiv.style.cssText = 'font-size:0.8rem;color:var(--text-light);margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem;';
-            periodoDiv.innerHTML = `<i class="fas fa-calendar-alt" style="color:var(--primary-color)"></i> Ciclo aberto: <strong>${fmtDate(inicio)}</strong> → <strong>${fmtDate(fim)}</strong>`;
-            panel.appendChild(periodoDiv);
-        } else if (cartoesAbertos.length === 0 && cartoesCiclo.length > 0) {
-            const avisoDiv = document.createElement('div');
-            avisoDiv.style.cssText = 'font-size:0.85rem;color:#d97706;margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem;background:rgba(251,191,36,0.1);border-radius:var(--border-radius);padding:0.6rem 1rem;';
-            avisoDiv.innerHTML = '<i class="fas fa-info-circle"></i> Todas as faturas deste ciclo estão fechadas. Pague-as acima para iniciar o próximo ciclo.';
-            panel.appendChild(avisoDiv);
-        }
-
-        const itemsDiv = document.createElement('div');
-        itemsDiv.id = `payment-ciclo-items-${ciclo.id}`;
-
-        // Contas fixas em destaque
-        contasFixas.filter(c => c.ciclo === ciclo.id && c.destaque).forEach(c => {
-            const item = criarItemPagamento(c.nome, parseFloat(c.valor), c);
-            if (c.pagamento === 'Boleto' && c.codbarras) {
-                const barcodeDiv = document.createElement('div');
-                barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
-                barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
-                item.style.flexWrap = 'wrap';
-                item.appendChild(barcodeDiv);
-            }
-            itemsDiv.appendChild(item);
-        });
-
-        // Faturas dos cartões abertos
-        if (faturasCiclo.length > 0) {
-            faturasCiclo.forEach(f => itemsDiv.appendChild(criarItemFaturaCartao('Fatura ' + f.nome + ' (aberta)', f.fatura, f.limite, f.cartao)));
-        }
-
-        // Investimento e total
-        const despesasCiclo = fixasSemCartao + totalFaturas;
-        const investimento = Math.max(0, salarioCiclo - despesasCiclo);
-        itemsDiv.appendChild(criarItemPagamento('Investir', investimento));
-        const totalItem = criarItemPagamento('Total', salarioCiclo);
-        totalItem.style.cssText += ';font-weight:600;font-size:1.05rem;padding-top:1.25rem;border-bottom:none;';
-        itemsDiv.appendChild(totalItem);
-
-        panel.appendChild(itemsDiv);
-
-        // Botão Pagar Contas (só aparece se houver fatura fechada neste ciclo)
-        const btnDiv = document.createElement('div');
-        btnDiv.style.cssText = 'display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1.25rem;';
-        const btn = document.createElement('button');
-        btn.className = 'pay-btn';
-        btn.innerHTML = `<i class="fas fa-file-alt"></i> Pagar Contas`;
-        btn.onclick = () => gerarRelatorioPagamento(ciclo.id);
-        btnDiv.appendChild(btn);
-        panel.appendChild(btnDiv);
-
-        container.appendChild(panel);
-    });
-
-    // Event listeners para os radio buttons
-    container.querySelectorAll('input[name="payment-date"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            container.querySelectorAll('.payment-details').forEach(p => p.classList.add('hidden'));
-            const panel = document.getElementById(`payment-ciclo-${this.value}`);
-            if (panel) panel.classList.remove('hidden');
-        });
-    });
-}
-
-function criarItemPagamento(label, valor, conta) {
-    const div = document.createElement('div');
-    div.className = 'payment-item';
-    let extra = '';
-    if (conta && conta.prazo === 'parcelas' && conta.parcelas) {
-        extra = `<small style="font-size:0.75rem;color:var(--primary-color);font-weight:600;margin-left:0.4rem;">${conta.parcelas}x restante${conta.parcelas > 1 ? 's' : ''}</small>`;
+    function criarItemFaturaCartao(label, valor, limite) {
+        const saldoDisp = limite - valor;
+        const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+        const div = document.createElement('div');
+        div.className = 'payment-item';
+        div.innerHTML = `
+            <span>${label}:</span>
+            <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                <span style="font-weight:600;">${formatarMoeda(valor)}</span>
+                ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
+            </span>`;
+        return div;
     }
-    div.innerHTML = `<span>${label}:${extra}</span><span>${formatarMoeda(valor)}</span>`;
-    return div;
-}
 
-function criarItemFaturaCartao(label, valor, limite, cartao) {
-    const saldoDisp = limite - valor;
-    const saldoCor = saldoDisp >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-    // Mostrar status do período
-    let statusPeriodo = '';
-    if (cartao) {
-        const hoje = new Date();
-        const diaHoje = hoje.getDate();
-        const fechamento = parseInt(cartao.fechamento);
-        const vencimento = parseInt(cartao.vencimento);
-        const diasFecha = ((fechamento - diaHoje + 31) % 31) || 31;
-        const diasVence = ((vencimento - diaHoje + 31) % 31) || 31;
-        if (parseInt(cartao.fechamento) === diaHoje) {
-            statusPeriodo = '<small style="color:#a78bfa;font-weight:600;">🔒 Fechou hoje</small>';
-        } else if (diasFecha <= 3) {
-            statusPeriodo = `<small style="color:#f59e0b;font-weight:600;">⚠️ Fecha em ${diasFecha}d</small>`;
-        } else if (parseInt(cartao.vencimento) === diaHoje) {
-            statusPeriodo = '<small style="color:#dc2626;font-weight:600;">⏰ Vence hoje!</small>';
-        } else if (diasVence <= 3) {
-            statusPeriodo = `<small style="color:#dc2626;font-weight:600;">⏰ Vence em ${diasVence}d</small>`;
+    /* --- DIA 15 --- */
+    const items15 = document.getElementById('payment-dia15-items');
+    items15.innerHTML = '';
+    contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
+        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+        if (c.pagamento === 'Boleto' && c.codbarras) {
+            const barcodeDiv = document.createElement('div');
+            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
+            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
+            item.style.flexWrap = 'wrap';
+            item.appendChild(barcodeDiv);
         }
-    }
-    const div = document.createElement('div');
-    div.className = 'payment-item';
-    div.innerHTML = `
-        <span style="display:flex;flex-direction:column;gap:0.15rem;">${label}${statusPeriodo ? '<br>' + statusPeriodo : ''}</span>
-        <span style="display:flex;flex-direction:column;align-items:flex-end;">
-            <span style="font-weight:600;">${formatarMoeda(valor)}</span>
-            ${limite > 0 ? `<small style="font-size:0.75rem;color:${saldoCor};font-weight:500;">${formatarMoeda(saldoDisp)}</small>` : ''}
-        </span>`;
-    return div;
+        items15.appendChild(item);
+    });
+    faturas15.forEach(f => items15.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+    const despesasDia15 = fixasDia15SemCartao + totalFaturas15;
+    const investimentoDia15 = Math.max(0, salario15 - despesasDia15);
+    items15.appendChild(criarItemPagamento('Investir', investimentoDia15));
+    const totalItem15 = criarItemPagamento('Total', salario15);
+    totalItem15.style.fontWeight = '600'; totalItem15.style.fontSize = '1.05rem';
+    totalItem15.style.paddingTop = '1.25rem'; totalItem15.style.borderBottom = 'none';
+    items15.appendChild(totalItem15);
+
+    /* --- DIA 30 --- */
+    const items30 = document.getElementById('payment-dia30-items');
+    items30.innerHTML = '';
+    contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
+        const item = criarItemPagamento(c.nome, parseFloat(c.valor));
+        if (c.pagamento === 'Boleto' && c.codbarras) {
+            const barcodeDiv = document.createElement('div');
+            barcodeDiv.style.cssText = 'font-size:0.72rem;color:var(--text-light);word-break:break-all;padding:0.2rem 0 0.5rem 0;font-family:monospace;width:100%;';
+            barcodeDiv.innerHTML = `<i class="fas fa-barcode" style="margin-right:0.3rem;"></i>${c.codbarras}`;
+            item.style.flexWrap = 'wrap';
+            item.appendChild(barcodeDiv);
+        }
+        items30.appendChild(item);
+    });
+    faturas30.forEach(f => items30.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
+    const despesasDia30 = fixasDia30SemCartao + totalFaturas30;
+    const investimentoDia30 = Math.max(0, salario30 - despesasDia30);
+    items30.appendChild(criarItemPagamento('Investir', investimentoDia30));
+    const totalItem30 = criarItemPagamento('Total', salario30);
+    totalItem30.style.fontWeight = '600'; totalItem30.style.fontSize = '1.05rem';
+    totalItem30.style.paddingTop = '1.25rem'; totalItem30.style.borderBottom = 'none';
+    items30.appendChild(totalItem30);
 }
 
 /* ===== RESUMO / GRÁFICO ===== */
 function atualizarResumoFinanceiro() {
-    // ENTRADAS: soma de todos os salários dos ciclos ativos
-    const totalEntradas = getCiclos().reduce((t, c) => t + getSalarioCiclo(c.id), 0);
+    // ENTRADAS: soma dos salários configurados
+    const salario1 = parseFloat(configuracoes.salario1) || 0;
+    const salario2 = parseFloat(configuracoes.salario2) || 0;
+    const totalEntradas = salario1 + salario2;
 
     // DESPESAS FIXAS: soma de TODAS as contas fixas/monitoradas cadastradas
     const totalDespesasFixas = contasFixas.reduce((t, c) => t + (parseFloat(c.valor) || 0), 0);
 
     // INVESTIMENTOS: calculado igual à aba Pagamentos (sobra do salário após despesas de cada ciclo)
-    const totalInvestimentos = getCiclos().reduce((total, ciclo) => {
-        const faturasCicloTot = cartoes.filter(c => c.ciclo === ciclo.id).map(c => getFaturaCartao(c.nome)).reduce((t, v) => t + v, 0);
-        const despesasCiclo = somaContasFixasCiclo(ciclo.id, true) + faturasCicloTot;
-        const invest = Math.max(0, getSalarioCiclo(ciclo.id) - despesasCiclo);
-        return total + invest;
-    }, 0);
+    const faturas15tot = cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
+    const faturas30tot = cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
+    const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
+    const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
+    const investimentoDia15 = Math.max(0, salario1 - despesasDia15);
+    const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
+    const totalInvestimentos = investimentoDia15 + investimentoDia30;
 
-    // LIVRE: soma dos gastos reais nos cartões (lançamentos do ciclo atual)
-    const limiteTotal = cartoes.reduce((t, c) => t + (parseFloat(c.limite) || 0), 0);
-    let totalLivre = 0;
-    let totalExcesso = 0;
-    cartoes.forEach(c => {
-        const gasto = calcularFaturaCartaoAtual(c.nome);
-        totalLivre += gasto;
-        totalExcesso += Math.max(0, gasto - (parseFloat(c.limite) || 0));
-    });
+    // LIVRE: soma dos gastos reais nos cartões (lançamentos)
+    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0) || (configuracoes.saldoLivreNubank||0) + (configuracoes.saldoLivreInter||0) + (configuracoes.saldoLivreSofisa||0);
+    const gastoNubank = calcularFaturaNubank();
+    const gastoInter  = calcularFaturaInter();
+    const gastoSofisa = lancamentos.filter(l => l.formaPagamento === 'Cartão Sofisa').reduce((t, l) => t + parseFloat(l.valor), 0);
+    let totalLivre = gastoNubank + gastoInter + gastoSofisa;
+
+    // limites individuais para cálculo de excesso
+    const limiteNubank  = parseFloat(configuracoes.saldoLivreNubank)  || 0;
+    const limiteInter   = parseFloat(configuracoes.saldoLivreInter)   || 0;
+    const limiteSofisa  = parseFloat(configuracoes.saldoLivreSofisa)  || 0;
+    const excessoNubank = Math.max(0, gastoNubank - limiteNubank);
+    const excessoInter  = Math.max(0, gastoInter  - limiteInter);
+    const excessoSofisa = Math.max(0, gastoSofisa - limiteSofisa);
+    const totalExcesso  = excessoNubank + excessoInter + excessoSofisa;
     const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
 
     // PERCENTUAIS em relação às entradas
@@ -2092,114 +1450,7 @@ function carregarConfiguracoes() {
     renderSalarios();
     renderCartoes();
     atualizarSelectsPagamento();
-    atualizarSelectsCiclos(); // atualiza todos os selects de ciclo dinamicamente
 }
-
-/* ===== ATUALIZA SELECTS DE CICLO EM TODOS OS FORMULÁRIOS ===== */
-function atualizarSelectsCiclos() {
-    const ciclosAtivos = getCiclos();
-    const opts = ciclosAtivos.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
-    const ids = [
-        'sal-ciclo', 'sal-ciclo-m',
-        'cf-ciclo', 'cf-ciclo-m',
-        'cf-prazo', 'cf-prazo-m',
-        'cart-ciclo'
-    ];
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const cur = el.value;
-        // Para prazo/vencimento, adicionar também as opções não-ciclo
-        if (id.startsWith('cf-prazo')) {
-            const optsExtra = ciclosAtivos.map(c => `<option value="${c.id}">Todo dia ${c.dia} (${c.nome})</option>`).join('');
-            el.innerHTML = optsExtra +
-                '<option value="perder">A perder de vista (sem prazo)</option>' +
-                '<option value="parcelas">Parcelado</option>' +
-                '<option value="personalizado">Data específica</option>';
-        } else {
-            el.innerHTML = opts;
-        }
-        if (cur) el.value = cur;
-    });
-}
-
-/* ===== RENDERIZA CICLOS NA ABA CONFIGURAÇÕES ===== */
-function renderCiclos() {
-    const lista = document.getElementById('lista-ciclos');
-    if (!lista) return;
-    lista.innerHTML = '';
-    const ciclosAtivos = getCiclos();
-    if (ciclosAtivos.length === 0) {
-        lista.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;padding:0.5rem 0;">Nenhum ciclo cadastrado ainda.</p>';
-        return;
-    }
-    ciclosAtivos.forEach((c, i) => {
-        const div = document.createElement('div');
-        div.className = 'ciclo-config-card conta-fixa-card';
-        div.innerHTML = `
-            <div class="conta-fixa-info">
-                <span class="conta-fixa-nome"><i class="fas fa-sync-alt" style="color:var(--primary-color);margin-right:0.4rem;"></i> ${c.nome}</span>
-                <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> Vence dia ${c.dia}</span>
-                <span class="conta-fixa-badge" style="background:rgba(107,114,128,0.1);color:var(--text-light);">ID: ${c.id}</span>
-            </div>
-            <div class="conta-fixa-acoes">
-                <button class="action-btn edit-btn" title="Editar" onclick="editarCiclo(${i})">✎</button>
-                ${ciclosAtivos.length > 1 ? `<button class="action-btn delete-btn" title="Excluir" onclick="excluirCiclo(${i})">×</button>` : ''}
-            </div>`;
-        lista.appendChild(div);
-    });
-}
-
-function excluirCiclo(index) {
-    if (!confirm(`Excluir ciclo "${ciclos[index].nome}"? Contas e salários vinculados a ele perderão o ciclo.`)) return;
-    ciclos.splice(index, 1);
-    salvarFirebase('ciclos', ciclos);
-    renderCiclos(); atualizarSelectsCiclos(); atualizarPagamentos();
-}
-
-function editarCiclo(index) {
-    const c = ciclos[index];
-    document.getElementById('ciclo-nome-m').value = c.nome;
-    document.getElementById('ciclo-dia-m').value = c.dia;
-    document.getElementById('ciclo-id-m').value = c.id;
-    document.getElementById('ciclo-edit-index-m').value = index;
-    document.getElementById('form-ciclo-titulo-modal').innerHTML = '<i class="fas fa-edit"></i> Editar Ciclo';
-    document.getElementById('modalCiclo').style.display = 'block';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Botão adicionar ciclo
-    document.getElementById('btn-show-form-ciclo').addEventListener('click', () => {
-        document.getElementById('ciclo-nome-m').value = '';
-        document.getElementById('ciclo-dia-m').value = '';
-        document.getElementById('ciclo-id-m').value = '';
-        document.getElementById('ciclo-edit-index-m').value = -1;
-        document.getElementById('form-ciclo-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Ciclo';
-        document.getElementById('modalCiclo').style.display = 'block';
-    });
-
-    document.getElementById('btn-salvar-ciclo-m').addEventListener('click', () => {
-        const nome = document.getElementById('ciclo-nome-m').value.trim();
-        const dia  = parseInt(document.getElementById('ciclo-dia-m').value) || 0;
-        let id     = document.getElementById('ciclo-id-m').value.trim().replace(/\s+/g, '');
-        if (!nome || !dia || !id) { alert('Preencha nome, dia e ID do ciclo.'); return; }
-        const editIndex = parseInt(document.getElementById('ciclo-edit-index-m').value);
-        if (editIndex >= 0) {
-            ciclos[editIndex] = { id, nome, dia };
-        } else {
-            if (ciclos.find(c => c.id === id)) { alert('Já existe um ciclo com este ID.'); return; }
-            ciclos.push({ id, nome, dia });
-        }
-        salvarFirebase('ciclos', ciclos);
-        document.getElementById('modalCiclo').style.display = 'none';
-        renderCiclos(); atualizarSelectsCiclos(); atualizarPagamentos(); renderSalarios();
-    });
-
-    window.addEventListener('click', e => {
-        if (e.target === document.getElementById('modalCiclo'))
-            document.getElementById('modalCiclo').style.display = 'none';
-    });
-});
 
 function renderSalarios() {
     const lista = document.getElementById('lista-salarios');
@@ -2217,7 +1468,7 @@ function renderSalarios() {
         div.className = 'conta-fixa-card';
         div.innerHTML = `
             <div class="conta-fixa-info">
-                <span class="conta-fixa-nome"><i class="fas fa-money-bill-wave" style="color:var(--success-color);margin-right:0.4rem;"></i> ${getCicloLabel(s.ciclo)}</span>
+                <span class="conta-fixa-nome"><i class="fas fa-money-bill-wave" style="color:var(--success-color);margin-right:0.4rem;"></i> ${s.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
                 <span class="conta-fixa-valor">${formatarMoeda(parseFloat(s.valor))}</span>
                 <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> ${dia}/${mes}/${ano}</span>
             </div>
@@ -2265,7 +1516,7 @@ function renderCartoes() {
                 <span class="conta-fixa-valor">${formatarMoeda(parseFloat(c.limite))}</span>
                 <span class="conta-fixa-badge badge-prazo-fixo"><i class="fas fa-calendar-alt"></i> Vence dia ${c.vencimento}</span>
                 <span class="conta-fixa-badge badge-pag-boleto"><i class="fas fa-lock"></i> Fecha dia ${c.fechamento}</span>
-                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${getCicloLabel(c.ciclo)}</span>
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
             </div>
             <div class="conta-fixa-acoes">
                 <button class="action-btn edit-btn" title="Editar" onclick="editarCartao(${i})">✎</button>
@@ -2299,16 +1550,13 @@ function editarCartao(index) {
 
 /* ===== CONTAS FIXAS ===== */
 function prazoLabel(c) {
-    const cicloLabel = getCicloLabel(c.prazo);
-    const map = { perder: 'A perder de vista', parcelas: `${c.parcelas || '?'} parcelas`, personalizado: c.dataVenc || '' };
-    if (map[c.prazo] !== undefined) return map[c.prazo];
-    return cicloLabel; // é um id de ciclo dinâmico
+    const map = { dia15: 'Todo dia 15', dia30: 'Todo dia 30', perder: 'A perder de vista', parcelas: `${c.parcelas || '?'} parcelas`, personalizado: c.dataVenc || '' };
+    return map[c.prazo] || c.prazo;
 }
 function prazoBadgeClass(prazo) {
     if (prazo === 'perder') return 'badge-prazo-perder';
     if (prazo === 'parcelas') return 'badge-prazo-parcelas';
-    if (prazo === 'personalizado') return 'badge-prazo-fixo';
-    return 'badge-prazo-fixo'; // ciclo dinâmico
+    return 'badge-prazo-fixo';
 }
 function pagBadgeClass(pag) {
     if (pag === 'Cartão Nubank') return 'badge-pag-nubank';
@@ -2337,7 +1585,7 @@ function renderContasFixas() {
                 <span class="conta-fixa-badge ${prazoBadgeClass(c.prazo)}"><i class="fas fa-calendar-alt"></i> ${prazoLabel(c)}</span>
                 <span class="conta-fixa-badge ${pagBadgeClass(c.pagamento)}">${c.pagamento}</span>
                 ${c.variavel === 'sim' ? '<span class="conta-fixa-badge badge-variavel"><i class="fas fa-edit"></i> Variável</span>' : ''}
-                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${getCicloLabel(c.ciclo)}</span>
+                <span class="conta-fixa-badge" style="background:rgba(99,102,241,0.08);color:var(--primary-color);">${c.ciclo === 'dia15' ? 'Dia 15' : 'Dia 30'}</span>
                 <span class="toggle-destaque ${c.destaque ? 'ativo' : 'inativo'}" onclick="toggleDestaque(${i})" title="Destacar no relatório de pagamentos">
                     <i class="fas fa-star"></i> ${c.destaque ? 'Destacado' : 'Destacar'}
                 </span>
@@ -2367,6 +1615,15 @@ function excluirTodasParcelas(grupoNome, formaPagamento) {
     const count = lancamentos.filter(l => l.parcelado && l.descricao.replace(/ \(\d+\/\d+\)$/, '') === grupoNome && l.formaPagamento === formaPagamento).length;
     if (!confirm(`Excluir todas as ${count} parcelas de "${grupoNome}"?`)) return;
     lancamentos = lancamentos.filter(l => !(l.parcelado && l.descricao.replace(/ \(\d+\/\d+\)$/, '') === grupoNome && l.formaPagamento === formaPagamento));
+    salvarFirebase('lancamentos', lancamentos);
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+}
+
+function excluirTodasParcelasGrupo(grupoId) {
+    const grupo = lancamentos.filter(l => l.grupoId === grupoId);
+    if (grupo.length === 0) return;
+    if (!confirm(`Excluir todas as ${grupo.length} parcelas de "${grupo[0].descricao}"?`)) return;
+    lancamentos = lancamentos.filter(l => l.grupoId !== grupoId);
     salvarFirebase('lancamentos', lancamentos);
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 }
@@ -2421,6 +1678,10 @@ function atualizarTabelaApartamento() {
     let totalEntrada = 0, totalEvolucaoObra = 0;
     let ultimaPendente = null;
 
+    const hoje = new Date();
+    const mesAtual = hoje.getMonth() + 1; // 1-12
+    const anoAtual = hoje.getFullYear();
+
     parcelasApartamento.forEach((p, i) => {
         const [ano, mes, dia] = p.data.split("-");
         const isPago = p.situacao === 'PAGO' || p.situacao === 'CURY CHEGA MAIS' || p.situacao === 'EVOLUÇÃO DE OBRA';
@@ -2438,8 +1699,15 @@ function atualizarTabelaApartamento() {
         totalConstrucao += p.construcao;
         const construcaoText = p.construcao > 0 ? p.construcao.toFixed(3) + '%' : '-';
         const tr = document.createElement('tr');
+
+        // Verificar se é o mês atual
+        const ehMesAtual = parseInt(mes) === mesAtual && parseInt(ano) === anoAtual;
+        if (ehMesAtual) {
+            tr.style.cssText = 'background: linear-gradient(90deg, rgba(99,102,241,0.10), rgba(99,102,241,0.05)); outline: 2px solid rgba(99,102,241,0.40); outline-offset: -1px; position: relative;';
+        }
+
         tr.innerHTML = `
-            <td>${p.mes}</td><td>${dia}/${mes}/${ano}</td>
+            <td>${ehMesAtual ? `<strong style="color:var(--primary-color);">📅 ${p.mes}</strong>` : p.mes}</td><td>${dia}/${mes}/${ano}</td>
             <td>${formatarMoeda(p.parcelaEntrada)}</td><td>${construcaoText}</td>
             <td>${formatarMoeda(p.evolucaoObra)}</td><td><strong>${formatarMoeda(p.parcelaTotal)}</strong></td>
             <td><span class="status-badge ${statusBadgeApt(p.situacao)}">${p.situacao}</span></td>
@@ -2542,158 +1810,103 @@ function emojiConta(nome) {
     return '📌';
 }
 
-/* ─────────────────────────────────────────────────
-   PAGAR FATURA DE UM CARTÃO ESPECÍFICO
-   Chamado pelo botão "Pagar Contas" de uma fatura fechada pendente.
-   1. Usa o valor congelado em faturasFechadas
-   2. Processa contas fixas do ciclo (reduz parcelas, remove personalizadas, zera variáveis)
-   3. Remove a entrada de faturasFechadas → sistema volta a mostrar o próximo ciclo aberto
-   4. Gera relatório para copiar/WhatsApp
-   ───────────────────────────────────────────────── */
-function pagarFaturaCartao(nomeCartao) {
-    const fat = faturasFechadas[nomeCartao];
-    if (!fat) { alert('Nenhuma fatura fechada encontrada para ' + nomeCartao); return; }
+function gerarRelatorioPagamento(dia) {
+    let relatorio = '';
+    const faturaNubankVal = calcularFaturaNubank() + somaContasFixasCartao('Cartão Nubank');
+    const faturaInterVal = calcularFaturaInter() + somaContasFixasCartao('Cartão Inter');
+    const faturaSofisaVal = calcularFaturaSofisa();
+    const fixas15 = somaContasFixasCiclo('dia15', true);
+    const fixas30 = somaContasFixasCiclo('dia30', true);
+    const invest15 = Math.max(0, (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal);
+    const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
+    const total15 = parseFloat(configuracoes.salario1) || 0;
+    const total30 = parseFloat(configuracoes.salario2) || 0;
 
-    const cicloId      = fat.cicloId;
-    const ciclo        = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
-    const salarioCiclo = getSalarioCiclo(cicloId);
-    const fixasCiclo   = contasFixas.filter(c => c.ciclo === cicloId && c.destaque);
-    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
-    const invest = Math.max(0, salarioCiclo - fixasSemCartao - fat.valor);
-
-    // ── Relatório ──
-    let rel = `📊 *Pagamentos ${ciclo.nome}* — ${new Date().toLocaleDateString('pt-BR')}\n\n`;
-    fixasCiclo.forEach(c => {
-        rel += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
-        if (c.prazo === 'parcelas' && c.parcelas) rel += ` (${c.parcelas}x restantes)`;
-        if (c.pagamento === 'Boleto' && c.codbarras) rel += `\n   📋 ${c.codbarras}`;
-        rel += '\n';
-    });
-    rel += `💳 Fatura ${nomeCartao}: ${formatarMoeda(fat.valor)}\n`;
-    rel += `\n📈 Investir: ${formatarMoeda(invest)}`;
-    rel += `\n💰 *Total entrada*: ${formatarMoeda(salarioCiclo)}`;
-
-    // ── Processar contas fixas do ciclo ──
-    contasFixas = contasFixas.reduce((acc, c) => {
-        if (c.ciclo !== cicloId) { acc.push(c); return acc; }
-        if (c.prazo === 'personalizado') return acc;           // remove data específica
-        if (c.prazo === 'parcelas') {
-            const rest = parseInt(c.parcelas) || 0;
-            if (rest <= 1) return acc;                          // última parcela: remove
-            acc.push({ ...c, parcelas: rest - 1 });             // reduz 1
-            return acc;
-        }
-        if (c.variavel === 'sim') { acc.push({ ...c, valor: 0 }); return acc; }
-        acc.push(c);
-        return acc;
-    }, []);
-
-    // ── Limpa a fatura fechada → próximo ciclo fica aberto ──
-    delete faturasFechadas[nomeCartao];
-    salvarFirebase('faturasFechadas', faturasFechadas);
-    salvarFirebase('contasFixas', contasFixas);
-
-    renderContasFixas();
-    atualizarDashboard();
-    atualizarPagamentos();
-    atualizarTabelaLancamentos();
-    verificarAvisosFatura();
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(rel)
-            .then(() => alert('✅ Fatura paga!\n\nRelatório copiado — é só colar no WhatsApp 😉\n\nO próximo ciclo já está em aberto na aba Pagamentos.'))
-            .catch(() => { prompt('Copie o relatório abaixo:', rel); });
-    } else {
-        prompt('Copie o relatório abaixo:', rel);
-    }
-}
-
-// Ver lançamentos de uma fatura fechada
-function verDetalhesFaturaFechada(nomeCartao) {
-    const fat = faturasFechadas[nomeCartao];
-    if (!fat || !fat.lancamentos) { alert('Sem lançamentos arquivados.'); return; }
-    const linhas = fat.lancamentos.map(l =>
-        `${l.data}  ${l.descricao.padEnd(25,' ')}  ${formatarMoeda(parseFloat(l.valor))}`
-    ).join('\n');
-    alert(`Lançamentos da fatura fechada — ${nomeCartao}:\n\n${linhas}\n\nTotal: ${formatarMoeda(fat.valor)}`);
-}
-
-// Mantido por compatibilidade (chamado em alguns lugares antigos)
-function gerarRelatorioPagamento(cicloId) {
-    const ciclo        = getCicloById(cicloId) || { id: cicloId, nome: cicloId, dia: 0 };
-    const salarioCiclo = getSalarioCiclo(cicloId);
-    const cartoesCiclo = cartoes.filter(c => c.ciclo === cicloId);
-
-    // Verificar se há pelo menos uma fatura fechada neste ciclo
-    const cartoesFechados = cartoesCiclo.filter(c => faturasFechadas[c.nome]);
-    if (cartoesFechados.length === 0) {
-        alert('Nenhuma fatura fechada neste ciclo.\n\nPrimeiro confirme o fechamento da fatura quando o sistema avisar no dia do fechamento do cartão.');
-        return;
+    // Helper: "pagar" uma forma de pagamento considerando parcelas
+    function pagarFormaPagamento(formaPagamento) {
+        // Para cada grupo parcelado nesta forma de pagamento, remover só a parcela mais baixa (pagar uma)
+        const grupoIds = [...new Set(lancamentos.filter(l => l.parcelado && l.grupoId && l.formaPagamento === formaPagamento).map(l => l.grupoId))];
+        grupoIds.forEach(gid => {
+            const grupo = lancamentos.filter(l => l.grupoId === gid).sort((a,b) => a.numeroParcela - b.numeroParcela);
+            if (grupo.length === 0) return;
+            // Remove a parcela de menor número (a "próxima a pagar")
+            const parcelaIdx = lancamentos.findIndex(l => l.grupoId === gid && l.numeroParcela === grupo[0].numeroParcela);
+            if (parcelaIdx >= 0) lancamentos.splice(parcelaIdx, 1);
+        });
+        // Remover lançamentos simples (não parcelados) desta forma de pagamento
+        lancamentos = lancamentos.filter(l => !(l.formaPagamento === formaPagamento && !l.parcelado));
     }
 
-    const fixasCiclo     = contasFixas.filter(c => c.ciclo === cicloId && c.destaque);
-    const totalFaturas   = cartoesFechados.reduce((t, c) => t + faturasFechadas[c.nome].valor, 0);
-    const fixasSemCartao = somaContasFixasCiclo(cicloId, true);
-    const invest         = Math.max(0, salarioCiclo - fixasSemCartao - totalFaturas);
-
-    // ── Monta relatório ──
-    let rel = `📊 *Pagamentos ${ciclo.nome}* — ${new Date().toLocaleDateString('pt-BR')}\n\n`;
-    fixasCiclo.forEach(c => {
-        rel += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
-        if (c.prazo === 'parcelas' && c.parcelas) rel += ` (${c.parcelas}x restantes)`;
-        if (c.pagamento === 'Boleto' && c.codbarras) rel += `\n   📋 ${c.codbarras}`;
-        rel += '\n';
-    });
-    cartoesFechados.forEach(c => {
-        rel += `💳 Fatura ${c.nome}: ${formatarMoeda(faturasFechadas[c.nome].valor)}\n`;
-    });
-    rel += `\n📈 Investir: ${formatarMoeda(invest)}`;
-    rel += `\n💰 *Total entrada*: ${formatarMoeda(salarioCiclo)}`;
-
-    // ── Processar contas fixas deste ciclo ──
-    const novasContasFixas = [];
-    contasFixas.forEach(c => {
-        if (c.ciclo !== cicloId) { novasContasFixas.push(c); return; }
-        if (c.prazo === 'personalizado') return; // data específica: remove
-        if (c.prazo === 'parcelas') {
-            const restantes = parseInt(c.parcelas) || 0;
-            if (restantes <= 1) return; // última parcela: remove
-            novasContasFixas.push({ ...c, parcelas: restantes - 1 });
-            return;
-        }
-        if (c.variavel === 'sim') { novasContasFixas.push({ ...c, valor: 0 }); return; }
-        novasContasFixas.push(c);
-    });
-    contasFixas = novasContasFixas;
-    salvarFirebase('contasFixas', contasFixas);
-
-    // ── Limpar faturas congeladas e desarquivar lançamentos ──
-    cartoesFechados.forEach(c => {
-        const faturaKey = c.nome + '_' + faturasFechadas[c.nome].dataFechamento;
-        lancamentos = lancamentos.map(l =>
-            l.faturaFechadaId === faturaKey
-                ? { ...l, faturaFechadaId: null, faturaFechadaPaga: faturaKey }
-                : l
-        );
-        delete faturasFechadas[c.nome];
-    });
-    salvarFirebase('faturasFechadas', faturasFechadas);
+    if (dia === 15) {
+        relatorio += `📊 *Pagamentos do dia 15:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nome do cartão dia15 nos cartoes cadastrados
+        const cartaoDia15 = cartoes.find(c => c.ciclo === 'dia15');
+        const nomeFatura15 = cartaoDia15 ? cartaoDia15.nome : 'Nubank';
+        relatorio += `💳 Fatura ${nomeFatura15}: ${formatarMoeda(faturaNubankVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
+        pagarFormaPagamento('Cartão Nubank');
+        // Excluir contas de data específica do ciclo dia15; zerar apenas as variáveis
+        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia15' && c.prazo === 'personalizado'));
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia15' && c.variavel === 'sim')
+                contasFixas[i].valor = 0;
+        });
+        // Decrementar parcelas parceladas nas contas fixas (prazo 'parcelas')
+        contasFixas.forEach((c, i) => {
+            if (c.ciclo === 'dia15' && c.prazo === 'parcelas' && c.parcelas > 0) {
+                contasFixas[i].parcelas = parseInt(c.parcelas) - 1;
+            }
+        });
+        // Remover contas fixas parceladas zeradas
+        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && parseInt(c.parcelas) <= 0));
+        salvarFirebase('contasFixas', contasFixas);
+    }
+    if (dia === 30) {
+        relatorio += `📊 *Pagamentos do dia 30:*\n\n`;
+        contasFixas.filter(c => c.ciclo === 'dia30' && c.destaque).forEach(c => {
+            relatorio += `${emojiConta(c.nome)} ${c.nome}: ${formatarMoeda(parseFloat(c.valor))}`;
+            if (c.pagamento === 'Boleto' && c.codbarras) {
+                relatorio += `\n   📋 Código: ${c.codbarras}`;
+            }
+            relatorio += `\n`;
+        });
+        // Buscar nomes dos cartões dia30
+        const cartoesDia30 = cartoes.filter(c => c.ciclo === 'dia30');
+        const nomeInter  = cartoesDia30.find(c => c.nome.toLowerCase().includes('inter'))?.nome  || 'Inter';
+        const nomeSofisa = cartoesDia30.find(c => c.nome.toLowerCase().includes('sofisa'))?.nome || 'Sofisa';
+        relatorio += `💳 Fatura ${nomeInter}: ${formatarMoeda(faturaInterVal)}\n`;
+        relatorio += `💳 Fatura ${nomeSofisa}: ${formatarMoeda(faturaSofisaVal)}\n`;
+        relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
+        relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
+        pagarFormaPagamento('Cartão Inter');
+        pagarFormaPagamento('Cartão Sofisa');
+        // Excluir contas de data específica do ciclo dia30; zerar apenas as variáveis
+        contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia30' && c.prazo === 'personalizado'));
+        contasFixas.forEach((c,i) => {
+            if (c.ciclo === 'dia30' && c.variavel === 'sim')
+                contasFixas[i].valor = 0;
+        });
+        // Decrementar parcelas parceladas nas contas fixas (prazo 'parcelas')
+        contasFixas.forEach((c, i) => {
+            if (c.ciclo === 'dia30' && c.prazo === 'parcelas' && c.parcelas > 0) {
+                contasFixas[i].parcelas = parseInt(c.parcelas) - 1;
+            }
+        });
+        // Remover contas fixas parceladas zeradas
+        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && parseInt(c.parcelas) <= 0));
+        salvarFirebase('contasFixas', contasFixas);
+    }
     salvarFirebase('lancamentos', lancamentos);
-
-    // ── Atualizar telas ──
-    renderContasFixas();
-    atualizarDashboard();
-    atualizarPagamentos();
-    atualizarTabelaLancamentos();
-    verificarAvisosFatura();
-
-    // ── Copiar relatório ──
-    const msg = '✅ Contas pagas!\n\nRelatório copiado — é só colar no WhatsApp 😉\nNovos lançamentos já entram no próximo ciclo.';
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(rel).then(() => alert(msg)).catch(() => prompt('Copie:', rel));
-    } else {
-        prompt('Copie o relatório abaixo:', rel);
-    }
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+    navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
 }
 
 /* ===== EVENT LISTENERS ===== */
@@ -2706,18 +1919,41 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
+document.getElementById('eh-parcelado').addEventListener('change', function() {
+    document.getElementById('grupo-num-parcelas').style.display = this.checked ? '' : 'none';
+});
+
 document.getElementById('form-lancamento').addEventListener('submit', function(e) {
     e.preventDefault();
-    lancamentos.push({
+    const ehParcelado = document.getElementById('eh-parcelado').checked;
+    const numParcelas = parseInt(document.getElementById('num-parcelas').value) || 1;
+    const base = {
         data: document.getElementById('data').value,
         tipo: document.getElementById('tipo').value,
         descricao: document.getElementById('descricao').value,
         valor: document.getElementById('valor').value,
         categoria: document.getElementById('categoria').value,
         formaPagamento: document.getElementById('forma-pagamento').value
-    });
+    };
+    if (ehParcelado && numParcelas >= 2) {
+        const grupoId = Date.now().toString();
+        for (let i = 1; i <= numParcelas; i++) {
+            lancamentos.push({
+                ...base,
+                descricao: base.descricao,
+                parcelado: true,
+                grupoId,
+                numeroParcela: i,
+                totalParcelas: numParcelas
+            });
+        }
+    } else {
+        lancamentos.push(base);
+    }
     salvarFirebase('lancamentos', lancamentos);
     this.reset();
+    document.getElementById('eh-parcelado').checked = false;
+    document.getElementById('grupo-num-parcelas').style.display = 'none';
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 });
@@ -2938,6 +2174,20 @@ document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
     carregarConfiguracoes(); atualizarDashboard(); atualizarPagamentos();
 });
 
+document.querySelectorAll('input[name="payment-date"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const dia15 = document.getElementById('payment-dia15');
+        const dia30 = document.getElementById('payment-dia30');
+        if (this.value === '15') {
+            dia15.style.display = '';
+            dia30.style.display = 'none';
+        } else {
+            dia15.style.display = 'none';
+            dia30.style.display = '';
+        }
+    });
+});
+
 document.getElementById('form-edicao').addEventListener('submit', function(e) {
     e.preventDefault();
     const idx = parseInt(document.getElementById('edit-index').value);
@@ -2953,6 +2203,9 @@ document.getElementById('form-edicao').addEventListener('submit', function(e) {
     modal.style.display = 'none';
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 });
+
+document.getElementById('relatorio-nubank').addEventListener('click', () => gerarRelatorioPagamento(15));
+document.getElementById('relatorio-inter').addEventListener('click', () => gerarRelatorioPagamento(30));
 
 const modalApartamento = document.getElementById('editModalApartamento');
 document.getElementById('closeApartamento').addEventListener('click', () => modalApartamento.style.display = 'none');
@@ -3020,8 +2273,7 @@ document.getElementById('btn-show-form-salario').addEventListener('click', () =>
     document.getElementById('form-salario-titulo-modal').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Salário';
     document.getElementById('sal-data-m').value = new Date().toISOString().split('T')[0];
     document.getElementById('sal-valor-m').value = '';
-    atualizarSelectsCiclos();
-    document.getElementById('sal-ciclo-m').value = getCiclos()[0]?.id || 'dia15';
+    document.getElementById('sal-ciclo-m').value = 'dia15';
     document.getElementById('modalSalario').style.display = 'block';
 });
 
@@ -3067,8 +2319,8 @@ document.getElementById('btn-show-form-conta').addEventListener('click', () => {
     document.getElementById('cf-nome-m').value = '';
     document.getElementById('cf-valor-m').value = '';
     document.getElementById('cf-variavel-m').value = 'nao';
-    document.getElementById('cf-prazo-m').value = getCiclos()[0]?.id || 'dia15';
-    document.getElementById('cf-ciclo-m').value = getCiclos()[0]?.id || 'dia15';
+    document.getElementById('cf-prazo-m').value = 'dia15';
+    document.getElementById('cf-ciclo-m').value = 'dia15';
     document.getElementById('cf-destaque-m').checked = false;
     document.getElementById('cf-codbarras-m').value = '';
     document.getElementById('cf-codbarras-group-m').style.display = 'none';
