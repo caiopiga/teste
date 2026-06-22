@@ -1036,6 +1036,7 @@ function iniciarSincronizacao() {
     salarios             = dados.salarios             || [];
     cartoes              = dados.cartoes              || [];
     parcelasApartamento  = dados.parcelasApartamento  || [...parcelasApartamentoPadrao];
+    setTimeout(processarLancamentoRapido, 1000);
 
     // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
     if (salarios.length === 0 && (configuracoes.salario1 > 0 || configuracoes.salario2 > 0)) {
