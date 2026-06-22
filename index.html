@@ -92,7 +92,7 @@
         .payment-option { display: inline-flex; align-items: center; margin-right: 1.5rem; cursor: pointer; font-weight: 500; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm); transition: var(--transition); background-color: var(--bg-light); }
         .payment-option:hover { background-color: rgba(99, 102, 241, 0.1); }
         .payment-option input { margin-right: 0.5rem; cursor: pointer; width: auto; }
-        .payment-details { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); contain: layout; }
+        .payment-details { margin-top: 1.5rem; background-color: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
         .payment-item { display: flex; justify-content: space-between; padding: 0.85rem 0; border-bottom: 1px solid var(--border-light); align-items: center; }
         .payment-item:last-child { border-bottom: none; font-weight: 600; padding-top: 1.25rem; font-size: 1.05rem; }
         .payment-item span:first-child { font-weight: 500; }
@@ -432,20 +432,6 @@
                 <div class="form-group">
                     <label for="data">Data</label>
                     <input type="date" id="data" required>
-                </div>
-            </div>
-            <!-- Parcelamento -->
-            <div class="form-row">
-                <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;padding-top:1.5rem;min-width:auto;flex:none;">
-                    <input type="checkbox" id="eh-parcelado" style="width:auto;cursor:pointer;">
-                    <label for="eh-parcelado" style="margin:0;cursor:pointer;font-size:0.9rem;">
-                        <i class="fas fa-layer-group" style="color:var(--primary-color);"></i> É uma compra parcelada?
-                    </label>
-                </div>
-                <div class="form-group" id="grupo-num-parcelas" style="display:none;">
-                    <label for="num-parcelas">Nº de Parcelas</label>
-                    <input type="number" id="num-parcelas" min="2" max="120" placeholder="Ex: 5" style="max-width:160px;">
-                    <small style="color:var(--text-light);font-size:0.78rem;display:block;margin-top:0.3rem;">O valor inserido acima será <strong>por parcela</strong>. O sistema irá decrementar a cada "Pagar Contas".</small>
                 </div>
             </div>
             <button type="submit"><i class="fas fa-save"></i> Adicionar Lançamento</button>
@@ -1169,23 +1155,8 @@ function atualizarTabelaLancamentos() {
         const valorHtml = valorFloat < 0
             ? `<span style="color:red">-${valorFormatado}</span>`
             : `<span style="color:green">${valorFormatado}</span>`;
-
-        let parcelaInfo = '';
-        let acoesParcela = '';
-        if (lancamento.parcelado) {
-            const total = lancamento.totalParcelas;
-            const atual = lancamento.numeroParcela;
-            const restantes = total - atual + 1; // incluindo a atual
-            parcelaInfo = ` <small style='color:var(--primary-color);font-weight:600;'>(${atual}/${total}) — ${restantes} restante${restantes !== 1 ? 's' : ''}</small>`;
-            // Botão para excluir todas as parcelas do grupo
-            if (lancamento.grupoId) {
-                acoesParcela = `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelasGrupo('${lancamento.grupoId}')" title="Excluir todas as parcelas">🗑 todas</button>`;
-            } else {
-                // compatibilidade antiga (sem grupoId)
-                const grupoNome = lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '');
-                acoesParcela = `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>`;
-            }
-        }
+        const parcelaInfo = lancamento.parcelado ? ` <small style='color:var(--primary-color);font-weight:600;'>(${lancamento.numeroParcela}/${lancamento.totalParcelas})</small>` : '';
+        const grupoNome = lancamento.parcelado ? lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '') : '';
         tr.innerHTML = `
             <td>${dia}/${mes}/${ano}</td>
             <td>${lancamento.descricao}${parcelaInfo}</td>
@@ -1194,7 +1165,7 @@ function atualizarTabelaLancamentos() {
             <td>
                 <button class="action-btn edit-btn" data-index="${index}">✎</button>
                 <button class="action-btn delete-btn" data-index="${index}">×</button>
-                ${acoesParcela}
+                ${lancamento.parcelado ? `<button class="action-btn" style="background:var(--warning-color);font-size:0.65rem;width:auto;padding:0 0.4rem;" onclick="excluirTodasParcelas('${grupoNome}', '${lancamento.formaPagamento}')" title="Excluir todas as parcelas">🗑 todas</button>` : ''}
             </td>`;
         tbody.appendChild(tr);
     });
@@ -1619,15 +1590,6 @@ function excluirTodasParcelas(grupoNome, formaPagamento) {
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 }
 
-function excluirTodasParcelasGrupo(grupoId) {
-    const grupo = lancamentos.filter(l => l.grupoId === grupoId);
-    if (grupo.length === 0) return;
-    if (!confirm(`Excluir todas as ${grupo.length} parcelas de "${grupo[0].descricao}"?`)) return;
-    lancamentos = lancamentos.filter(l => l.grupoId !== grupoId);
-    salvarFirebase('lancamentos', lancamentos);
-    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
-}
-
 function excluirContaFixa(index) {
     if (!confirm(`Excluir "${contasFixas[index].nome}"?`)) return;
     contasFixas.splice(index, 1);
@@ -1678,10 +1640,6 @@ function atualizarTabelaApartamento() {
     let totalEntrada = 0, totalEvolucaoObra = 0;
     let ultimaPendente = null;
 
-    const hoje = new Date();
-    const mesAtual = hoje.getMonth() + 1; // 1-12
-    const anoAtual = hoje.getFullYear();
-
     parcelasApartamento.forEach((p, i) => {
         const [ano, mes, dia] = p.data.split("-");
         const isPago = p.situacao === 'PAGO' || p.situacao === 'CURY CHEGA MAIS' || p.situacao === 'EVOLUÇÃO DE OBRA';
@@ -1699,15 +1657,8 @@ function atualizarTabelaApartamento() {
         totalConstrucao += p.construcao;
         const construcaoText = p.construcao > 0 ? p.construcao.toFixed(3) + '%' : '-';
         const tr = document.createElement('tr');
-
-        // Verificar se é o mês atual
-        const ehMesAtual = parseInt(mes) === mesAtual && parseInt(ano) === anoAtual;
-        if (ehMesAtual) {
-            tr.style.cssText = 'background: linear-gradient(90deg, rgba(99,102,241,0.10), rgba(99,102,241,0.05)); outline: 2px solid rgba(99,102,241,0.40); outline-offset: -1px; position: relative;';
-        }
-
         tr.innerHTML = `
-            <td>${ehMesAtual ? `<strong style="color:var(--primary-color);">📅 ${p.mes}</strong>` : p.mes}</td><td>${dia}/${mes}/${ano}</td>
+            <td>${p.mes}</td><td>${dia}/${mes}/${ano}</td>
             <td>${formatarMoeda(p.parcelaEntrada)}</td><td>${construcaoText}</td>
             <td>${formatarMoeda(p.evolucaoObra)}</td><td><strong>${formatarMoeda(p.parcelaTotal)}</strong></td>
             <td><span class="status-badge ${statusBadgeApt(p.situacao)}">${p.situacao}</span></td>
@@ -1821,22 +1772,6 @@ function gerarRelatorioPagamento(dia) {
     const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
     const total15 = parseFloat(configuracoes.salario1) || 0;
     const total30 = parseFloat(configuracoes.salario2) || 0;
-
-    // Helper: "pagar" uma forma de pagamento considerando parcelas
-    function pagarFormaPagamento(formaPagamento) {
-        // Para cada grupo parcelado nesta forma de pagamento, remover só a parcela mais baixa (pagar uma)
-        const grupoIds = [...new Set(lancamentos.filter(l => l.parcelado && l.grupoId && l.formaPagamento === formaPagamento).map(l => l.grupoId))];
-        grupoIds.forEach(gid => {
-            const grupo = lancamentos.filter(l => l.grupoId === gid).sort((a,b) => a.numeroParcela - b.numeroParcela);
-            if (grupo.length === 0) return;
-            // Remove a parcela de menor número (a "próxima a pagar")
-            const parcelaIdx = lancamentos.findIndex(l => l.grupoId === gid && l.numeroParcela === grupo[0].numeroParcela);
-            if (parcelaIdx >= 0) lancamentos.splice(parcelaIdx, 1);
-        });
-        // Remover lançamentos simples (não parcelados) desta forma de pagamento
-        lancamentos = lancamentos.filter(l => !(l.formaPagamento === formaPagamento && !l.parcelado));
-    }
-
     if (dia === 15) {
         relatorio += `📊 *Pagamentos do dia 15:*\n\n`;
         contasFixas.filter(c => c.ciclo === 'dia15' && c.destaque).forEach(c => {
@@ -1852,21 +1787,13 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `💳 Fatura ${nomeFatura15}: ${formatarMoeda(faturaNubankVal)}\n`;
         relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
-        pagarFormaPagamento('Cartão Nubank');
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
         // Excluir contas de data específica do ciclo dia15; zerar apenas as variáveis
         contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia15' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
             if (c.ciclo === 'dia15' && c.variavel === 'sim')
                 contasFixas[i].valor = 0;
         });
-        // Decrementar parcelas parceladas nas contas fixas (prazo 'parcelas')
-        contasFixas.forEach((c, i) => {
-            if (c.ciclo === 'dia15' && c.prazo === 'parcelas' && c.parcelas > 0) {
-                contasFixas[i].parcelas = parseInt(c.parcelas) - 1;
-            }
-        });
-        // Remover contas fixas parceladas zeradas
-        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && parseInt(c.parcelas) <= 0));
         salvarFirebase('contasFixas', contasFixas);
     }
     if (dia === 30) {
@@ -1886,22 +1813,13 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `💳 Fatura ${nomeSofisa}: ${formatarMoeda(faturaSofisaVal)}\n`;
         relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
-        pagarFormaPagamento('Cartão Inter');
-        pagarFormaPagamento('Cartão Sofisa');
+        lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
         // Excluir contas de data específica do ciclo dia30; zerar apenas as variáveis
         contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia30' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
             if (c.ciclo === 'dia30' && c.variavel === 'sim')
                 contasFixas[i].valor = 0;
         });
-        // Decrementar parcelas parceladas nas contas fixas (prazo 'parcelas')
-        contasFixas.forEach((c, i) => {
-            if (c.ciclo === 'dia30' && c.prazo === 'parcelas' && c.parcelas > 0) {
-                contasFixas[i].parcelas = parseInt(c.parcelas) - 1;
-            }
-        });
-        // Remover contas fixas parceladas zeradas
-        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && parseInt(c.parcelas) <= 0));
         salvarFirebase('contasFixas', contasFixas);
     }
     salvarFirebase('lancamentos', lancamentos);
@@ -1912,6 +1830,74 @@ function gerarRelatorioPagamento(dia) {
 /* ===== EVENT LISTENERS ===== */
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function() {
+/* ===== LANÇAMENTO RÁPIDO VIA URL ===== */
+
+function abrirAba(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    document.querySelector(`.tab[data-tab="${tabId}"]`)?.classList.add('active');
+    document.getElementById(tabId)?.classList.add('active');
+}
+
+function categoriaAutomatica(descricao) {
+    const texto = descricao.toLowerCase();
+
+    if (texto.includes('ifood') ||
+        texto.includes('padaria') ||
+        texto.includes('mercado') ||
+        texto.includes('restaurante') ||
+        texto.includes('burger') ||
+        texto.includes('pizza'))
+        return 'Alimentação';
+
+    if (texto.includes('uber') ||
+        texto.includes('99'))
+        return 'Transporte';
+
+    if (texto.includes('droga') ||
+        texto.includes('farmacia'))
+        return 'Saúde';
+
+    return 'Outros';
+}
+
+function processarLancamentoRapido() {
+
+    const params = new URLSearchParams(window.location.search);
+
+    const descricao = params.get('descricao');
+    const valor = params.get('valor');
+
+    if (!descricao || !valor) return;
+
+    abrirAba('lancamentos');
+
+    document.getElementById('tipo').value = 'Despesa';
+    document.getElementById('descricao').value = descricao;
+    document.getElementById('valor').value = valor;
+    document.getElementById('categoria').value = categoriaAutomatica(descricao);
+    document.getElementById('data').value =
+        new Date().toISOString().split('T')[0];
+
+    setTimeout(() => {
+
+        if (confirm(
+            `Registrar lançamento?\n\n${descricao}\nR$ ${valor}`
+        )) {
+
+            document
+                .getElementById('form-lancamento')
+                .dispatchEvent(
+                    new Event('submit', {
+                        bubbles: true,
+                        cancelable: true
+                    })
+                );
+        }
+
+    }, 500);
+}
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         this.classList.add('active');
@@ -1919,43 +1905,21 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
-document.getElementById('eh-parcelado').addEventListener('change', function() {
-    document.getElementById('grupo-num-parcelas').style.display = this.checked ? '' : 'none';
-});
-
 document.getElementById('form-lancamento').addEventListener('submit', function(e) {
     e.preventDefault();
-    const ehParcelado = document.getElementById('eh-parcelado').checked;
-    const numParcelas = parseInt(document.getElementById('num-parcelas').value) || 1;
-    const base = {
+    lancamentos.push({
         data: document.getElementById('data').value,
         tipo: document.getElementById('tipo').value,
         descricao: document.getElementById('descricao').value,
         valor: document.getElementById('valor').value,
         categoria: document.getElementById('categoria').value,
         formaPagamento: document.getElementById('forma-pagamento').value
-    };
-    if (ehParcelado && numParcelas >= 2) {
-        const grupoId = Date.now().toString();
-        for (let i = 1; i <= numParcelas; i++) {
-            lancamentos.push({
-                ...base,
-                descricao: base.descricao,
-                parcelado: true,
-                grupoId,
-                numeroParcela: i,
-                totalParcelas: numParcelas
-            });
-        }
-    } else {
-        lancamentos.push(base);
-    }
+    });
     salvarFirebase('lancamentos', lancamentos);
     this.reset();
-    document.getElementById('eh-parcelado').checked = false;
-    document.getElementById('grupo-num-parcelas').style.display = 'none';
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
+processarLancamentoRapido();
 });
 // ─── Salário event listeners ───────────────────────────
 /* listeners antigos de salario removidos - substituídos por modal */
@@ -2176,15 +2140,8 @@ document.getElementById('btn-salvar-cartao').addEventListener('click', () => {
 
 document.querySelectorAll('input[name="payment-date"]').forEach(radio => {
     radio.addEventListener('change', function() {
-        const dia15 = document.getElementById('payment-dia15');
-        const dia30 = document.getElementById('payment-dia30');
-        if (this.value === '15') {
-            dia15.style.display = '';
-            dia30.style.display = 'none';
-        } else {
-            dia15.style.display = 'none';
-            dia30.style.display = '';
-        }
+        document.getElementById('payment-dia15').classList.toggle('hidden', this.value !== '15');
+        document.getElementById('payment-dia30').classList.toggle('hidden', this.value !== '30');
     });
 });
 
