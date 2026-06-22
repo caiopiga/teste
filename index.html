@@ -1918,8 +1918,7 @@ document.getElementById('form-lancamento').addEventListener('submit', function(e
     salvarFirebase('lancamentos', lancamentos);
     this.reset();
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
-    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
-processarLancamentoRapido();
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();processarLancamentoRapido();
 });
 // ─── Salário event listeners ───────────────────────────
 /* listeners antigos de salario removidos - substituídos por modal */
