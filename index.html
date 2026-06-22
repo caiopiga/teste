@@ -1036,7 +1036,6 @@ function iniciarSincronizacao() {
     salarios             = dados.salarios             || [];
     cartoes              = dados.cartoes              || [];
     parcelasApartamento  = dados.parcelasApartamento  || [...parcelasApartamentoPadrao];
-    setTimeout(processarLancamentoRapido, 1000);
 
     // Backward compatibility: se não tem salarios mas tem configuracoes antigas, migrar
     if (salarios.length === 0 && (configuracoes.salario1 > 0 || configuracoes.salario2 > 0)) {
@@ -1059,6 +1058,9 @@ function iniciarSincronizacao() {
     atualizarDashboard();
     atualizarPagamentos();
     atualizarTabelaApartamento();
+    if (window.__atalhoURLPendente) {
+        window.__atalhoURLPendente = false;
+        lancarViaURL();    
     }, err => {
         document.getElementById('loading-overlay').style.display = 'none';
         setStatus('❌ Sem conexão', 'err');
@@ -1831,74 +1833,6 @@ function gerarRelatorioPagamento(dia) {
 /* ===== EVENT LISTENERS ===== */
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function() {
-/* ===== LANÇAMENTO RÁPIDO VIA URL ===== */
-
-function abrirAba(tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-    document.querySelector(`.tab[data-tab="${tabId}"]`)?.classList.add('active');
-    document.getElementById(tabId)?.classList.add('active');
-}
-
-function categoriaAutomatica(descricao) {
-    const texto = descricao.toLowerCase();
-
-    if (texto.includes('ifood') ||
-        texto.includes('padaria') ||
-        texto.includes('mercado') ||
-        texto.includes('restaurante') ||
-        texto.includes('burger') ||
-        texto.includes('pizza'))
-        return 'Alimentação';
-
-    if (texto.includes('uber') ||
-        texto.includes('99'))
-        return 'Transporte';
-
-    if (texto.includes('droga') ||
-        texto.includes('farmacia'))
-        return 'Saúde';
-
-    return 'Outros';
-}
-
-function processarLancamentoRapido() {
-    alert('FUNÇÃO EXECUTOU');
-    const params = new URLSearchParams(window.location.search);
-
-    const descricao = params.get('descricao');
-    const valor = params.get('valor');
-
-    if (!descricao || !valor) return;
-
-    abrirAba('lancamentos');
-
-    document.getElementById('tipo').value = 'Despesa';
-    document.getElementById('descricao').value = descricao;
-    document.getElementById('valor').value = valor;
-    document.getElementById('categoria').value = categoriaAutomatica(descricao);
-    document.getElementById('data').value =
-        new Date().toISOString().split('T')[0];
-
-    setTimeout(() => {
-
-        if (confirm(
-            `Registrar lançamento?\n\n${descricao}\nR$ ${valor}`
-        )) {
-
-            document
-                .getElementById('form-lancamento')
-                .dispatchEvent(
-                    new Event('submit', {
-                        bubbles: true,
-                        cancelable: true
-                    })
-                );
-        }
-
-    }, 500);
-}
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         this.classList.add('active');
@@ -1919,7 +1853,7 @@ document.getElementById('form-lancamento').addEventListener('submit', function(e
     salvarFirebase('lancamentos', lancamentos);
     this.reset();
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
-    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();processarLancamentoRapido();
+    atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
 });
 // ─── Salário event listeners ───────────────────────────
 /* listeners antigos de salario removidos - substituídos por modal */
@@ -2313,7 +2247,152 @@ document.getElementById('btn-salvar-conta-m').addEventListener('click', () => {
 });
 
 window.addEventListener('click', e => { if (e.target == document.getElementById('modalContaFixa')) document.getElementById('modalContaFixa').style.display = 'none'; });
+// ═══ LANÇAMENTO RÁPIDO VIA URL (Atalhos do iPhone) ════════════════════
+function lancarViaURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('atalho')) return; // não é uma chamada do Atalho
 
+    const descricao = params.get('desc') || '';
+    const valor = params.get('valor') || '';
+    const cartao = params.get('cartao') || '';
+    const data = new Date().toISOString().split('T')[0];
+
+    // Cria modal de aprovação
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position:fixed;inset:0;z-index:9999;
+        background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+        display:flex;align-items:center;justify-content:center;padding:1rem;
+    `;
+
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:420px;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+            <div style="text-align:center;margin-bottom:1.5rem;">
+                <div style="font-size:2.5rem;">💳</div>
+                <h2 style="font-size:1.3rem;font-weight:700;color:#1f2937;margin-top:0.5rem;">Novo Lançamento</h2>
+                <p style="color:#6b7280;font-size:0.85rem;">Detectado via ${cartao || 'Cartão'}</p>
+            </div>
+
+            <div style="background:#f9fafb;border-radius:8px;padding:1.25rem;margin-bottom:1.25rem;border:1px solid #e5e7eb;">
+                <div style="margin-bottom:1rem;">
+                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">DESCRIÇÃO</label>
+                    <input id="al-desc" value="${descricao}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                </div>
+                <div style="display:flex;gap:0.75rem;">
+                    <div style="flex:1;">
+                        <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">VALOR (R$)</label>
+                        <input id="al-valor" type="number" step="0.01" value="${valor}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">DATA</label>
+                        <input id="al-data" type="date" value="${data}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                    </div>
+                </div>
+                <div style="margin-top:1rem;">
+                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">CATEGORIA</label>
+                    <select id="al-categoria" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                        <option value="Alimentação">🍔 Alimentação</option>
+                        <option value="Transporte">🚗 Transporte</option>
+                        <option value="Saúde">❤️ Saúde</option>
+                        <option value="Lazer">🎉 Lazer</option>
+                        <option value="Educação">📚 Educação</option>
+                        <option value="Outros">📦 Outros</option>
+                    </select>
+                </div>
+                <div style="margin-top:1rem;">
+                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">FORMA DE PAGAMENTO</label>
+                    <select id="al-pagamento" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:0.75rem;">
+                <button id="al-cancelar" style="flex:1;padding:0.85rem;background:#f3f4f6;color:#374151;border:none;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;">
+                    ✕ Cancelar
+                </button>
+                <button id="al-aprovar" style="flex:2;padding:0.85rem;background:#6366f1;color:white;border:none;border-radius:8px;font-size:0.95rem;font-weight:700;cursor:pointer;">
+                    ✓ Aprovar Lançamento
+                </button>
+            </div>
+            <div id="al-status" style="margin-top:0.75rem;text-align:center;font-size:0.85rem;color:#6b7280;display:none;"></div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Popula select de pagamento com os cartões cadastrados
+    function popularPagamento() {
+        const sel = document.getElementById('al-pagamento');
+        if (!sel) return;
+        sel.innerHTML = '';
+        cartoes.forEach(c => {
+            const op = document.createElement('option');
+            op.value = `Cartão ${c.nome}`;
+            op.textContent = `Cartão ${c.nome}`;
+            if (cartao && c.nome.toLowerCase().includes(cartao.toLowerCase())) op.selected = true;
+            sel.appendChild(op);
+        });
+        ['PIX','Boleto','Débito Automático'].forEach(v => {
+            const op = document.createElement('option');
+            op.value = v; op.textContent = v;
+            sel.appendChild(op);
+        });
+    }
+    // Aguarda cartões carregarem
+    const tentarPopular = setInterval(() => {
+        if (cartoes.length > 0) { popularPagamento(); clearInterval(tentarPopular); }
+    }, 300);
+    setTimeout(() => clearInterval(tentarPopular), 5000);
+
+    document.getElementById('al-cancelar').onclick = () => overlay.remove();
+
+    document.getElementById('al-aprovar').onclick = async () => {
+        const btn = document.getElementById('al-aprovar');
+        const status = document.getElementById('al-status');
+        const descVal = document.getElementById('al-desc').value.trim();
+        const valorVal = parseFloat(document.getElementById('al-valor').value);
+        const dataVal = document.getElementById('al-data').value;
+        const catVal = document.getElementById('al-categoria').value;
+        const pagVal = document.getElementById('al-pagamento').value;
+
+        if (!descVal || !valorVal || !dataVal || !catVal || !pagVal) {
+            status.textContent = '⚠️ Preencha todos os campos.';
+            status.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Salvando...';
+        status.textContent = '';
+        status.style.display = 'none';
+
+        const lancamento = {
+            tipo: 'Despesa',
+            descricao: descVal,
+            valor: valorVal,
+            categoria: catVal,
+            formaPagamento: pagVal,
+            data: dataVal
+        };
+
+        try {
+            lancamentos.push(lancamento);
+            await salvarFirebase('lancamentos', lancamentos);
+            btn.textContent = '✓ Lançado com sucesso!';
+            btn.style.background = '#22c55e';
+            setTimeout(() => overlay.remove(), 1500);
+        } catch(e) {
+            btn.disabled = false;
+            btn.textContent = '✓ Aprovar Lançamento';
+            status.textContent = '❌ Erro ao salvar. Tente novamente.';
+            status.style.display = 'block';
+        }
+    };
+}
+
+// Chama a função após o Firebase carregar
+window.__atalhoURLPendente = true;
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
     // Os dados são carregados pelo Firebase onSnapshot acima
