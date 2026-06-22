@@ -1060,7 +1060,8 @@ function iniciarSincronizacao() {
     atualizarTabelaApartamento();
     if (window.__atalhoURLPendente) {
         window.__atalhoURLPendente = false;
-        lancarViaURL();    
+        lancarViaURL();
+    }
     }, err => {
         document.getElementById('loading-overlay').style.display = 'none';
         setStatus('❌ Sem conexão', 'err');
@@ -2247,89 +2248,76 @@ document.getElementById('btn-salvar-conta-m').addEventListener('click', () => {
 });
 
 window.addEventListener('click', e => { if (e.target == document.getElementById('modalContaFixa')) document.getElementById('modalContaFixa').style.display = 'none'; });
-// ═══ LANÇAMENTO RÁPIDO VIA URL (Atalhos do iPhone) ════════════════════
+
 function lancarViaURL() {
     const params = new URLSearchParams(window.location.search);
-    if (!params.has('atalho')) return; // não é uma chamada do Atalho
+    if (!params.has('atalho')) return;
 
     const descricao = params.get('desc') || '';
     const valor = params.get('valor') || '';
     const cartao = params.get('cartao') || '';
-    const data = new Date().toISOString().split('T')[0];
+    const dataHoje = new Date().toISOString().split('T')[0];
 
-    // Cria modal de aprovação
     const overlay = document.createElement('div');
-    overlay.style.cssText = `
-        position:fixed;inset:0;z-index:9999;
-        background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
-        display:flex;align-items:center;justify-content:center;padding:1rem;
-    `;
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;padding:1rem;';
 
     overlay.innerHTML = `
-        <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:420px;box-shadow:0 20px 40px rgba(0,0,0,0.3);">
-            <div style="text-align:center;margin-bottom:1.5rem;">
-                <div style="font-size:2.5rem;">💳</div>
-                <h2 style="font-size:1.3rem;font-weight:700;color:#1f2937;margin-top:0.5rem;">Novo Lançamento</h2>
-                <p style="color:#6b7280;font-size:0.85rem;">Detectado via ${cartao || 'Cartão'}</p>
+        <div style="background:#fff;border-radius:16px;padding:1.75rem;width:100%;max-width:400px;box-sizing:border-box;">
+            <div style="text-align:center;margin-bottom:1.25rem;">
+                <div style="font-size:2rem;">💳</div>
+                <h2 style="font-size:1.15rem;font-weight:700;color:#1f2937;margin:0.4rem 0 0.2rem;">Novo lançamento</h2>
+                <p style="color:#6b7280;font-size:0.82rem;margin:0;">Detectado via ${cartao || 'Cartão'}</p>
             </div>
-
-            <div style="background:#f9fafb;border-radius:8px;padding:1.25rem;margin-bottom:1.25rem;border:1px solid #e5e7eb;">
-                <div style="margin-bottom:1rem;">
-                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">DESCRIÇÃO</label>
-                    <input id="al-desc" value="${descricao}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+            <div style="background:#f9fafb;border-radius:10px;padding:1.1rem;margin-bottom:1.1rem;border:1px solid #e5e7eb;">
+                <div style="margin-bottom:0.85rem;">
+                    <label style="font-size:0.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.3rem;">DESCRIÇÃO</label>
+                    <input id="al-desc" value="${descricao}" style="width:100%;padding:0.55rem 0.75rem;border:1px solid #d1d5db;border-radius:7px;font-size:0.92rem;color:#1f2937;box-sizing:border-box;">
                 </div>
-                <div style="display:flex;gap:0.75rem;">
+                <div style="display:flex;gap:0.65rem;margin-bottom:0.85rem;">
                     <div style="flex:1;">
-                        <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">VALOR (R$)</label>
-                        <input id="al-valor" type="number" step="0.01" value="${valor}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                        <label style="font-size:0.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.3rem;">VALOR (R$)</label>
+                        <input id="al-valor" type="number" step="0.01" value="${valor}" style="width:100%;padding:0.55rem 0.75rem;border:1px solid #d1d5db;border-radius:7px;font-size:0.92rem;color:#1f2937;box-sizing:border-box;">
                     </div>
                     <div style="flex:1;">
-                        <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">DATA</label>
-                        <input id="al-data" type="date" value="${data}" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                        <label style="font-size:0.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.3rem;">DATA</label>
+                        <input id="al-data" type="date" value="${dataHoje}" style="width:100%;padding:0.55rem 0.75rem;border:1px solid #d1d5db;border-radius:7px;font-size:0.92rem;color:#1f2937;box-sizing:border-box;">
                     </div>
                 </div>
-                <div style="margin-top:1rem;">
-                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">CATEGORIA</label>
-                    <select id="al-categoria" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
-                        <option value="Alimentação">🍔 Alimentação</option>
-                        <option value="Transporte">🚗 Transporte</option>
-                        <option value="Saúde">❤️ Saúde</option>
-                        <option value="Lazer">🎉 Lazer</option>
-                        <option value="Educação">📚 Educação</option>
-                        <option value="Outros">📦 Outros</option>
+                <div style="margin-bottom:0.85rem;">
+                    <label style="font-size:0.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.3rem;">CATEGORIA</label>
+                    <select id="al-categoria" style="width:100%;padding:0.55rem 0.75rem;border:1px solid #d1d5db;border-radius:7px;font-size:0.92rem;color:#1f2937;box-sizing:border-box;">
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Lazer">Lazer</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Outros">Outros</option>
                     </select>
                 </div>
-                <div style="margin-top:1rem;">
-                    <label style="font-size:0.8rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.35rem;">FORMA DE PAGAMENTO</label>
-                    <select id="al-pagamento" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:0.95rem;color:#1f2937;">
+                <div>
+                    <label style="font-size:0.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:0.3rem;">FORMA DE PAGAMENTO</label>
+                    <select id="al-pagamento" style="width:100%;padding:0.55rem 0.75rem;border:1px solid #d1d5db;border-radius:7px;font-size:0.92rem;color:#1f2937;box-sizing:border-box;">
                         <option value="">Selecione</option>
                     </select>
                 </div>
             </div>
-
-            <div style="display:flex;gap:0.75rem;">
-                <button id="al-cancelar" style="flex:1;padding:0.85rem;background:#f3f4f6;color:#374151;border:none;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;">
-                    ✕ Cancelar
-                </button>
-                <button id="al-aprovar" style="flex:2;padding:0.85rem;background:#6366f1;color:white;border:none;border-radius:8px;font-size:0.95rem;font-weight:700;cursor:pointer;">
-                    ✓ Aprovar Lançamento
-                </button>
+            <div style="display:flex;gap:0.65rem;">
+                <button id="al-cancelar" style="flex:1;padding:0.8rem;background:#f3f4f6;color:#374151;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;">✕ Cancelar</button>
+                <button id="al-aprovar" style="flex:2;padding:0.8rem;background:#6366f1;color:white;border:none;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:pointer;">✓ Aprovar lançamento</button>
             </div>
-            <div id="al-status" style="margin-top:0.75rem;text-align:center;font-size:0.85rem;color:#6b7280;display:none;"></div>
-        </div>
-    `;
+            <div id="al-status" style="margin-top:0.65rem;text-align:center;font-size:0.82rem;color:#6b7280;display:none;"></div>
+        </div>`;
 
     document.body.appendChild(overlay);
 
-    // Popula select de pagamento com os cartões cadastrados
     function popularPagamento() {
         const sel = document.getElementById('al-pagamento');
         if (!sel) return;
         sel.innerHTML = '';
         cartoes.forEach(c => {
             const op = document.createElement('option');
-            op.value = `Cartão ${c.nome}`;
-            op.textContent = `Cartão ${c.nome}`;
+            op.value = 'Cartão ' + c.nome;
+            op.textContent = 'Cartão ' + c.nome;
             if (cartao && c.nome.toLowerCase().includes(cartao.toLowerCase())) op.selected = true;
             sel.appendChild(op);
         });
@@ -2339,11 +2327,11 @@ function lancarViaURL() {
             sel.appendChild(op);
         });
     }
-    // Aguarda cartões carregarem
+
     const tentarPopular = setInterval(() => {
         if (cartoes.length > 0) { popularPagamento(); clearInterval(tentarPopular); }
     }, 300);
-    setTimeout(() => clearInterval(tentarPopular), 5000);
+    setTimeout(() => clearInterval(tentarPopular), 6000);
 
     document.getElementById('al-cancelar').onclick = () => overlay.remove();
 
@@ -2364,35 +2352,27 @@ function lancarViaURL() {
 
         btn.disabled = true;
         btn.textContent = 'Salvando...';
-        status.textContent = '';
         status.style.display = 'none';
 
-        const lancamento = {
-            tipo: 'Despesa',
-            descricao: descVal,
-            valor: valorVal,
-            categoria: catVal,
-            formaPagamento: pagVal,
-            data: dataVal
-        };
+        const lancamento = { tipo: 'Despesa', descricao: descVal, valor: valorVal, categoria: catVal, formaPagamento: pagVal, data: dataVal };
 
         try {
             lancamentos.push(lancamento);
             await salvarFirebase('lancamentos', lancamentos);
             btn.textContent = '✓ Lançado com sucesso!';
             btn.style.background = '#22c55e';
-            setTimeout(() => overlay.remove(), 1500);
+            setTimeout(() => { overlay.remove(); atualizarTabelaLancamentos(); atualizarDashboard(); }, 1500);
         } catch(e) {
             btn.disabled = false;
-            btn.textContent = '✓ Aprovar Lançamento';
+            btn.textContent = '✓ Aprovar lançamento';
             status.textContent = '❌ Erro ao salvar. Tente novamente.';
             status.style.display = 'block';
         }
     };
 }
 
-// Chama a função após o Firebase carregar
-window.__atalhoURLPendente = true;
+window.__atalhoURLPendente = new URLSearchParams(window.location.search).has('atalho');
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('data').value = new Date().toISOString().split('T')[0];
     // Os dados são carregados pelo Firebase onSnapshot acima
