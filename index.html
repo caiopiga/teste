@@ -2254,7 +2254,7 @@ function lancarViaURL() {
     if (!params.has('atalho')) return;
 
     const descricao = params.get('desc') || '';
-    const valor = params.get('valor') || '';
+    const valor = (params.get('valor') || '').replace(',', '.');
     const cartao = params.get('cartao') || '';
     const dataHoje = new Date().toISOString().split('T')[0];
 
