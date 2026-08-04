@@ -1792,6 +1792,14 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `📈 Investir: ${formatarMoeda(invest15)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total15)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Nubank');
+        // Baixa de parcelas: contas fixas parceladas pagas no cartão de crédito perdem 1 parcela a cada fechamento
+        contasFixas.forEach(c => {
+            if (c.ciclo === 'dia15' && c.prazo === 'parcelas' && c.pagamento && c.pagamento.startsWith('Cartão ')) {
+                c.parcelas = (parseInt(c.parcelas) || 1) - 1;
+            }
+        });
+        // Remove automaticamente as contas parceladas no cartão que zeraram as parcelas
+        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && c.pagamento && c.pagamento.startsWith('Cartão ') && parseInt(c.parcelas) <= 0));
         // Excluir contas de data específica do ciclo dia15; zerar apenas as variáveis
         contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia15' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
@@ -1818,6 +1826,14 @@ function gerarRelatorioPagamento(dia) {
         relatorio += `📈 Investir: ${formatarMoeda(invest30)}\n`;
         relatorio += `\n💰 *Total*: ${formatarMoeda(total30)}`;
         lancamentos = lancamentos.filter(l => l.formaPagamento !== 'Cartão Inter' && l.formaPagamento !== 'Cartão Sofisa');
+        // Baixa de parcelas: contas fixas parceladas pagas no cartão de crédito perdem 1 parcela a cada fechamento
+        contasFixas.forEach(c => {
+            if (c.ciclo === 'dia30' && c.prazo === 'parcelas' && c.pagamento && c.pagamento.startsWith('Cartão ')) {
+                c.parcelas = (parseInt(c.parcelas) || 1) - 1;
+            }
+        });
+        // Remove automaticamente as contas parceladas no cartão que zeraram as parcelas
+        contasFixas = contasFixas.filter(c => !(c.prazo === 'parcelas' && c.pagamento && c.pagamento.startsWith('Cartão ') && parseInt(c.parcelas) <= 0));
         // Excluir contas de data específica do ciclo dia30; zerar apenas as variáveis
         contasFixas = contasFixas.filter(c => !(c.ciclo === 'dia30' && c.prazo === 'personalizado'));
         contasFixas.forEach((c,i) => {
@@ -1827,6 +1843,7 @@ function gerarRelatorioPagamento(dia) {
         salvarFirebase('contasFixas', contasFixas);
     }
     salvarFirebase('lancamentos', lancamentos);
+    renderContasFixas();
     atualizarTabelaLancamentos(); atualizarDashboard(); atualizarPagamentos();
     navigator.clipboard.writeText(relatorio).then(() => alert('Fatura Fechada! Agora é só colar no WhatsApp 😉'));
 }
