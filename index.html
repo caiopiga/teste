@@ -1314,21 +1314,16 @@ function atualizarResumoFinanceiro() {
     const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
     const totalInvestimentos = investimentoDia15 + investimentoDia30;
 
-    // LIVRE: soma dos gastos reais nos cartões (lançamentos)
-    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0) || (configuracoes.saldoLivreNubank||0) + (configuracoes.saldoLivreInter||0) + (configuracoes.saldoLivreSofisa||0);
-    const gastoNubank = calcularFaturaNubank();
-    const gastoInter  = calcularFaturaInter();
-    const gastoSofisa = lancamentos.filter(l => l.formaPagamento === 'Cartão Sofisa').reduce((t, l) => t + parseFloat(l.valor), 0);
-    let totalLivre = gastoNubank + gastoInter + gastoSofisa;
-
-    // limites individuais para cálculo de excesso
-    const limiteNubank  = parseFloat(configuracoes.saldoLivreNubank)  || 0;
-    const limiteInter   = parseFloat(configuracoes.saldoLivreInter)   || 0;
-    const limiteSofisa  = parseFloat(configuracoes.saldoLivreSofisa)  || 0;
-    const excessoNubank = Math.max(0, gastoNubank - limiteNubank);
-    const excessoInter  = Math.max(0, gastoInter  - limiteInter);
-    const excessoSofisa = Math.max(0, gastoSofisa - limiteSofisa);
-    const totalExcesso  = excessoNubank + excessoInter + excessoSofisa;
+    // LIVRE: soma dinâmica de TODOS os cartões cadastrados (não apenas Nubank/Inter/Sofisa)
+    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0);
+    let totalLivre = 0;
+    let totalExcesso = 0;
+    cartoes.forEach(c => {
+        const fatura = getFaturaCartao(c.nome);
+        const limite = parseFloat(c.limite) || 0;
+        totalLivre += fatura;
+        totalExcesso += Math.max(0, fatura - limite);
+    });
     const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
 
     // PERCENTUAIS em relação às entradas
