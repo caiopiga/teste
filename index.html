@@ -1314,15 +1314,17 @@ function atualizarResumoFinanceiro() {
     const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
     const totalInvestimentos = investimentoDia15 + investimentoDia30;
 
-    // LIVRE: soma dinâmica de TODOS os cartões cadastrados (não apenas Nubank/Inter/Sofisa)
-    const limiteTotal = cartoes.reduce((t,c) => t + (parseFloat(c.limite)||0), 0);
+    // LIVRE: soma DINÂMICA de todos os cartões cadastrados (independe do nome/banco)
+    // Antes esse cálculo estava travado em Nubank/Inter/Sofisa; agora percorre cartoes[] usando
+    // a mesma função getFaturaCartao() já usada no resto do app (Dashboard e Pagamentos).
+    const limiteTotal = cartoes.reduce((t, c) => t + (parseFloat(c.limite) || 0), 0);
     let totalLivre = 0;
     let totalExcesso = 0;
     cartoes.forEach(c => {
-        const fatura = getFaturaCartao(c.nome);
+        const gasto = getFaturaCartao(c.nome);
         const limite = parseFloat(c.limite) || 0;
-        totalLivre += fatura;
-        totalExcesso += Math.max(0, fatura - limite);
+        totalLivre += gasto;
+        totalExcesso += Math.max(0, gasto - limite);
     });
     const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
 
