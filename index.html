@@ -1075,8 +1075,8 @@ const closeModal = document.querySelector('.close');
 let balancoChart;
 
 function formatarMoeda(valor) {
-    const sinal = valor < 0 ? '-' : '';
-    return sinal + 'R$ ' + Math.abs(valor).toFixed(2).replace('.', ',');
+     const sinal = valor < 0 ? 'R$ -' : 'R$ ';
+    return sinal + Math.abs(valor).toFixed(2).replace('.', ',');
 }
 
 /* ===== CÁLCULOS ===== */
@@ -1156,9 +1156,9 @@ function atualizarTabelaLancamentos() {
         const tr = document.createElement('tr');
         const [ano, mes, dia] = lancamento.data.split("-");
         const valorFloat = parseFloat(lancamento.valor);
-        const valorFormatado = formatarMoeda(Math.abs(valorFloat));
+        const valorFormatado = formatarMoeda(valorFloat);
         const valorHtml = valorFloat < 0
-            ? `<span style="color:red">-${valorFormatado}</span>`
+            ? `<span style="color:red">${valorFormatado}</span>`
             : `<span style="color:green">${valorFormatado}</span>`;
         const parcelaInfo = lancamento.parcelado ? ` <small style='color:var(--primary-color);font-weight:600;'>(${lancamento.numeroParcela}/${lancamento.totalParcelas})</small>` : '';
         const grupoNome = lancamento.parcelado ? lancamento.descricao.replace(/ \(\d+\/\d+\)$/, '') : '';
