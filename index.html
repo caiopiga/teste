@@ -1075,7 +1075,8 @@ const closeModal = document.querySelector('.close');
 let balancoChart;
 
 function formatarMoeda(valor) {
-    return 'R$ ' + valor.toFixed(2).replace('.', ',');
+    const sinal = valor < 0 ? '-' : '';
+    return sinal + 'R$ ' + Math.abs(valor).toFixed(2).replace('.', ',');
 }
 
 /* ===== CÁLCULOS ===== */
@@ -1227,10 +1228,14 @@ function atualizarPagamentos() {
     const fixasDia15SemCartao = somaContasFixasCiclo('dia15', true);
     const fixasDia30SemCartao = somaContasFixasCiclo('dia30', true);
 
-    function criarItemPagamento(label, valor) {
+    function criarItemPagamento(label, valor, destacarNegativo) {
         const div = document.createElement('div');
         div.className = 'payment-item';
-        div.innerHTML = `<span>${label}:</span><span>${formatarMoeda(valor)}</span>`;
+        const negativo = destacarNegativo && valor < 0;
+        const valorSpan = negativo
+            ? `<span style="color:var(--danger-color);">${formatarMoeda(valor)}</span>`
+            : `<span>${formatarMoeda(valor)}</span>`;
+        div.innerHTML = `<span>${label}:</span>${valorSpan}`;
         return div;
     }
 
@@ -1264,8 +1269,8 @@ function atualizarPagamentos() {
     });
     faturas15.forEach(f => items15.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
     const despesasDia15 = fixasDia15SemCartao + totalFaturas15;
-    const investimentoDia15 = Math.max(0, salario15 - despesasDia15);
-    items15.appendChild(criarItemPagamento('Investir', investimentoDia15));
+    const investimentoDia15 = salario15 - despesasDia15;
+    items15.appendChild(criarItemPagamento('Investir', investimentoDia15, true));
     const totalItem15 = criarItemPagamento('Total', salario15);
     totalItem15.style.fontWeight = '600'; totalItem15.style.fontSize = '1.05rem';
     totalItem15.style.paddingTop = '1.25rem'; totalItem15.style.borderBottom = 'none';
@@ -1287,8 +1292,8 @@ function atualizarPagamentos() {
     });
     faturas30.forEach(f => items30.appendChild(criarItemFaturaCartao('Fatura ' + f.nome, f.fatura, f.limite)));
     const despesasDia30 = fixasDia30SemCartao + totalFaturas30;
-    const investimentoDia30 = Math.max(0, salario30 - despesasDia30);
-    items30.appendChild(criarItemPagamento('Investir', investimentoDia30));
+    const investimentoDia30 = salario30 - despesasDia30;
+    items30.appendChild(criarItemPagamento('Investir', investimentoDia30, true));
     const totalItem30 = criarItemPagamento('Total', salario30);
     totalItem30.style.fontWeight = '600'; totalItem30.style.fontSize = '1.05rem';
     totalItem30.style.paddingTop = '1.25rem'; totalItem30.style.borderBottom = 'none';
@@ -1310,8 +1315,8 @@ function atualizarResumoFinanceiro() {
     const faturas30tot = cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
     const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
     const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
-    const investimentoDia15 = Math.max(0, salario1 - despesasDia15);
-    const investimentoDia30 = Math.max(0, salario2 - despesasDia30);
+    const investimentoDia15 = salario1 - despesasDia15;
+    const investimentoDia30 = salario2 - despesasDia30;
     const totalInvestimentos = investimentoDia15 + investimentoDia30;
 
     // LIVRE: soma DINÂMICA de todos os cartões cadastrados (independe do nome/banco)
@@ -1326,7 +1331,7 @@ function atualizarResumoFinanceiro() {
         totalLivre += gasto;
         totalExcesso += Math.max(0, gasto - limite);
     });
-    const totalInvestimentosFinal = totalExcesso > 0 ? Math.max(0, totalInvestimentos - totalExcesso) : totalInvestimentos;
+    const totalInvestimentosFinal = totalExcesso > 0 ? (totalInvestimentos - totalExcesso) : totalInvestimentos;
 
     // PERCENTUAIS em relação às entradas
     function pct(valor) {
@@ -1340,7 +1345,9 @@ function atualizarResumoFinanceiro() {
     document.getElementById('total-despesas').textContent = formatarMoeda(totalDespesasFixas);
     document.getElementById('pct-despesas').textContent   = pct(totalDespesasFixas);
 
-    document.getElementById('total-investimentos').textContent = formatarMoeda(totalInvestimentosFinal);
+    const invEl = document.getElementById('total-investimentos');
+    invEl.textContent = formatarMoeda(totalInvestimentosFinal);
+    invEl.className   = totalInvestimentosFinal < 0 ? 'resumo-value valor-negativo' : 'resumo-value';
     document.getElementById('pct-investimentos').textContent   = pct(totalInvestimentosFinal);
 
     const livreEl = document.getElementById('saldo-mensal');
@@ -1769,8 +1776,8 @@ function gerarRelatorioPagamento(dia) {
     const faturaSofisaVal = calcularFaturaSofisa();
     const fixas15 = somaContasFixasCiclo('dia15', true);
     const fixas30 = somaContasFixasCiclo('dia30', true);
-    const invest15 = Math.max(0, (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal);
-    const invest30 = Math.max(0, (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal);
+    const invest15 = (parseFloat(configuracoes.salario1) || 0) - fixas15 - faturaNubankVal;
+    const invest30 = (parseFloat(configuracoes.salario2) || 0) - fixas30 - faturaInterVal - faturaSofisaVal;
     const total15 = parseFloat(configuracoes.salario1) || 0;
     const total30 = parseFloat(configuracoes.salario2) || 0;
     if (dia === 15) {
