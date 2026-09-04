@@ -1366,8 +1366,10 @@ const totalComprometido = despesasDia15 + despesasDia30;
     document.getElementById('total-entradas').textContent = formatarMoeda(totalEntradas);
     document.getElementById('pct-entradas').textContent   = '100%';
 
-    document.getElementById('total-despesas').textContent = formatarMoeda(totalComprometido);
-document.getElementById('pct-despesas').textContent   = pct(totalComprometido);
+    const totalFixasSemCartao = somaContasFixasCiclo('dia15', true) + somaContasFixasCiclo('dia30', true);
+
+document.getElementById('total-despesas').textContent = formatarMoeda(totalFixasSemCartao);
+document.getElementById('pct-despesas').textContent   = pct(totalFixasSemCartao);
 
 const invEl = document.getElementById('total-investimentos');
 invEl.textContent = formatarMoeda(totalInvestimentosFinal);
