@@ -361,21 +361,21 @@
                         </div>
                     </div>
                     <div class="resumo-card card-investimentos">
-                        <div class="resumo-icon"><i class="fas fa-piggy-bank"></i></div>
-                        <div class="resumo-content">
-                            <span class="resumo-title">Investimentos</span>
-                            <span class="resumo-value" id="total-investimentos">R$ 0,00</span>
-                            <span class="resumo-percent" id="pct-investimentos" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
-                        </div>
-                    </div>
-                    <div class="resumo-card card-saldo">
-                        <div class="resumo-icon"><i class="fas fa-wallet"></i></div>
-                        <div class="resumo-content">
-                            <span class="resumo-title">Livre</span>
-                            <span class="resumo-value" id="saldo-mensal">R$ 0,00</span>
-                            <span class="resumo-percent" id="pct-livre" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
-                        </div>
-                    </div>
+    <div class="resumo-icon"><i class="fas fa-piggy-bank"></i></div>
+    <div class="resumo-content">
+        <span class="resumo-title">Sobra para investir</span>
+        <span class="resumo-value" id="total-investimentos">R$ 0,00</span>
+        <span class="resumo-percent" id="pct-investimentos" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
+    </div>
+</div>
+<div class="resumo-card card-saldo">
+    <div class="resumo-icon"><i class="fas fa-wallet"></i></div>
+    <div class="resumo-content">
+        <span class="resumo-title">Disponível real</span>
+        <span class="resumo-value" id="saldo-mensal">R$ 0,00</span>
+        <span class="resumo-percent" id="pct-livre" style="font-size:0.8rem;color:var(--text-light);margin-top:0.1rem;">0%</span>
+    </div>
+</div>
                 </div>
                 <div class="chart-container">
                     <h3>Balanço Mensal</h3>
@@ -1310,28 +1310,52 @@ function atualizarResumoFinanceiro() {
     // DESPESAS FIXAS: soma de TODAS as contas fixas/monitoradas cadastradas
     const totalDespesasFixas = contasFixas.reduce((t, c) => t + (parseFloat(c.valor) || 0), 0);
 
-    // INVESTIMENTOS: calculado igual à aba Pagamentos (sobra do salário após despesas de cada ciclo)
-    const faturas15tot = cartoes.filter(c=>c.ciclo==='dia15').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
-    const faturas30tot = cartoes.filter(c=>c.ciclo==='dia30').map(c=>getFaturaCartao(c.nome)).reduce((t,v)=>t+v, 0);
-    const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
-    const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
-    const investimentoDia15 = salario1 - despesasDia15;
-    const investimentoDia30 = salario2 - despesasDia30;
-    const totalInvestimentos = investimentoDia15 + investimentoDia30;
+    // ============================================================
+// COMPROMETIDO E SOBRA PARA INVESTIR
+// ============================================================
 
-    // LIVRE: soma DINÂMICA de todos os cartões cadastrados (independe do nome/banco)
-    // Antes esse cálculo estava travado em Nubank/Inter/Sofisa; agora percorre cartoes[] usando
-    // a mesma função getFaturaCartao() já usada no resto do app (Dashboard e Pagamentos).
-    const limiteTotal = cartoes.reduce((t, c) => t + (parseFloat(c.limite) || 0), 0);
-    let totalLivre = 0;
-    let totalExcesso = 0;
-    cartoes.forEach(c => {
-        const gasto = getFaturaCartao(c.nome);
-        const limite = parseFloat(c.limite) || 0;
-        totalLivre += gasto;
-        totalExcesso += Math.max(0, gasto - limite);
-    });
-    const totalInvestimentosFinal = totalExcesso > 0 ? (totalInvestimentos - totalExcesso) : totalInvestimentos;
+// Faturas dos cartões por ciclo
+const faturas15tot = cartoes
+    .filter(c => c.ciclo === 'dia15')
+    .map(c => getFaturaCartao(c.nome))
+    .reduce((t, v) => t + v, 0);
+
+const faturas30tot = cartoes
+    .filter(c => c.ciclo === 'dia30')
+    .map(c => getFaturaCartao(c.nome))
+    .reduce((t, v) => t + v, 0);
+
+// Despesas de cada ciclo
+const despesasDia15 = somaContasFixasCiclo('dia15', true) + faturas15tot;
+const despesasDia30 = somaContasFixasCiclo('dia30', true) + faturas30tot;
+
+// Sobra de cada ciclo
+const investimentoDia15 = salario1 - despesasDia15;
+const investimentoDia30 = salario2 - despesasDia30;
+
+// Sobra total que poderia ser investida
+const totalInvestimentos = investimentoDia15 + investimentoDia30;
+
+// ============================================================
+// DISPONÍVEL REAL
+// ============================================================
+//
+// Por enquanto, como o sistema não registra quanto foi
+// efetivamente investido, o "Disponível real" corresponde
+// à mesma sobra disponível para investimento.
+//
+// Em uma próxima evolução poderemos separar:
+// Sobra para investir
+// (-) Valor efetivamente investido
+// (=) Disponível real
+//
+const totalInvestimentosFinal = totalInvestimentos;
+
+// ============================================================
+// TOTAL COMPROMETIDO
+// ============================================================
+
+const totalComprometido = despesasDia15 + despesasDia30;
 
     // PERCENTUAIS em relação às entradas
     function pct(valor) {
@@ -1342,20 +1366,29 @@ function atualizarResumoFinanceiro() {
     document.getElementById('total-entradas').textContent = formatarMoeda(totalEntradas);
     document.getElementById('pct-entradas').textContent   = '100%';
 
-    document.getElementById('total-despesas').textContent = formatarMoeda(totalDespesasFixas);
-    document.getElementById('pct-despesas').textContent   = pct(totalDespesasFixas);
+    document.getElementById('total-despesas').textContent = formatarMoeda(totalComprometido);
+document.getElementById('pct-despesas').textContent   = pct(totalComprometido);
 
-    const invEl = document.getElementById('total-investimentos');
-    invEl.textContent = formatarMoeda(totalInvestimentosFinal);
-    invEl.className   = totalInvestimentosFinal < 0 ? 'resumo-value valor-negativo' : 'resumo-value';
-    document.getElementById('pct-investimentos').textContent   = pct(totalInvestimentosFinal);
+const invEl = document.getElementById('total-investimentos');
+invEl.textContent = formatarMoeda(totalInvestimentosFinal);
+invEl.className = totalInvestimentosFinal < 0
+    ? 'resumo-value valor-negativo'
+    : 'resumo-value';
+document.getElementById('pct-investimentos').textContent = pct(totalInvestimentosFinal);
 
-    const livreEl = document.getElementById('saldo-mensal');
-    livreEl.textContent = formatarMoeda(totalLivre);
-    livreEl.className   = totalLivre > limiteTotal ? 'resumo-value valor-negativo' : 'resumo-value valor-positivo';
-    document.getElementById('pct-livre').textContent = pct(totalLivre);
+const livreEl = document.getElementById('saldo-mensal');
+livreEl.textContent = formatarMoeda(totalInvestimentosFinal);
+livreEl.className = totalInvestimentosFinal < 0
+    ? 'resumo-value valor-negativo'
+    : 'resumo-value valor-positivo';
+document.getElementById('pct-livre').textContent = pct(totalInvestimentosFinal);
 
-    atualizarGraficoBalanco(totalEntradas, totalDespesasFixas, totalInvestimentosFinal, totalLivre);
+atualizarGraficoBalanco(
+    totalEntradas,
+    totalComprometido,
+    totalInvestimentosFinal,
+    totalInvestimentosFinal
+);
 }
 
 function atualizarGraficoBalanco(entradas, despesas, investimentos, saldo) {
@@ -1364,7 +1397,7 @@ function atualizarGraficoBalanco(entradas, despesas, investimentos, saldo) {
     balancoChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Entradas', 'Despesas Fixas', 'Investimentos', 'Livre'],
+            labels: ['Entradas', 'Comprometido', 'Sobra para investir', 'Disponível real'],
             datasets: [{ label: 'Valor (R$)', data: [entradas, despesas, investimentos, saldo >= 0 ? saldo : 0],
                 backgroundColor: ['rgba(34,197,94,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(99,102,241,0.7)'],
                 borderColor: ['rgba(34,197,94,1)','rgba(239,68,68,1)','rgba(245,158,11,1)','rgba(99,102,241,1)'],
